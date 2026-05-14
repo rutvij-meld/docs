@@ -1,0 +1,73 @@
+---
+title: "Investments"
+---
+
+<Note>
+API Reference
+
+[Search investment holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search)
+
+[Search investment transactions](https://docs.meld.io/reference/bank-linking-investment-transactions-search)
+</Note>
+
+
+# Overview
+
+Investments refers to an investment account, also known as a brokerage account, where one has various stocks and other securities (such as mutual funds, CDs, bonds, ETFs, etc.) The investment product allows you to connect an investment account and get back all relevant information about the account.
+
+There are two types of investment data: investment holdings and investment transactions. See [here](https://docs.meld.io/docs/managing-completed-connections#get-investments-data) for an example on fetching the data.
+
+# Investment Holdings
+
+Investment Holdings refers to the current holdings of an investment account. This means what securities are currently in the account, along with other relevant information such as the number of shares, the cost basis, and the current value of the holding. This is similar to the balances product, but is a breakdown as it includes all the securities in an account.
+
+## Sample Response for a Single Holding
+
+```json
+{
+    "id": "WQ57LwnwzUo5WMM5Fi7nn2",
+    "accountId": "W9kbkRme9VT2iz6qRT3212",
+    "customerId": "WQ43wxs1bjUhohY8ekjeje",
+    "financialAccountId": "WQ44KLVNHt9ARfp7aRWCC4",
+    "symbol": "RKLB",
+    "description": "Rocket Lab USA",
+    "quantity": 2.00000000000000000000,
+    "currentValue": 11.12000000000000000000,
+    "costBasis": 11.11000000000000000000,
+    "currency": "USD",
+    "isin": "US7731221062",
+    "cusip": "773122106",
+    "type": "stock",
+    "serviceProviderDetails": [
+        // data
+    ]
+}
+```
+
+# Investment Transactions
+
+Investment Transactions are the trade history of an account. For example, if the account owner purchased 10 shares of Google in a single trade, that would be a transaction. Unlike holdings, which are a snapshot of the present, transactions are the history of the account and give insight as to how the current holdings were assembled.
+
+## Sample Response for a Single Transaction
+
+```json
+{
+    "id": "WQ57iFJpqR524P82QZrFiW",
+    "accountId": "W9kbkRme9VT2iz6qRT3212",
+    "customerId": "WQ43wxs1bjUhohY8ekjeje",
+    "financialAccountId": "WQ44KLVNHt9ARfp7aRWCC4",
+    "amount": 11.11000000000000000000,
+    "currency": "USD",
+    "description": "Rocket Lab USA Limit Buy",
+    "transactionDate": "2023-06-16T00:00:00Z",
+    "postedDate": "2023-06-16T00:00:00Z",
+    "symbol": "RKLB",
+    "quantity": 2.00000000000000000000,
+    "costBasis": 5.56000000000000000000,
+    "type": "buy"
+    "status": "POSTED",
+    "serviceProviderDetails": [
+        // data
+    ]
+}
+```

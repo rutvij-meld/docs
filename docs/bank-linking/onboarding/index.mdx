@@ -1,0 +1,30 @@
+---
+title: "Onboarding"
+---
+
+Meld works hard to make onboarding as smooth as possible. To facilitate with onboarding, follow the steps below and use the Meld Dashboard to add your credentials, grab your API key, set up webhooks, and access Meld's API.
+
+If you would like access to the Meld Dashboard, reach out to Meld either [here](https://www.meld.io/contact) or via your account rep to request it.
+
+## Onboarding FAQ
+
+### My dashboard invite in Step 1 isn't working or has expired, what should I do?
+
+Reach out to Meld for assistance with receiving a new invite. If members of your team have already joined the dashboard for your account, they can also re-invite you.
+
+### Where do I get my service provider credentials in Step 2?
+
+They can generally be found in the dashboard of each provider, or are logged in any API calls you have made to that provider. Meld generally does not have access to your accounts with each provider and therefore cannot get this information for you.
+
+### After adding my service provider credentials in Step 2, I tried to make an API call in Step 4 but it didn't work, what happened?
+
+There are a couple of different possible sources of error here:
+
+1. The credentials entered in Step 2 were incorrect. Double-check the credentials, fix them, and try again.
+2. The API key used did not match the Base URL selected. See Step 4 for more details but each API key is tied to either a sandbox or production account, and can only be used for API calls in that environment.
+3. Some required fields for the API call are missing or have improper values. The API reference guide will inform you if this is the case.
+4. Your provider does not match the call being made. For example, asking for a crypto quote for Finicity, a bank linking provider, will not work. Each endpoint is generally domain specific, and will only work for providers in that domain.
+
+### What events should I subscribe to for webhooks?
+
+When in doubt, subscribe to all. You will not receive extraneous webhooks.

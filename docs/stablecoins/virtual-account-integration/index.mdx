@@ -1,0 +1,18 @@
+---
+title: "Product 3: Virtual Account and Payouts"
+description: "Overview of the Virtual Account Flow"
+---
+
+## What are virtual accounts?
+
+A virtual account is a dedicated set of receiving details — a bank account number, IBAN, or crypto address — assigned to a specific customer. When funds arrive at those details, the provider automatically converts and settles them to the destination you configured (e.g. a crypto wallet for onramp, or a bank account for offramp).
+
+**Onramp (fiat to crypto):** The customer receives unique bank details (ACH routing + account number, SEPA IBAN, etc.). They deposit fiat from their bank; the provider converts it and delivers stablecoin to the specified wallet address.
+
+**Offramp (crypto to fiat):** The customer receives a crypto deposit address. They send stablecoin from their wallet; the provider converts and pays out fiat to the bank details on file. In this flow, typically a virtual account is not created per business / user unless necessary. Instead the onramp sends money directly from the provider's funding account to the business' / user's end bank account.
+
+Because each virtual account is unique to a customer, deposits are automatically attributed — no manual reference matching required. Meld orchestrates the provider integration, KYC, quoting, and settlement tracking so you work with a single API surface regardless of which provider (Noah, Due, etc.) handles the underlying rails.
+
+Please reach out to Meld for more information about virtual accounts and how to enable them.
+
+<br />

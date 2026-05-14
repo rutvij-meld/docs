@@ -1,0 +1,89 @@
+---
+title: "Finicity Balances Mapping"
+---
+
+This data comes from Finicity's [/aggregation/v1/customers /\{customerId}/institutionLogins /\{institutionLoginId}/accounts/](https://api-reference.finicity.com/#/rest/api-endpoints/accounts/get-customer-accounts-by-institution-login) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint. 
+
+Meld uses the cached balance [GetCustomerAccountsByInstitutionsLogin](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#GetCustomerAccountsByInstitutionLogin) the vast majority of the time (for daily refreshes).
+
+If you force refresh just balances, Meld calls [GetAvailableBalanceLive](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#GetAvailableBalanceLive) (because it's quicker and cheaper), but if you refresh balances and transactions Meld calls [RefreshCustomerAccountsByInstitutionLogin](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#RefreshCustomerAccountsByInstitutionLogin).
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Meld
+      </th>
+
+      <th>
+        Description
+      </th>
+
+      <th>
+        Finicity Response Field
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        currency
+      </td>
+
+      <td>
+        The currency of the account balance
+      </td>
+
+      <td>
+        currency
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        currentAmount
+      </td>
+
+      <td>
+        The current amount in the account
+      </td>
+
+      <td>
+        balance
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        availableAmount
+      </td>
+
+      <td>
+        The available amount in the account
+      </td>
+
+      <td>
+        Assigned in the following order if non-null:  
+
+        detail.availableBalanceAmount\
+        detail.availableCashBalance\
+        balance
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        updatedAt
+      </td>
+
+      <td>
+        The last time balances were updated
+      </td>
+
+      <td>
+        balanceDate
+      </td>
+    </tr>
+  </tbody>
+</Table>

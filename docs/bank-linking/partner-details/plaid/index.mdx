@@ -1,0 +1,44 @@
+---
+title: "Plaid Partner Details"
+---
+
+This page will cover supported countries, config settings, and Plaid specific information.
+
+**Do not attempt to set up webhooks from Plaid to Meld, Meld will pass Plaid the correct webhook url when initiating the Plaid widget (in any environment).**
+
+## Supported Countries
+
+Meld supports Plaid institutions in the United States (US) and Canada (CA).
+
+## Configuration Settings
+
+If you have your own [Plaid](https://plaid.com/) account that you wish to integrate with Meld, you will need to provide the following credentials securely on the Meld Integrations Tab on the dashboard:
+
+* *Client ID*  
+* *Client Secret*
+
+In addition, you will need to complete Plaid's OAuth Registration form in order to enable OAuth institutions.
+
+![](https://files.readme.io/02425af-image.png)
+
+## Product Initialization
+
+Unlike the other service providers, Plaid will filter out any accounts belonging to the customer that do not support all of the products requested, thus limiting which accounts the customer can select for aggregation within Plaid's widget flow. In order to normalize account selection behavior across service providers and reduce customer abandonment due to missing accounts, Meld aims to ensure the largest breadth of accounts is made available as possible. To do so, Meld uses a subset of the products supplied in the [/connect/start](https://docs.meld.io/reference/bank-linking-connect-create) request that optimizes for account availability when initializing the connection with Plaid. This means that there may be financial accounts belonging to the connection that don't support every product requested, but this can be expected and replicates the behavior exhibited by all of the other service providers. 
+
+There are several factors Meld takes into consideration when determining which products requested in the `/connect/start` request will be included in the minimal subset provided to Plaid. This determination is made as follows:
+
+1. The products supported by the widest variety of account types take precedence for inclusion in the subset, and those that aren't supported by many account types are typically excluded. For example,`TRANSACTIONS` is supported by nearly all account types, so it is always provided to Plaid if it is one of the requested products in `/connect/start`. On the other hand, `IDENTIFIERS` (account/routing numbers) is only supported by checking and savings accounts, and thus will not be included in the subset (unless it is the only product requested).
+2. Products deemed distinctive enough that their inclusion alone within the `/connect/start` request likely implies their importance to the applications that request them will take precedence for inclusion in the subset. For example, the investment type products (`INVESTMENT_TRANSACTIONS` and `INVESTMENT_HOLDINGS`) are specific enough that when requested, they are most likely critical to an application's use-case, and filtering out account types that don't support investments would be desirable. On the other hand, `OWNERS` is typically a supplementary product for most applications and typically won't be included in the subset. It's nice to have if available, but not important enough that it warrants filtering out accounts that don't have this information.
+
+**Note:** This minimizing of the product set *does not* imply that the products not included in the subset Meld provides to Plaid will never be aggregated, but rather that the omitted products are not being used to restrict which accounts the customer can select in Plaid's widget. Meld will still attempt to load all the requested products after connection completion, there is just no guarantee that every linked account supports all of them.
+
+You can read more about how Plaid handles product initialization on their own documentation [here](https://plaid.com/docs/link/initializing-products/#required-if-supported-products).
+
+## Special considerations
+
+* You must complete several Plaid onboarding steps prior to integrating Plaid with Meld. These steps can be completed on the Plaid dashboard or by reaching out to your account manager. The steps are as follows:
+  * Complete the [Security Questionnaire ](https://dashboard.plaid.com/overview/questionnaire-start)form
+  * Complete the OAuth registration. See [here](https://plaid.com/docs/link/oauth/#complete-the-registration-requirements). 
+  * Enable Plaid's `transaction_refresh` product if triggering real-time refreshes is desired. Plaid will still auto-refresh transactions daily, but if forcing refreshes is applicable to your use case, then this is an additional product that must be enabled. You can do so by submitting a [product request form](https://dashboard.plaid.com/overview/request-products) on the plaid dashboard
+* Plaid is the only provider for which the user must select their institution again in their widget even if already selected previously in the Meld picker
+* If transactions is a specified product, historical transactions will be loaded by default

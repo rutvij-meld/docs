@@ -1,0 +1,76 @@
+---
+title: "Webhooks Authentication"
+---
+
+Meld signs our webhook events using an HMAC hash with the secret defined in the webhook profile. We strongly recommend clients validate the signature and timestamp to ensure the data is sent by Meld and not tampered with in transit.
+
+# Request headers & body
+
+The request includes the following headers for verifying the event comes from Meld:
+
+* `meld-signature` - The signature to verify against.
+* `meld-signature-timestamp` - The timestamp of the event, which is included in the signature.
+
+The body of the request is JSON, but it is compact and not pretty. Some tools may display the response in a prettier format with extra whitespace that is not included in the raw response body. That cannot be included when constructing the signature.
+
+# Verifying the signature
+
+The signature is constructed using the signature timestamp in the header, the URL where the event was sent, and the unformatted/raw request body. These three are concatenated together with a period (`.`) and then signed using the secret. The signed bytes are then Base64 URL encoded with padding.
+
+Represented simply: `base64url(HMACSHA256(<TIMESTAMP>.<URL>.<BODY>))`
+
+To verify, create the same SHA256 HMAC signature and then compare it to the `Meld-Signature` in the header. If they match, then you can be sure that the webhook was sent by Meld. If they don't, it may be from another source.
+
+# Example
+
+Profile Settings:
+
+* `Secret`: `42m4NMLS34WQ6BbMfo1KFKqMv4hy`
+* `URL`: `https://example.meld.io/webhooks`
+
+Headers:
+
+* `Meld-Signature`: `O4bN5E0U9s88l2DFc0kjt-0w3LLA3Zkv8hXhafc22Hg=`
+* `Meld-Signature-Timestamp`: `2022-05-26T20:25:17.682818Z`
+
+Body:
+
+```
+{"eventType":"WEBHOOK_TEST","eventId":"GDtv8pQgwzc9HuFFBQFrww","timestamp":"2022-05-26T20:23:45.908400Z","accountId":"W9jpQc1HKvwscqMPcLmzUS","profileId":null,"version":"2021-10-27","payload":{"requestId":"7aWW1GXTjWCCtNubzvVX7V"}}
+```
+
+Given these values, the string to sign is:
+
+```
+2022-05-26T20:25:17.682818Z.https://example.meld.io/webhooks.{"eventType":"WEBHOOK_TEST","eventId":"GDtv8pQgwzc9HuFFBQFrww","timestamp":"2022-05-26T20:23:45.908400Z","accountId":"W9jpQc1HKvwscqMPcLmzUS","profileId":null,"version":"2021-10-27","payload":{"requestId":"7aWW1GXTjWCCtNubzvVX7V"}}
+```
+
+The signed string in base64 should match the signature in the header:
+
+```
+O4bN5E0U9s88l2DFc0kjt-0w3LLA3Zkv8hXhafc22Hg=
+```
+
+# Sample code
+
+Here is sample code to get the signature:
+
+```java
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+public class WebhookUtil
+{
+  public static String getSignature(String timestamp, String url, String body, String secret)
+    throws Exception
+  {
+    final String data = String.join(".", timestamp, url, body);
+    final Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), mac.getAlgorithm()));
+    final byte[] bytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+    return Base64.getUrlEncoder().encodeToString(bytes);
+  }
+}
+```

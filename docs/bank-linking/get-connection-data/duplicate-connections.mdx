@@ -1,0 +1,15 @@
+---
+title: "Duplicate Connections"
+---
+
+Duplicate connections occur when multiple Meld connections reference the same underlying service provider connection. This occurs when the **same customer connects to the same bank account(s) through the same service provider in separate connect sessions using the same login credentials**. In such cases, the majority of service providers recognize that the connection already exists and will return the same id for it. However, since Meld generates connection ids immediately upon creation (prior to the customer actually linking their accounts and prior to knowing whether it will be a duplicate) then this means there will now be multiple Meld connections linked to the same underlying service provider connection id. Therefore it only becomes necessary to maintain one of these Meld connections to avoid excessive refreshing and redundancy. 
+
+In such cases, the most recently connected of these duplicate Meld connections will be considered `ACTIVE` and be routinely maintained, with the remainder moving to status `PARTIALLY_ACTIVE` and statusReason `INACTIVE_DUPLICATE`. These `INACTIVE_DUPLICATE` Meld connections still share the same underlying financial accounts, transactions, etc. as the primary Meld duplicate, it's just that this data will only get refreshed once per service provider update rather than for all of the duplicates linked to it. At any time you can make one of the `PARTIALLY_ACTIVE` connections `ACTIVE` by [manually refreshing it](https://docs.meld.io/docs/refreshing-connections#forced-refreshes), but that will also make the current `ACTIVE` duplicate have a status of `PARTIALLY_ACTIVE` now. Whenever a connection moves to `PARTIALLY_ACTIVE` you will be informed of that via a `BANK_LINKING_CONNECTION_STATUS_CHANGE` [webhook](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_status_change).
+
+If any duplicate connections do exist, the `duplicateConnectionIds` list in the [/connections endpoint](https://docs.meld.io/reference/bank-linking-connections-get) will contain the ids of all of them ordered from most recently aggregated to oldest, otherwise this list will be null. 
+
+When deleting connections, all of its duplicates must be deleted in order to sever the connection with the underlying service provider and stop it from being billed. **Meld does not ever automatically delete duplicates but encourages you to do so if you are not using them.**
+
+Note: Duplicate connections will all belong to the same service provider and have the same service provider connection id. **If the user connects via different providers, then the connections will NOT be considered duplicates.** For service providers (such as Plaid) that DO NOT identify duplicate connections (and thus always use a unique id for each new connection regardless of whether the customer has already connected the same financial accounts), then the associated Meld connections will not be considered duplicates either. This is because the service provider still treats them as separate connections and they are billed separately.
+
+<br />

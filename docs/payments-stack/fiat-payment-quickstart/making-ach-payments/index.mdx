@@ -1,0 +1,32 @@
+---
+title: "Making ACH Payments"
+---
+
+For ACH transactions, Meld supports 2 types of transactions, Payins and Payouts.
+
+## Definitions:
+
+* Payins (aka Debit or Charge): When money moves from a buyer to a merchant.
+* Payouts (aka Credit): When money moves from a merchant to a buyer. 
+* Refunds: A Refund is a special type of Payout. To initiate a full or partial refund, the Payin can be reversed by simply initiating a Payout with the desired amount. Similarly, if a Payout is to be reversed, then initiate a Payin for the same amount.
+* Cashouts: Moving money from a merchant account on the provider to the merchant's checking account with their bank, can be treated as a Payout as well.
+
+# Making an ACH transaction
+
+Steps to follow in order to create an ACH transaction with Meld:
+
+
+<Note>
+Configuration
+
+Before you make an ACH transaction, you must first set up your merchant account with the service provider. Contact Meld for help here.
+</Note>
+
+
+1. Account Verification: Use Meld's Bank Linking products to verify your user's account which will be used for ACH Debit. This process is known as [Account Verification](https://docs.meld.io/docs/account-verification) and you will need to use the Bank Linking flow to request access to the Account [IDENTIFIERS](https://docs.meld.io/docs/account-identifiers) (account and routing number) and the [OWNERS](https://docs.meld.io/docs/account-owners) (account owner's name) products.
+2. Create a customer: For each ACH transaction you will need to create a Meld customer to represent the buyer. If the buyer is new, you should create a Meld customer following the [steps here](https://docs.meld.io/docs/creating-a-payments-customer), or if you recognize the buyer you can simply pass in their corresponding Meld customerId when making a transaction.
+3. Payin: Once you have a Meld customer for both the seller and buyer, you can make an ACH Payin transaction by following [these steps](https://docs.meld.io/docs/ach-payin-debit).
+4. Payout: Once you have a Meld customer for both the seller and buyer, you can make an ACH Payout transaction by following [these steps](https://docs.meld.io/docs/ach-credit-payout).
+5. Cashout: Moving money from your account with the service provider to your bank account follows the same flow as an ACH Payout. In your system, you can set these to run automatically on whatever schedule you would like.
+
+<br />

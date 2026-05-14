@@ -1,0 +1,56 @@
+---
+title: "Payments Quickstart"
+---
+
+# Introduction
+
+The Meld Payments Stack allows you to offer a comprehensive way to build and route across multiple payments providers through a single, normalized API. After you review the documentation, read the API Reference for the Payments Stack to understand what is required to make the API calls.
+
+To onboard with Meld for Payments, follow the steps found in the [onboarding guide](https://docs.meld.io/docs/onboarding).
+
+
+<Note>
+Public Postman Workspace
+
+Meld offers public postman collections for our core endpoints to get you started. Please use it in conjunction with the documentation to understand the full power of Meld's API.
+
+The Postman workspace can be found [here](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection).
+</Note>
+
+
+## Webhooks
+
+In order for both you and Meld to receive transaction status notifications and updates, you must set up webhooks for your service providers, as shown in the [webhooks quickstart](https://docs.meld.io/docs/webhook-quickstart).
+
+## Routing
+
+Routing can be used to route to user to the best provider to complete their transaction. More information on fiat payments routing can be found [here](https://docs.meld.io/docs/routing-overview#payments-routing).
+
+# Environments
+
+Meld offers both production and sandbox environments. The tables below contain the URL for each environment:
+
+| Environment | API Base URL                              |
+| :---------- | :---------------------------------------- |
+| Sandbox     | https\://api-sb.meld.io                     |
+| Production  | https\://api.meld.io                        |
+
+# Payment Functionality Supported
+
+The following functionalities are supported to payments service providers through the Meld API:
+
+| Functionality                              | Description                                                                                                                                                 |
+| :----------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Collect a payment                          | Collect a payment from your customer through the specified service provider.                                                                                |
+| Get all transactions                       | Get a list of all payments that we submitted through a service provider. This request can be filtered based on date, service provider, and other variables. |
+| Get a transaction using the transaction id | Get the status of a specific transaction.                                                                                                                   |
+| Issue a refund                             | Issue a refund to a transaction that was submitted through Meld.                                                                                            |
+| Issue an external refund to a customer     | Issue a refund to a transaction that was submitted outside of Meld.                                                                                         |
+
+
+<Note>
+Resources
+
+* [API Reference for Payments Stack](https://docs.meld.io/reference/payments-transactions-create)
+* [Supported service providers](https://docs.meld.io/docs/fiat-supported-service-providers)
+</Note>

@@ -1,0 +1,219 @@
+---
+title: "Transaction Statuses"
+---
+
+Depending on what happens, transactions go through several statuses. The list below provides you with the definition of each transaction status you might come across when calling Meld APIs. Transactions with a temporary status will continue to change status while transactions with terminal statuses will not change.
+
+The most common lifecycle of a successful transaction is `PENDING` -> `SETTLING` -> `SETTLED`. In this case `PENDING` generally means that the user has opened the widget and logged in / completed KYC, `SETTLING` means the user has submitted the payment for the crypto, and `SETTLED` means the payment has processed successfully and the crypto has been successfully sent to the user. Those, along with `FAILED`, which means that the transaction failed, are the 4 most common and most important transaction statuses.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+        Status
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        Description
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        State
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `PENDING CREATED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The transaction has been created in Meld's system, but it has not yet been processed by the service provider.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `PENDING`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The transaction has been created in Meld's system and has been submitted to the service provider to be reviewed.  
+
+        Once it has been verified, the funds will be sent to the customer.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `SETTLING`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The service provider has accepted the transaction but the crypto asset still needs to be transferred to the customer.  
+
+        The customer's fiat funds have not yet settled.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `SETTLED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The customer's fiat funds have settled and the crypto asset has been successfully transferred.  
+
+        Transactions with this status have been approved.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TERMINAL
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `REFUNDED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The crypto asset was not transferred to the customer or was transferred back to the seller.  
+
+        A full refund will have been successfully issued to your customer.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TERMINAL
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `DECLINED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The service provider or the customer's credit card provider/bank has declined the transaction.  
+
+        If this transaction uses the card method, there are several reasons that the card may be declined, such as insufficient funds in the account, the card is not being activated, or the card being stolen or canceled.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TERMINAL
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `CANCELLED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The transaction has been canceled by the customer or account during the payment process and the funds will not be sent for settlement.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TERMINAL
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `FAILED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The order has been declined by external payment systems and/or cannot be processed.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TERMINAL
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `ERROR`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        A computing error occurred while processing the transaction.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `TWO_FA_REQUIRED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        Your customer has provided their payment information, and it is being validated by the service provider.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `TWO_FA_PROVIDED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        Your customer has submitted the 2FA codes, and the service provider is validating the submitted codes with the card issuer.
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `ACCEPTED`,`AUTHORIZED`, `PARTIALLY_SETTLED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        These are all legacy statuses that can be treated the same as `PENDING`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TEMPORARY
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        `AUTHORIZATION_EXPIRED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        This is a legacy status that can be treated the same as `FAILED`
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        TERMINAL
+      </td>
+    </tr>
+  </tbody>
+</Table>

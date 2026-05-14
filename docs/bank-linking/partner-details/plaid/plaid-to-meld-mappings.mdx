@@ -1,0 +1,35 @@
+---
+title: "Plaid to Meld Overall Mappings"
+---
+
+**Note:** You can always compare the raw responses from Plaid in the `serviceProviderDetails` section of a financial account.
+
+[Financial Account Base Fields](#financial-account-base-fields)
+
+[Balances](https://docs.meld.io/docs/plaid-balances-mapping)
+
+[Identifiers](https://docs.meld.io/docs/plaid-identifiers-mapping)
+
+[Owners](https://docs.meld.io/docs/plaid-owners-mapping)
+
+[Transactions](https://docs.meld.io/docs/plaid-transactions-mapping)
+
+[Investment Holdings](https://docs.meld.io/docs/plaid-investment-holdings-mappings)
+
+[Investment Transactions](https://docs.meld.io/docs/plaid-investment-transactions-mapping)
+
+[Normalized Account Types and Subtypes](#normalized-account-types-and-subtypes)
+
+## Financial Account Base Fields
+
+This data comes From Plaid's [/accounts/get](https://plaid.com/docs/api/accounts/#accounts-get-response-accounts-name) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+| Meld Field             | Description                                                       | Plaid Response Field                                                                                                        |
+| :--------------------- | :---------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| name                   | The account name                                                  | accounts.name                                                                                                               |
+| truncatedAccountNumber | The last 4 digits of the account number                           | accounts.mask                                                                                                               |
+| status                 | The real-time status of the account                               | Due to Plaid only returning active bank accounts, it does not have this field.<br />Meld will populate the status as `ACTIVE` |
+| type                   | The type of the account. Mapped to a Meld standardized type       | accounts.type                                                                                                               |
+| subtype                | The subtype of the account. Mapped to a Meld standardized subtype | accounts.subtype                                                                                                            |
+
+## Normalized Account Types and Subtypes

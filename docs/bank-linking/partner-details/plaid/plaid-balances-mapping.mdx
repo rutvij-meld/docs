@@ -1,0 +1,83 @@
+---
+title: "Plaid Balances Mapping"
+---
+
+This data comes From Plaid's [/accounts/balance/get](https://plaid.com/docs/api/products/balance/#accounts-balance-get-response-accounts-balances-iso-currency-code) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+        Meld Field
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        Description
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        Plaid Response Field
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        currency
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The currency of the account balance
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.balances\
+        .iso\_currency\_code
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        currentAmount
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The current amount in the account
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.balances.current
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        availableAmount
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The available amount in the account
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.balances.available
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        updatedAt
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The last time balances were updated
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.balances\
+        .last\_updated\_datetime
+      </td>
+    </tr>
+  </tbody>
+</Table>

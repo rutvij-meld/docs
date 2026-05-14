@@ -1,0 +1,15 @@
+---
+title: "Refreshing Connections"
+---
+
+Connections have 2 types of [refreshes](https://docs.meld.io/reference/bank-linking-connections-refresh), automatic and forced. You can refresh specific products, and the refresh will happen to all accounts under that connection. Both types of refreshes will result in webhooks being sent to you for the connection.
+
+# Automatic Refreshes
+
+Service Providers typically refresh connection data (balances and transactions) once a day, and Meld will get the latest data from the provider at that time. When Meld detects a change in data for a connection, you will receive webhooks informing you of the same, so that you can hit Meld's endpoints and receive the latest data.
+
+# Forced Refreshes
+
+At any time you can use Meld's [refresh endpoint](https://docs.meld.io/reference/bank-linking-connections-refresh) to get the latest data for all accounts belonging to a connection. That being said, the data is limited by how often the institutions update the data, which is often only several times a day. Forcing refreshes can incur additional costs. Also, providers may rate limit forced refreshes (for example MX only supports forced refreshing every 3 hours).
+
+# How to Refresh a Connection

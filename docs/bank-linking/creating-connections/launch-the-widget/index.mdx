@@ -1,0 +1,108 @@
+---
+title: "Step 2: Launch the Widget"
+---
+
+# Meld Connect Widget
+
+## Overview
+
+The Meld Connect Widget is where your customer will select a financial institution to connect with. Once your customer has connected their bank account, you can then use our other endpoints (described later) to pull information from their accounts.
+
+The Meld Connect Widget contains two components:
+
+* **Front-end component** -- Use to select the financial institution. 
+
+* **Back-end component** -- Use to access the customer’s financial data.
+
+**Meld highly recommends launching the widget inside an iframe for optimal UI**, and then close it when the connect\_complete event is emitted. You can just load the url as a new tab or in a webview but certain UI elements will not look as good. Still, how you choose to display the widget shouldn't affect a user's ability to connect to their bank.
+
+## Launch Meld Connect Widget
+
+Before you launch the Meld Connect Widget, make sure you have the connect token from the [previous step](https://docs.meld.io/docs/create-a-connect-token).\
+Use the connect token to build the URL and show our widget to your customers. Below is a sample code:
+
+```html
+<iframe src="https://institution-connect-sb.meld.io/?connectToken={{connectToken string}}" width="360" height="640" style="border: none;" />
+```
+
+The optimal size to load the iframe's in is H=630 x W=360 px.
+
+And below is the Meld Connect Widget your customers will see:
+
+![](https://files.readme.io/4a6005a-Screen_Shot_2021-12-01_at_10.43.29_AM.png)
+
+See [here](https://docs.meld.io/docs/widget-flow-examples) for examples of the widget flow.
+
+
+<Note>
+Launching in Test Mode
+
+If you launch the widget url in your browser (no iframe), then at the end of making a connection you may see an endless loading spinner. This is only seen in this test mode, when you actually implement the widget, launch it in an iframe, and close it once the connection is done, there is no spinner.
+</Note>
+
+
+## Listening for Emitted Events
+
+The widget emits several events, including errors, that you can listen for and use to trigger actions on your end. See more information on [Widget Emitted Events and Errors](https://docs.meld.io/docs/widget-emitted-events).
+
+# Set up webhooks and notifications
+
+You can receive notifications via webhooks whenever there are changes in financial accounts and transactions data. For instructions on setting up your webhook profiles, reference the [Webhook Quickstart](https://docs.meld.io/docs/webhook-quickstart).
+
+Example events include:
+
+* `BANK_LINKING_CONNECTION_COMPLETED`
+* `BANK_LINKING_CONNECTION_DELETED`
+* `BANK_LINKING_CUSTOMER_ACTION_REQUIRED`
+* `BANK_LINKING_ACCOUNTS_UPDATING`
+* `BANK_LINKING_ACCOUNTS_UPDATED`
+* `BANK_LINKING_ACCOUNTS_REMOVED`
+
+See the full list of bank-linking webhook event types in detail [here](https://docs.meld.io/docs/webhook-events-bank-linking).
+
+# Mobile Optimization
+
+**Overview**\
+In order to optimize your users’ mobile experience, if you are rendering the Meld Connect Widget inside of a modal window, you will need to apply a few styles to that modal window to ensure that the Connect Widget has the entire screen to render.
+
+**Example**\
+Detecting whether your site is on a mobile device, and styling the modal, will vary based on which frontend framework(s) you are using. For our example, we are using React, and Ant Design along with Styled Components.
+
+To detect whether the page is being viewed on a mobile device, we use *react-device-detect*:
+
+```text
+import { isMobile } from "react-device-detect";
+```
+
+To style our modal, we style the Ant Modal Component:
+
+```text
+export const Modal = styled(ModalANTD)`
+  padding: 0 !important;
+  position: relative;
+  ${isMobile &&
+  ` max-width: unset !important;
+    margin: unset !important;
+    height: 100%;
+    .ant-modal-centered::before {
+      content: unset;
+    }
+    .ant-modal-content {
+      height: 100%;
+    }`}
+
+  .ant-modal-content {
+    border-radius: 8px;
+  }
+  .ant-modal-body {
+    padding: 12px;
+  }
+`;
+```
+
+
+<Note>
+Resources
+
+* [API Reference for Bank Linking Stack](https://docs.meld.io/reference/bank-linking-connect-create)
+</Note>

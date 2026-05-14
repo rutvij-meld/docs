@@ -1,0 +1,12 @@
+---
+title: "Salt Edge Partners Balance Mapping"
+---
+
+This data comes from SaltEdge Partners [api/partners/v1/accounts](https://docs.saltedge.com/partners/v1/#accounts-attributes) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+| Meld Field      | Description                         | SaltEdge Partners Response Field |
+| :-------------- | :---------------------------------- | :------------------------------- |
+| currency        | The currency of the account balance | currency\_code                   |
+| currentAmount   | The current amount in the account   | balance                          |
+| availableAmount | The available amount in the account | extra.available\_amount          |
+| updatedAt       | The last time balances were updated | updated\_at                      |

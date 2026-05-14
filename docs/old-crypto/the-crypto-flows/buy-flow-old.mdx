@@ -1,0 +1,261 @@
+---
+title: "Buy Flow"
+---
+
+The buy flow aka onramping is the most common crypto flow.
+
+If you would like to use Meld's UI for the entire flow, Meld recommends using the [All in One Wizard](https://docs.meld.io/docs/crypto-widget) which follows the above flow. If you use the wizard you do not need to read any of the information below.
+
+The below information applies only if you are planning to use the Meld [White Label Widget](https://docs.meld.io/docs/crypto-widget).
+
+## Prerequisites
+
+Before a user can buy crypto, you should know the following information:
+
+* The user's wallet address
+
+* The payment method the user intends to pay with
+
+* The amount of fiat the user wants to exchange for crypto
+
+* The fiat currency the user will pay the fiat in (for example USD)
+
+* The cryptocurrency and network the user wants to purchase (for example ETH\_ARBITRUM aka Ethereum on the Arbitrum network)
+
+* The country the user's billing address is in
+
+You can either collect this information through your own UI, or use the Meld Crypto Wizard for an all-in-one UI that collects this information then allows the user to make purchase.
+
+If you are using your own UI to collect this information, you should use Meld's [service provider endpoints](https://docs.meld.io/reference/service-provider) to know which countries / payment methods / fiat currencies / tokens the onramps you have enabled support.
+
+## Steps to Users Buying Crypto
+
+Once you have the above information, you can complete the following steps, in order:
+
+1. Get a [crypto quote](https://docs.meld.io/docs/crypto-widget) from Meld for each provider. This involves gathering the parameters for what kind of quote the user wants and passing them in to the [crypto quote ](https://docs.meld.io/reference/crypto-quote-get)endpoint. Either select a quote for the user or show the user a list of quotes. Meld recommends sorting by quotes by the highest `customerScore`, or by the highest `destinationAmount` (which is the amount of crypto the user will receive).
+2. The user will select an onramp based on the quotes (or you can select one for them) and launch the onramp's [widget](https://docs.meld.io/reference/crypto-session-widget-create). The user completes the transaction using the widget. This entails the user making a payment to the onramp and the onramp sending the user crypto to the wallet address they provided. You can pass in a redirectUrl so that the user gets redirected to it after they submit a transaction on the onramp.
+3. Wait and listen for webhooks, and use them as triggers to fetch transaction data. For more information on how to do this see [here](https://docs.meld.io/docs/fetch-transaction-information). Once you have transaction data, you can choose how you would like to display it to the user.
+
+Note that while Step 1, getting a quote, will lead to the best user experience, it is not a required step. You can just launch an onramp's widget without asking for a quote beforehand.
+
+## How to Buy Crypto
+
+
+# API Calls
+
+## Quote
+
+Here is an example of a call to [/quotes](https://docs.meld.io/reference/crypto-quote-get🔗) when buying cryptocurrency (note that passing in serviceProviders is optional here):
+
+```json
+{
+    "walletAddress": "testWalletAddress",
+    "countryCode": "US",
+    "sourceCurrencyCode": "USD",
+    "sourceAmount": "100",
+    "destinationCurrencyCode": "ETH",
+    "paymentMethodType": "CARD"
+    // "serviceProviders": ["BANXA", "TRANSAK"]
+}
+```
+
+And here's a sample response:
+
+```json
+{
+    "quotes": [
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100,
+            "sourceAmountWithoutFees": 97.76,
+            "fiatAmountWithoutFees": 97.76,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 2.24,
+            "networkFee": 0.77,
+            "transactionFee": 1.47,
+            "destinationAmount": 0.031663,
+            "destinationCurrencyCode": "ETH",
+            "exchangeRate": 3158.3,
+            "paymentMethodType": "CREDIT_DEBIT_CARD",
+            "customerScore": 63.18,
+            "serviceProvider": "BANXA"
+        },
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100,
+            "sourceAmountWithoutFees": 90.95,
+            "fiatAmountWithoutFees": 90.95,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 9.05,
+            "networkFee": 4.32,
+            "transactionFee": 4.73,
+            "destinationAmount": 0.02952059,
+            "destinationCurrencyCode": "ETH",
+            "exchangeRate": 3387.466,
+            "paymentMethodType": "APPLE_PAY",
+            "customerScore": 18.64,
+            "serviceProvider": "TRANSAK"
+        },
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100.00,
+            "sourceAmountWithoutFees": 98.12,
+            "fiatAmountWithoutFees": 98.12,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 1.88,
+            "networkFee": 0.38,
+            "transactionFee": 1.50,
+            "destinationAmount": 0.0310259,
+            "destinationCurrencyCode": "ETH",
+            "exchangeRate": 3223.11,
+            "paymentMethodType": "CREDIT_DEBIT_CARD",
+            "customerScore": 19.59,
+            "serviceProvider": "BLOCKCHAINDOTCOM"
+        },
+
+```
+
+Note that the customer scores returned are Meld's recommendation of onramp with which the user is most likely to succeed in buying crypto, with a higher customer score being better. Learn more about customerScore [here](https://docs.meld.io/docs/crypto-quotes#customer-score). 
+
+**Redirect Url** -- Most onramps have a button that a user can click on to redirect to a particular url after a transaction is submitted. Meld can set a default value for you but the recommended behavior is to pass your redirect url in as part of the call to the /widget endpoint (using the param redirectUrl), as shown below, because this way if you'd like you can pass in a different url per widget session. One example for why this is useful is if the url has your order number each time, or if you have a deeplink vs a normal url for app vs browser..
+
+## Widget
+
+Here is an example of the corresponding call to [/widget](https://docs.meld.io/reference/crypto-session-widget-create) when buying cryptocurrency:
+
+```json
+{
+    "sessionData": {
+        "walletAddress": "testWalletAddress",
+        "countryCode": "US",
+        "sourceCurrencyCode": "USD",
+        "sourceAmount": "100",
+        "destinationCurrencyCode": "ETH",
+        "paymentMethodType": "CARD",
+        "serviceProvider": "BANXA",
+        "redirectUrl": "https://mywebsite.com"
+    },
+    "sessionType": "BUY",
+    "externalCustomerId": "customer1",
+    "externalSessionId": "buysession1"
+}
+```
+
+And here's a sample response:
+
+```json
+{
+    "id": "WQ4wQ4w475pjaRrNfT8KE9",
+    "externalSessionId": "buysession1",
+    "externalCustomerId": "customer1",
+    "customerId": "WQ4toL6ECKWc96PZ8HufDU",
+    "widgetUrl": "https://meldcrypto.com/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjcnlwdG8iLCJtZXJjaGFudElkIjoiVzlrZzlpUDFzYnB5WnB0UURjQ01KdSIsImlzcyI6Im1lbGQuaW8iLCJzZXNzaW9uSWQiOiJXUTR3UTR3NDc1cGphUnJOZlQ4S0U5IiwiZXhwIjoxNzEzNTYxMjY1LCJpYXQiOjE3MTM1NTk0NjV9.5-7MEH9dMdVGDwQstKSVxWYmpV8-8rYnRy-ynuYakvA",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjcnlwdG8iLCJtZXJjaGFudElkIjoiVzlrZzlpUDFzYnB5WnB0UURjQ01KdSIsImlzcyI6Im1lbGQuaW8iLCJzZXNzaW9uSWQiOiJXUTR3UTR3NDc1cGphUnJOZlQ4S0U5IiwiZXhwIjoxNzEzNTYxMjY1LCJpYXQiOjE3MTM1NTk0NjV9.5-7MEH9dMdVGDwQstKSVxWYmpV8-8rYnRy-ynuYakvA"
+}
+```
+
+## Webhooks
+
+Here is a sample of a `TRANSACTION_CRYPTO_PENDING` webhook, which is the first webhook you will receive for any transaction. See more about the various webhooks [here](https://docs.meld.io/docs/webhook-events-crypto).
+
+```json
+{
+    "eventType": "TRANSACTION_CRYPTO_PENDING",
+    "eventId": "AAsuLXHXD3mS1cjNBuHHzv",
+    "timestamp": "2024-02-24T16:36:41.717262Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "version": "2024-02-02",
+    "payload": {
+      "accountId": "W2aRZnYGPwhBWB94iFsZus",
+      "paymentTransactionId": "W9k9Tg12BFk1i68WpQYQY8",
+      "customerId": "WQ4toL6ECKWc96PZ8HufDU",
+      "externalCustomerId": "customer1",
+      "externalSessionId": "buysession1",
+      "paymentTransactionStatus": "PENDING"
+    }
+}
+```
+
+## Transaction Data
+
+Once you call the [/transactions](https://docs.meld.io/reference/payments-transactions-get-1) with a transactionId (the `paymentTransactionId` in the webhook above), this is a sample response:
+
+```json
+{
+    "key": "LYoQeP31CEkFxmsZvBKqy2EcRvgHiKdSqdsLQNA9C23DAg4ahRPdaSWeL7esWooQb9tMZaEdd7SLukWCSD95zzciDE",
+    "id": "W9k9Tg12BFk1i68WpQYQY8",
+    "parentPaymentTransactionId": null,
+    "accountId": "W9kg9iP1sbpyZptQDcCMJu",
+    "isPassthrough": false,
+    "passthroughReference": null,
+    "isImported": false,
+    "customer": {
+        "id": "WQ4toL6ECKWc96PZ8HufDU",
+        "accountId": "W2aRZnYGPwhBWB94iFsZus",
+        "name": {
+            "firstName": null,
+            "lastName": null
+        },
+        "addresses": []
+    },
+    "transactionType": "CRYPTO_PURCHASE",
+    "status": "SETTLED",
+    "sourceAmount": 100.00,
+    "sourceCurrencyCode": "USD",
+    "destinationAmount": 0.02872325,
+    "destinationCurrencyCode": "ETH",
+    "paymentMethodType": "CREDIT_DEBIT_CARD",
+    "serviceProvider": "BANXA",
+    "serviceTransactionId": "PB24043832633TX61",
+    "description": null,
+    "externalReferenceId": null,
+    "serviceProviderDetails": {
+        "networkFee": 0.77,
+        "type": "banxa",
+        "quoteId": "edff5599-3999-46d5-a887-9dc340ef0323",
+        "processingFee": 1.50,
+        "cryptoCurrency": "ETH",
+        "txnHash": "6E54FC71179F741EEE63569A4BA554FEF5A9FDDEDBDF2765225DF5F0242CE6F4",
+        "totalFee": 3.27,
+        "requestId": "fa0f7454-0f6d-4e71-b274-d9b1c843a5c5",
+        "cryptoCurrencyAmount": 0.02872325,
+        "partnerUserId": "WQ4wmNrDmELekUBRFJZg7K",
+        "walletAddress": "testWalletAddress",
+        "status": "completed",
+        "partnerFee": 1
+    },
+    "multiFactorAuthorizationStatus": null,
+    "createdAt": "2024-04-19T20:47:36.578875Z",
+    "updatedAt": "2024-04-19T20:49:04.616555Z",
+    "countryCode": "NO",
+    "sessionId": "WQ4wQ4w475pjaRrNfT8KE9",
+    "externalSessionId": null,
+    "paymentDetails": null,
+    "cryptoDetails": {
+        "walletAddress": "testWalletAddress",
+        "networkFee": 0.77,
+        "transactionFee": 1.50,
+        "partnerFee": 1,
+        "totalFee": 3.27,
+        "networkFeeInUsd": null,
+        "transactionFeeInUsd": null,
+        "partnerFeeInUsd": null,
+        "totalFeeInUsd": null,
+        "blockchainTransactionId": "6E54FC71179F741EEE63569A4BA554FEF5A9FDDEDBDF2765225DF5F0242CE6F4",
+        "institution": null,
+        "chainId": 1
+    },
+    "externalCustomerId": null,
+    "fiatAmountInUsd": 96.73,
+    "sessionClientTags": null,
+    "apiAccessProfileId": "WGuwgsCEsfyyrzmZfb4y2t"
+}
+```
+
+The `serviceProviderDetails` are directly the fields from the onramp's own transactions endpoint so the specific field and field names will vary per onramp.

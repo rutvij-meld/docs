@@ -1,0 +1,126 @@
+---
+title: "Widget Emitted Events and Errors"
+---
+
+The bank picker widget emits Meld several events, including errors, that you should listen for in order to trigger certain actions on your end, for example closing the widget. These events can be viewed in the Console tab of your browser. While these events technically can be viewed by your user, their main purpose is to be used by Meld for debugging as well as for you to know when a connection has started and completed.
+
+**The bank picker will emit both Meld and service provider events. The Meld events normalize the service provider events (aka are consistent across providers) and therefore you should ONLY listen to the meld events, not the service provider events. The Meld events will have*domain: "meld-connect"* in them to distinguish them.**
+
+# Types of events emitted by the widget
+
+Here are a list of Meld events emitted by the widget, along with what each means and what to do with them.
+
+1. `{ domain: "meld-connect", eventName: "init" }`
+   1. Emitted when the widget initializes.
+   2. Use this to know that the widget has been initialized so that you can track a session.
+2. `{ domain: "meld-connect", eventName: "debug" }`
+   1. Emitted at various times with debug information. Examples include when your customer cancels an integrated service provider's embedded widget or whenever your customer navigates to another screen within an integrated service provider's embedded widget.
+   2. This event is used by Meld for debugging. It is not necessary for you to listen to this event.
+3. `{ domain: "meld-connect", eventName: "error" }`
+   1. Emitted when the widget encounters an error. This event will be accompanied by query-string metadata, containing `details` and `reason` keys, as available.
+   2. This event tells you if a user runs into a service provider error while trying to connect to their bank. It is not necessary for you to listen to this event.
+4. `{ domain: "meld-connect", eventName: "connect_complete" }`
+   1. Emitted once the internal API call to /connect/complete has finished. It will be accompanied by query-string metadata, containing:
+      1. institutionId: Meld's institution ID for the institution your customer chose to connect with
+      2. institutionName: The name of the same institution
+      3. accountCount: The number of accounts your customer has connected
+      4. accounts: Where available, an array of connected accounts including details such as name, type, and mask; null otherwise
+   2. This event tells you the connection has completed successfully, and you can close the widget. Note that the connection may still be aggregating (aka gathering data), but will still succeed with the widget closed as the user's involvement is done.
+5. `{ domain: "meld-connect", eventName: "cancel" }`
+   1. Emitted when your customer cancels the widget.
+   2. This event lets you know that the customer has decided to leave the widget without successfully completing a connection. Use this event to trigger closing the widget.
+6. `{ domain: "meld-connect", eventName: "handover" }`
+   1. Emitted when the connect has been completed. This is a legacy event that has been made redundant by "connect\_complete".
+   2. It is not necessary for you to listen to this event, in fact it is advised that you don't, as "connect\_complete" serves the same purpose.
+
+# Listening for Emitted Events
+
+After your customer has successfully authenticated themselves, the Meld Connect Widget will emit an event indicating that the widget can now be closed and the connection will still succeed. On most platforms, this event will have a `data` object, which will contain a `domain` (always `"meld-connect"`), an `eventName`, and a `metadata` object (where appropriate). However, for iOS and Android, these events will be serialized into a string, in the format `[<domain>]<eventName>?<&-delimited-metaData>`.
+
+If you wish to close the iframe at this point, you can capture the `[meld-connect]connect_complete` event. This can be done in a few different ways, depending on how you have embedded the widget.
+
+**Desktop / Mobile browser**
+
+If you have embedded the widget into a page running in a full web browser, you can make use of that browser's `addEventListener` function:
+
+```javascript
+window.addEventListener(
+    "message",
+    (event) => {
+        if (event.data === '[meld-connect]connect_complete') {
+            // close the Meld Connect Widget
+        }
+    },
+    false,
+);
+```
+
+**React Native**
+
+When instantiating your WebView, you simply need to provide the component with an `onMessage` function:
+
+```html React
+<WebView
+    ...props
+    onMessage={(event) => {
+        if (event.data === '[meld-connect]connect_complete') {
+            // close the Meld Connect Widget
+        }
+    }}
+/>
+```
+
+**Android WebView**
+
+If you have embedded the widget as a WebView inside of your Android app, you will need to create a class that implements the `@JavascriptInterface` interface, and add that to the webview. The name of the class is unimportant, but the Connect Widget knows to look for a namespace named `Android` that contains a function named `postMessage`, so those names are required.
+
+```java
+private class JsObject {
+    @JavascriptInterface
+    public void postMessage(String event) {
+        if (event === "[meld-connect]connect_complete") {
+            // close the Meld Connect Widget
+        }
+    }
+}
+
+yourWebView.addJavascriptInterface(new JsObject(), "Android");
+```
+
+**iOS WKWebView**
+
+Embedding the widget in an iOS app requires o`WKWebView` set up to handle callback messages. Configure a `WKWebView` with `userContentController`:
+
+```swift
+class ConnectController: UIViewController {
+    let meldMessageHandler = "meldMessageHandler"
+    
+    override func viewDidLoad() {
+        let configuration = WKWebViewConfiguration()
+        configuration.userContentController.add(self, name: meldMessageHandler)
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+    }
+}
+    
+extension ConnectController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == meldMessageHandler, let body = message.body as? String,
+            body == "[meld-connect]connect_complete" {
+            // dismiss the controller
+        }
+    }
+}
+```
+
+
+<Note>
+We recommend also capturing the following events to close the iframe when an error occurs, or your customer does not complete the authentication step.
+
+* `[meld-connect]error` -- Emitted when the widget encounters an error
+* `[meld-connect]cancel` -- Emitted when your customer cancels the widget
+</Note>
+
+
+Once you have received the connect\_complete event, then congratulations, the widget flow is complete! After [setting up a webhook configuration with Meld](https://docs.meld.io/docs/webhook-quickstart#steps-to-receive-webhooks-from-meld), you can then expect the [BANK\_LINKING\_CONNECTION\_COMPLETED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_completed) webhook to notify of official connection completion, followed by the other aggregation-related webhooks that relay when account/transaction data is ready to be fetched from the Meld API. 
+
+See [Retrieving Connection Data](https://docs.meld.io/docs/retrieving-connection-data) for next steps and more detail regarding loading account & transaction data.

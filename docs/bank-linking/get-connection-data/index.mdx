@@ -1,0 +1,24 @@
+---
+title: "Get Connection Data"
+---
+
+Once you complete a connection, you can get your connection data. This involves knowing when a connection has been completed (using widget events and webhooks), retrieving connection data, and understanding connection statuses.
+
+1. Review the [widget emitted events](https://docs.meld.io/docs/widget-emitted-events). This will let you know when a connection has been successfully completed, or if there was an error during the connection process.
+2. Understand [when your data is available](https://docs.meld.io/docs/when-is-your-data-available). You should understand the webhook flow and which webhooks indicate that data is available.
+3. Once your data is available, [retrieve your connection data](https://docs.meld.io/docs/retrieving-connection-data). This can involve retrieving data for balances, owners, identifiers, transactions, and investments.
+4. Review the various [connection statuses and errors](https://docs.meld.io/docs/connection-statuses-and-errors). As connections move out of ACTIVE, learn what can be done to refresh, repair, or delete them in the next section. 
+
+The data you get back about a connection is normalized by Meld across providers. For more details see [here](https://docs.meld.io/docs/data-normalization).
+
+# Informing the User of the Status
+
+There will likely be a delay between your user completing their connection and you receiving webhooks that the data is ready to be fetched. This can be anywhere from a few seconds for balance / identifier / owner data to several minutes depending on the institution or if the accounts connected have a very large number of historical transactions. During that time, Meld recommends showing something in your UI to indicate to the user that the connection was successful and that their data is being fetched, so that they don't get confused and attempt another connection.
+
+# Get Balances, Owners, and Identifiers Data
+
+
+# Get Transactions Data
+
+
+# Get Investments Data

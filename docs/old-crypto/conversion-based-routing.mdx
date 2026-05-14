@@ -1,0 +1,146 @@
+---
+title: "Conversion Based Routing"
+---
+
+Meld ranks service providers returned in each [quote](https://docs.meld.io/docs/crypto-quotes) to help you select the best converting option for that specific user. These features help drive conversion by guiding users toward onramps they are already familiar with, which ensures the greatest chance of success.
+
+
+<Note>
+Increased On-Ramp and Off-Ramp Conversion
+
+Meld's customerScore and lowKyc parameters have enabled developers to see 69-94% end to end conversion rates.
+</Note>
+
+
+The features discussed in this section relate to buy quotes specifically, and at this time are not available for sell quotes. All of the data discussed in this section is returned from the [quote endpoint](https://docs.meld.io/reference/crypto-quote-get). 
+
+## Background: KYC
+
+KYC ([know your customer](https://www.trulioo.com/industries/crypto-identity-verification/kyc)) is a process every onramp has to perform independently, and can range from asking a user for their phone number / email to having them prove they have requisite funds in their bank account. As a result, due to the intensive process, KYC affects conversion greatly, with the more effort the user having to put in corresponding with a higher dropoff rate. Therefore, Meld makes sure that if a user has KYCed with a particular onramp before, that they will get recommended that onramp again.
+
+With that in mind, here are some important params returned alongside each quote, along with what they mean and how to use them:
+
+* `customerScore`
+
+* `lowKyc`
+
+# Feature: Customer Score
+
+Every single buy quote you receive from Meld comes with a `customerScore` value attached. This value is Meld's recommendation on which provider would be best for the user to use, with values ranging from 0-100. 
+
+The customerScore is a complex calculation Meld runs in batches multiple times a day. The customerScore is calculated based on data including:
+
+* Has the user bought crypto with the selected service provider, either on your wallet or any other wallet within the Meld network?
+* The fees *and* spreads for each service provider, ensuring users get the best price for their purchase.
+* The number of payment methods a provider supports in the given geo, to ensure broad local payment method acceptance.
+* The historical performance of each service provider on Meld, at an aggregate level, across all Meld wallets in that geo and on a global basis, with that payment method.
+
+Meld recognizes the user based on the wallet address, therefore to make full use of `customerScore`make sure to pass in the user's `walletAddress`.
+
+You will receive a customerScore for each onramp for a particular quote. Successful previous transactions with an onramp result in a higher score for that onramp. The reason Meld returns a score and not a true/false here is because success is a scale. For example, a user making 3 successful transactions with a particular onramp last week is an excellent indicator that their next transaction will also be successful, whereas a user making 2 successful transactions 3 months ago and and unsuccessful transaction 1 month ago with an onramp is still a positive indicator, just less strong than the previous example. So the first scenario would result in a highest customerScore than the second.
+
+## Recommended Use:
+
+A customerScore above 30 means that Meld has seen that user successfully transact with that onramp before. 
+
+A customerScore above 70 is an indication that Meld has seen multiple recent successful transactions between that user and that onramp, with few to no failures. 
+
+
+<Note>
+Maximizing Conversion
+
+To maximize conversion for users buying crypto, rank quotes in your UI by customerScore, with the highest being on top, and put special emphasis on any onramps with a customerScore > 30.
+</Note>
+
+
+# Feature: Low KYC
+
+Low KYC means that a brand new user (one using that particular onramp for the first time) will be able to complete a purchase of up to a certain amount without having to upload any documentation. They will likely still be asked for some combination of their phone number, email address, and SSN (or the equivalent in non-US countries), but will not have to upload a picture of their license, passport, or other documentation. 
+
+Uploading documentation is where there is generally a huge dropoff in conversion as it breaks the user out of the buying crypto flow and introduces friction. If the user asks for a quote that is in the "Low KYC" threshold, the corresponding Meld quote will return `"lowKyc": true`. Is the amount is over the low KYC threshold, or the provider doesn't offer a low kyc threshold, then the quote will return `"lowKyc": false` or `"lowKyc": null`.
+
+## Recommended Use:
+
+If you see that a quote from a particular onramp returns `"lowKyc": true`, you can use this to promote that particular onramp to your user, and you can add a badge that says something to the effect of "No Document Upload"  to that quote in your UI (this already happens automatically if you are using the Meld Wizard). 
+
+Guiding a user towards an onramp where they don't have to upload documentation for KYC greatly increases conversion.
+
+# Example
+
+Here's a sample quote response that Meld might return to you:
+
+```json
+{
+    "quotes": [
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100.00,
+            "sourceAmountWithoutFees": 93.58,
+            "fiatAmountWithoutFees": 93.58,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 6.42,
+            "networkFee": 3.02,
+            "transactionFee": 3.40,
+            "destinationAmount": 0.04944677,
+            "destinationCurrencyCode": "ETH",
+            "exchangeRate": 2022.377,
+            "paymentMethodType": "CREDIT_DEBIT_CARD",
+            "customerScore": 18.99,
+            "serviceProvider": "TRANSAK",
+            "institutionName": null,
+            "lowKyc": true,
+            "partnerFee": null
+        },
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100.00,
+            "sourceAmountWithoutFees": 99.399714,
+            "fiatAmountWithoutFees": 99.399714,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 0.600286,
+            "networkFee": 0.000286,
+            "transactionFee": 0.6,
+            "destinationAmount": 0.0484171,
+            "destinationCurrencyCode": "ETH",
+            "exchangeRate": 2065.39,
+            "paymentMethodType": "CREDIT_DEBIT_CARD",
+            "customerScore": 63.59,
+            "serviceProvider": "ROBINHOOD",
+            "institutionName": null,
+            "lowKyc": null,
+            "partnerFee": null
+        },
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100.00,
+            "sourceAmountWithoutFees": 97.76,
+            "fiatAmountWithoutFees": 97.76,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 2.24,
+            "networkFee": 0.29,
+            "transactionFee": 1.95,
+            "destinationAmount": 0.05107600,
+            "destinationCurrencyCode": "ETH",
+            "exchangeRate": 1957.867,
+            "paymentMethodType": "CREDIT_DEBIT_CARD",
+            "customerScore": 19.61,
+            "serviceProvider": "STRIPE",
+            "institutionName": null,
+            "lowKyc": false,
+            "partnerFee": null
+        }
+    ]
+}
+```
+
+There's 3 quotes returned, 1 each from Transak, Robinhood, and Stripe. Stripe and Transak have low customerScores, meaning Meld doesn't have any recorded transactions for that user with those onramps. However Robinhood has a high customerScore (>30) indicating Meld has seen that user successfully purchase crypto through Robinhood before. Therefore the Robinhood quote should be at the top and prominent in your UI so that the user selects in.
+
+Secondly, only Transak returned a lowKyc value of true, meaning that the user could purchase with Transak without having to upload documents. Therefore you should show the user some sort of visual cue in your UI that they can proceed with Transak without needing to upload documents.
+
+The customerScore and lowKyc features are meant to work together, not compete. **Meld recommends ranking by customerScore, but adding badges using lowKyc.** In this way, a quote won't move up or down the list based on lowKycm and these features won't interfere with one another. Therefore in the above example, the quotes would be ranked (top to bottom) Robinhood, Stripe, and Transak, with Transak having a lowKyc badge.

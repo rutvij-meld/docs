@@ -1,0 +1,83 @@
+---
+title: "Ramp & Swap Flow"
+---
+
+There are many tokens that are difficult to find on most onramps. Examples include **USDH** and **SBC**, among others. To enable users to purchase or sell these assets using fiat currency, **Meld supports a Ramp & Swap flow**, which facilitates both onramping and offramping.
+
+This feature allows users to convert fiat into a supported intermediary asset through a fiat onramp and then automatically swap that asset into the desired token (or perform the reverse flow for offramping).
+
+To enable the **Ramp & Swap** flow, please contact the Meld team to activate this functionality for your account. From an integration standpoint, the implementation is identical to the existing [White Label flow](https://docs.meld.io/docs/white-label-api-integration), requiring no additional technical changes.
+
+Meld also plans to make this feature available through the [Meld Checkout flow](https://docs.meld.io/docs/meld-checkout-integration) in a future release.
+
+In the example flows below, assume a user wishes to **purchase USDH using USD** or **sell USDH for USD**.
+
+**Note that while Meld offers several providers for swapping, you must choose only 1 to use for your Meld account.**
+
+## Onramping - High Level Overview
+
+In this flow, the user first completes an onramp transaction into an intermediate asset, typically USDC on Arbitrum. After the user purchases USDC using fiat (e.g. USD) through the onramp provider, the onramp sends the USDC to a swap provider. The swap provider then converts the USDC into the desired token (for example, USDH) and transfers the resulting tokens to the user’s wallet.
+
+The user experience will be similar to the example shown below. The blue screen represents the onramp provider’s UI, while the remaining screens are rendered either within your application’s UI (when using the White Label integration) or within Meld’s UI (when using the Meld Checkout integration).
+
+![](https://files.readme.io/6883c741120c8860da51e3c6b96b3b36feb2ba8e9202cb4c79e078e17e82759d-image.png)
+
+Below are the transaction statuses that may occur during the lifecycle of an onramp transaction, in order.
+
+| Transaction Status | Onramp Meaning                           |
+| :----------------- | :--------------------------------------- |
+| `PENDING`          | Onramp transaction in progress           |
+| `SETTLING`         | Onramp payment submitted and approved    |
+| `ONRAMP_SETTLED`   | Crypto has arrived in smart contract     |
+| `SWAPPING`         | Swap provider is swapping tokens         |
+| `SETTLED`          | User has received final token            |
+| `FAILED`           | Onramp transaction failed or swap failed |
+
+## Offramping - High Level Overview
+
+This flow is similar to the onramp flow, but in reverse. The user initiates the transaction by sending USDH to a swap provider. The swap provider converts the USDH into USDC on Arbitrum and then transfers the USDC to an offramp provider. The offramp receives the USDC and completes the transaction by sending USD to the user’s bank account.
+
+The user experience will be similar to the example shown below. The blue screen represents the offramp provider’s UI, while the remaining screens are rendered either within your application’s UI (when using the White Label integration) or within Meld’s UI (when using the Meld Checkout integration).
+
+![](https://files.readme.io/9372d20558743066edf89ba8a9e1a518f92d68802bfa3b89a448b8812fd18ea6-image.png)
+
+Below are the transaction statuses that may occur during the lifecycle of an offramp transaction, in order.
+
+| Transaction Status | Offramp Meaning                               |
+| :----------------- | :-------------------------------------------- |
+| `PENDING`          | Transaction in progress                       |
+| `SWAPPING`         | Swap provider receives token                  |
+| `SWAP_SETTLED`     | Swap provider send token to offramp           |
+| `SETTLING`         | Offramp transaction in progress               |
+| `SETTLED`          | User has received fiat currency               |
+| `FAILED`           | Offramp failed                                |
+| `REFUNDED`         | Swap failed, original token sent back to user |
+
+## Notes
+
+* **Direct onramp support is prioritized**
+  * If a token is directly supported by one of the onramps enabled for your account, Meld will recommend that option first. The Ramp & Swap flow is only presented when none of the available onramps support the requested token directly.
+* **Intermediate asset selection**
+  * Meld currently uses USDC on Arbitrum as the intermediate asset due to its broad ecosystem support, deep liquidity, and low transaction fees.
+* **User experience**
+  * From the user’s perspective, the process appears as a **single transaction** (the onramp or offramp). The swap occurs entirely behind the scenes.
+* **Onramp UI Behavior**
+  * Within the onramp provider’s UI, the user will see that they are buying or selling USDC, and the destination wallet address will belong to the swap provider, not the user. Because the onramp UI is controlled by the onramp provider, Meld recommends clearly explaining this flow within your application UI to avoid user confusion. Example step-by-step flows are illustrated in the screenshots above.
+* **Quote & Transaction Representation**
+  * From the integration perspective, you will receive a **single quote** for the full transaction, and the process will be represented as **one Meld transaction**, even though two underlying operations occur (the onramp/offramp and the swap).
+* **KYC Requirements**
+  * The user must complete KYC with the onramp provider, but **will not KYC with the swap provider**, nor will they interact with any swap provider UI.
+* **Failure handling**
+  * In the unlikely event that the onramp transaction succeeds but the swap fails (after multiple retries), the user will receive USDC instead of the intended token. To ensure the funds can be safely delivered, you must pass the user’s USDC-compatible wallet address via the refundWalletAddress field when calling the /[widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create).
+* **Coverage**
+  * Currently this flow is only supported for USDH. Reach out to Meld if you are interested in this flow for another token.
+
+## Sandbox Testing
+
+You can test this flow using in sandbox mode, with the test credentials provided [here](https://docs.meld.io/docs/test). Providers who support the intermediate token in their sandbox are Unlimit, Kryptonim, Mercuryo, Topper, Transak, and Banxa.
+
+Please note that in the sandbox environment, only testnet assets are transferred. As a result, the swap portion of the flow is not executed. While you can complete the onramp portion of the transaction, the transaction status will only progress to `PENDING`.
+
+Transactions will reach the `SETTLED` status only in the Production environment, where the full Ramp & Swap flow is executed.
+
+<br />

@@ -1,0 +1,105 @@
+---
+title: "Finicity Transactions Mapping"
+---
+
+This data comes from Finicity's [/aggregation/v3/customers /`{customerId}`/accounts /`{accountId}`/transactions](https://api-reference.finicity.com/#/rest/api-endpoints/transactions/get-customer-account-transactions) endpoint and is returned from Meld's [/bank-linking/transactions](https://docs.meld.io/reference/bank-linking-transactions-search) endpoint.
+
+To fetch transaction data, Meld calls [GetCustomerAccountTransactions](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#GetCustomerAccountTransactions) the vast majority of the time, Meld only uses the paid endpoint [LoadHistoricTransactionsForCustomerAccount](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#LoadHistoricTransactionsForCustomerAccount) for historical transactions (1 time per connection on the initial load). Forced refreshes are done via [RefreshCustomerAccountsByInstitutionLogin](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#RefreshCustomerAccountsByInstitutionLogin).
+
+Finicity's transaction signs (positive and negative) are inverted when mapped to make the behavior consistent with other providers. You can find more information on signage [here](https://docs.meld.io/docs/account-transactions#signage).
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Meld
+      </th>
+      <th>
+        Description
+      </th>
+      <th>
+        Finicity Response Field
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        amount
+      </td>
+      <td>
+        The amount of the transaction
+      </td>
+      <td>
+        amount
+      </td>
+    </tr>
+    <tr>
+      <td>
+        currency
+      </td>
+      <td>
+        The currency used in the transaction
+      </td>
+      <td>
+        currencySymbol
+
+        * If null:\_ Meld will default\
+          to `USD`
+      </td>
+    </tr>
+    <tr>
+      <td>
+        description
+      </td>
+      <td>
+        The transaction's description
+      </td>
+      <td>
+        description
+      </td>
+    </tr>
+    <tr>
+      <td>
+        status
+      </td>
+      <td>
+        The status of the transaction
+      </td>
+      <td>
+        status
+
+        <br />  - If returns `Active`, Meld will populate the value as `POSTED`<br />  - If returns `Pending`,  Meld will populate the value as `PENDING`<br />  - If returns `Shadow`, Meld will populate the value as `SHADOW`
+
+        **Note:**\
+        Some institutions continue to modify or delete transactions long after they are first posted to the institution’s data feed. This practice can cause Finicity transactions to appear as duplicates, or to continue to appear in the Finicity data after they have disappeared from the institution’s current website.
+
+        Finicity has added the ability to identify transactions that were found in an earlier aggregation of an account, but are not found in the institution’s current data source. These `SHADOW` transactions are identified in the `transaction record`.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        transactionDate
+      </td>
+      <td>
+        The date and time the transaction was made
+      </td>
+      <td>
+        transactionDate
+
+        * If null:\_ postedDate
+      </td>
+    </tr>
+    <tr>
+      <td>
+        postedDate
+      </td>
+      <td>
+        The date and time the transaction was posted
+      </td>
+      <td>
+        postedDate
+      </td>
+    </tr>
+  </tbody>
+</Table>

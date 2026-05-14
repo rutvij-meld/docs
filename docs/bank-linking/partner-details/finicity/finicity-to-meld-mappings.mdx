@@ -1,0 +1,99 @@
+---
+title: "Finicity to Meld Overall Mappings"
+---
+
+**Note:** You can always compare the raw responses from Finicity in the `serviceProviderDetails` section of a financial account.
+
+[Financial Account Base Fields](#financial-account-base-fields)
+
+[Balances](https://docs.meld.io/docs/finicity-balances-mapping)
+
+[Identifiers](https://docs.meld.io/docs/finicity-identifiers-mapping)
+
+[Owners](https://docs.meld.io/docs/finicity-owners-mapping)
+
+[Transactions](https://docs.meld.io/docs/finicity-transactions-mapping)
+
+[Normalized Account Types and Subtypes](#normalized-account-types-and-subtypes)
+
+## Financial Account Base Fields
+
+This data comes from Finicity's [/aggregation/v1/customers /`{customerId}`/institutionLogins /`{institutionLoginId}`/accounts/](https://api-reference.finicity.com/#/rest/api-endpoints/accounts/get-customer-accounts-by-institution-login) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Table align={["left", "left", "left"]}>
+  <thead>
+    <tr>
+      <th>
+        Meld
+      </th>
+      <th>
+        Description
+      </th>
+      <th>
+        Finicity Response Field
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        name
+      </td>
+      <td>
+        The account name
+      </td>
+      <td>
+        name
+      </td>
+    </tr>
+    <tr>
+      <td>
+        truncated\
+        AccountNumber
+      </td>
+      <td>
+        The last 4 digits of the account number
+      </td>
+      <td>
+        realAccountNumberLast4
+        * If null:\_ accountNumberDisplay
+      </td>
+    </tr>
+    <tr>
+      <td>
+        status
+      </td>
+      <td>
+        The real-time status of the account
+      </td>
+      <td>
+        status <br />Possible values:<br />  - `PENDING`<br />  - `ACTIVE`
+      </td>
+    </tr>
+    <tr>
+      <td>
+        type
+      </td>
+      <td>
+        The type of the account. Mapped to a Meld standardized type
+      </td>
+      <td>
+        type
+      </td>
+    </tr>
+    <tr>
+      <td>
+        subtype
+      </td>
+      <td>
+        The subtype of the account. Mapped to a Meld standardized subtype based on the type
+      </td>
+      <td>
+        * None\_. Meld subtype\
+        determined from Finicity type.
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+## Normalized Account Types and Subtypes

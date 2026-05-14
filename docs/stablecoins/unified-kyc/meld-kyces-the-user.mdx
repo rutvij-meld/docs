@@ -1,0 +1,181 @@
+---
+title: "Meld KYCes the User"
+description: "You call Meld's API to KYC the user"
+---
+
+In this flow, you will call Meld's API to launch the Sumsub UI in order to KYC your user. Then the user can be sent to Mercuryo and not have to KYC again.
+
+If you would like to use this flow, Meld will need to enable Sumsub for your account. Please reach out to Meld for this.
+
+See this [page](https://docs.meld.io/docs/kyc-testing) for more information on how to test this flow in Meld's sandbox.
+
+To enable this flow, do the following:
+
+## Step 1: Create a Meld customer
+
+This step is required for the user to skip logging into the onramp, and is a one time setup per user. Call Meld's [create customer endpoint](https://docs.meld.io/reference/accounts-customers-create), and pass in the user's first name, last name, email address, phone number, and birthday. Your request will look like this:
+
+```json
+{
+  "name": {
+    "firstName": "First",
+    "lastName": "Last"
+  },
+  "email": "test@user.com",
+  "dateOfBirth": "01-30-1980",
+  "phone": "+1-111-222-3456",
+  "externalCustomerId": "testUser1"  // optional, for you to pass in your own reference id for the user
+}
+```
+
+The response body will look like this:
+
+```json
+{
+  "name": {
+    "firstName": "First",
+    "lastName": "Last"
+  },
+  "email": "test@user.com",
+  "dateOfBirth": "01-30-1980",
+  "phone": "+1-111-222-3456",
+  "externalCustomerId": "testUser1",
+  "id": "W912345678", // customerId to pass into /widget
+  "key": "N/A",
+  "accountId": "W932jkkjn2jnjn",
+  "addresses": {},
+  "serviceProviderCustomers": {},
+  "subAccountId": "N/A"
+}
+```
+
+The `id` in the response is now the Meld `customerId` of that user. The `customerId` is critical for all of the following steps, make sure you safely store it and tie it to the user in your system.
+
+## Step 2: Check if the User is KYCed
+
+You can keep track in your own system if a particular user has been KYCed via Meld. If you don't keep track, you can call the [search customer endpoint](https://docs.meld.io/reference/accounts-customers-search), passing in the customerId of the user, to check if the user has already been KYCed with Meld or not.
+
+If the user has been KYCed successfully, then you do not have to KYC the user again. The response will look something like this for a KYCed user, with the key field being `serviceProviderCustomers.kyc.status`.
+
+```json
+{
+  "id": "W912345678",
+  "accountId": "W932jkkjn2jnjn",
+  "externalCustomerId": "testUser1",
+	"name": {
+		"firstName": "First",
+		"lastName": "Last"
+	},
+	"dateOfBirth": "01-30-1980",
+	"email": "test@user.com",
+	"phone": "+1-111-222-3456",
+	"addresses": [],
+	"serviceProviderCustomers": [
+		{
+			"serviceProvider": "SUMSUB",
+			"id": "699e243ff55da9f719ad1d15",
+			"serviceProviderAccessProfileId": "WmZLEt7PVzFKYNvdyHLmc7",
+			"kyc": {
+				"status": "APPROVED",
+				"updatedAt": "2026-02-24T22:22:43.012616Z"
+			},
+			"wallets": [],
+			"serviceProviderDetails": null,
+			"createdAt": "2026-02-24T22:20:47.148504Z",
+			"deletedAt": null,
+			"status": "ACTIVE"
+		}
+	],
+	"status": "ACTIVE",
+	"subAccountId": null
+}
+```
+
+If the user has not been successfully KYCed, then either `serviceProviderCustomers.kyc.status` will show a status other than `APPROVED`, or the `serviceProviderCustomers` object will be blank, depending on if the user has attempted KYC previously or not. Either way, this user will have to be KYCed.
+
+## Step 3: Have Meld KYC the User
+
+This step is only needed if the user isn't already successfully KYCed. In other words, if the value of `serviceProviderCustomers.kyc.status` in the previous step is `APPROVED` then you can skip this step.
+
+To KYC the user, call the [initiate KYC endpoint](https://docs.meld.io/reference/accounts-customers-kyc-initiate). The customerId will be in the path, and your request body will look like this:
+
+```json
+{
+  "serviceProvider": "SUMSUB",
+	"mode": "HOSTED_URL"
+}
+```
+
+The response will be a Sumsub url that you should then launch from your UI. The response will look like this:
+
+```json
+{
+	"customerId": "W912345678",
+	"serviceProvider": "SUMSUB",
+	"status": "PENDING",
+	"url": "https://kyclink.com"
+}
+```
+
+As the user goes through the KYC flow, you will receive webhooks informing you that the KYC status of the user has changed. The body of the webhook will look like this:
+
+```json
+{
+    "eventType": "CUSTOMER_KYC_STATUS_CHANGE",
+    "eventId": "4cWK83avakzy8jG4ztmBUk",
+    "timestamp": "2026-02-25T18:55:08.968360756Z",
+    "accountId": "W9jSUfLiRWx1GkaMGt7DTT",
+    "profileId": "WmZ1rqsv532RYW9ELxM4eo",
+    "version": "2026-02-02",
+    "payload": {
+      "requestId": "4456e4e9b0174c53b962227df6766ca7",
+      "customerId": "W912345678",
+      "serviceProvider": "SUMSUB",
+      "status": "APPROVED",
+      "statusUpdatedAt": "2026-02-25T18:55:08.960052Z"
+    }
+}
+```
+
+Each time you receive a webhook, repeat Step 2 until the `serviceProviderCustomers.kyc.status` shows as `APPROVED`.
+
+If the `serviceProviderCustomers.kyc.status` is `REJECTED`, this means the user has failed KYC. Either the user has to go through the KYC flow once again (repeat this step) or the user will be unable to use this flow, and is unlikely to be able to buy crypto. Note that a user who fails KYC in this flow will very likely also fail KYC directly with any onramp.
+
+## Step 4: Initiate a transaction
+
+If you send the user to an onramp that supports Sumsub token sharing, then pass Meld the customerId of the user when you call Meld's [/widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create). Your request will look like this:
+
+```json
+{
+  "sessionData": {
+    "countryCode": "US",
+    "destinationCurrencyCode": "BTC",
+    "serviceProvider": "MERCURYO",
+    "sourceAmount": "100",
+    "sourceCurrencyCode": "USD",
+    "walletAddress": "1EEo4ioA4spdJ2ZxiSQ1hWsp3Ve81ZRZ2F"
+  },
+  "sessionType": "BUY",
+  "bypassKyc": true,
+  "customerId": "W912345678"        // should be the same as the customer created above
+}
+```
+
+The response will look like this:
+
+```json
+{
+  "id": "WmYtVn52MCZkXQSdCFDU8N",
+  "externalSessionId": null,
+  "externalCustomerId": null,
+  "customerId": "W912345678",
+  "widgetUrl": "https://meldcrypto.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ7.eyJpc3MiOiJtZWxkLmlvIiwiaWF0IjoxNzcxMjY3MDM4LCJzdWIiOiJjcnlwdG8iLCJleHAiOjE3NzEyNjg4MzgsImFjY291bnRJZCI6Ilc5a2c5aVAxc2JweVpwdFFEY0NNSnUiLCJzZXNzaW9uSWQiOiJXbVl0Vm41Mk1DWmtYUVNkQ0ZEVThOIn0.eqFYseggwUyv-F7WyO-LKEhwEqLiWVOmAV4lNjuth60",
+  "serviceProviderWidgetUrl": "https://exchange.mercuryo.io?widget_id=34c04adf-d04a-42de-a4aa-609a302b24tz&currency=BTC&fiat_currency=USD&fiat_amount=100&address=1EEo4ioA4spdJ2ZxiSQ1hWsp3Ve81ZRZ2F&type=buy&network=BITCOIN&merchant_transaction_id=WmYtVmRXgDnavemEzb3k6K&redirect_url=https%3A%2F%2Fmeldcrypto.com&country_code=US&email&payment_method=card&signature=zxcvbnmasdfghjkl",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtZWxkLmlvIiwiaWF0IjoxNzcxMjY3MDM4LCJzdWIiOiJjcnlwdG8iLCJleHAiOjE3NzEyNjg4MzgsImFjY291bnRJZCI6Ilc5a2c5aVAxc2JweVpwdFFEY0NNSnUiLCJzZXNzaW9uSWQiOiJXbVl0Vm41Mk1DWmtYUVNkQ0ZEVThOIn0.eqFYseggwUyv-F7WyO-LKEhwEqLiWVOmAV4lNjuth60"
+}
+```
+
+If you executed every step correctly, then when you open either the `widgetUrl` or `serviceProviderWidgetUrl`, then the user go straight to the Mercuryo payment screen, as seen in this demo video:
+
+
+And that's it! Congrats, you are now using Meld's Unified KYC product to enhance your users' experience!

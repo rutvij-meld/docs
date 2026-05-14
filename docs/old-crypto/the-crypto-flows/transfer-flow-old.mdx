@@ -1,0 +1,191 @@
+---
+title: "Transfer Flow"
+---
+
+The transfer flow is for when a user wants to transfer crypto from a wallet on one exchange to another wallet address .
+
+Meld's All in One Wizard does not currently support transfers, but will soon. In the meantime, use [Meld's White Label Widget](https://docs.meld.io/docs/crypto-widget) instead.
+
+## Prerequisites
+
+Before a user can transfer crypto, you should know the following information:
+
+* The user's wallet address that they want to transfer crypto to
+
+* The exchange that the user wants to transfer crypto from
+
+* The amount of crypto the user wants to transfer
+
+* The cryptocurrency and network the user wants to transfer (for example ETH\_ARBITRUM aka Ethereum on the Arbitrum network)
+
+* The country the user's billing address is in
+
+You should use Meld's [service provider endpoints](https://docs.meld.io/reference/service-provider) to know which countries / tokens the exchanges you have enabled support.
+
+## Steps to Users Transferring Crypto
+
+Once you have the above information, you can complete the following steps, in order:
+
+1. The user will select an exchange and launch the exchange's [widget](https://docs.meld.io/docs/crypto-widget-object). The user completes the transaction using the widget. This entails the user agreeing to the fees and confirming the amount of crypto they would like to send to another wallet. You can pass in a redirectUrl so that the user gets redirected to it after they submit a transfer on the exchange.
+2. Wait and listen for webhooks, and use them as triggers to fetch transaction data. For more information on how to do this see [here](https://docs.meld.io/docs/fetch-transaction-information). Once you have transaction data, you can choose how you would like to display it to the user.
+
+Note that the transfer flow does not include quotes. There are still fees for a transfer, which are typically the network / gas fee and the partner / affiliate fee. A transfer can go to any wallet address but can only originate from an exchange that Meld supports.
+
+## How to Transfer Crypto
+
+
+# API Calls
+
+**Note that for a transfer in your Headers you must set`Meld-Version` to `2023-12-19` or later.**
+
+Transfers do not have quotes.
+
+Here is an example of a call to [/widget](https://docs.meld.io/reference/crypto-session-widget-create) when transferring cryptocurrency (note that unlike the Buy call, there is no destinationCurrencyCode here). This call is to transfer a single token and therefore includes the amount:
+
+```json
+{
+    "sessionData": {
+        "walletAddress": "testWalletAddress",
+        "countryCode": "US",
+        "sourceCurrencyCodes": ["ETH"],
+        "sourceAmount": "0.01",
+        // "institutionId": "WQ4TWHRBuHVSC46yS92L1w",
+        "serviceProvider": "MESH"
+    },
+    "sessionType": "TRANSFER",
+    "externalCustomerId": "customer1",
+    "externalSessionId": "transfersession1"
+}
+```
+
+Here is an example of a call to [/widget](https://docs.meld.io/reference/crypto-session-widget-create), except this one has multiple tokens, and the user will select which one to transfer after logging into the exchange and viewing their holdings. As a result, since there are multiple tokens, there is no sourceAmount passed in here. There is still only one wallet address passed in so all tokens passed in must share a wallet address:
+
+```json
+{
+    "sessionData": {
+        "walletAddress": "testWalletAddress",
+        "countryCode": "US",
+        "sourceCurrencyCodes": ["ETH", "ETH_ARBITRUM"],
+        // "institutionId": "WQ4TWHRBuHVSC46yS92L1w",
+        "serviceProvider": "MESH"
+    },
+    "sessionType": "TRANSFER",
+    "externalCustomerId": "customer1",
+    "externalSessionId": "transfersession1"
+}
+```
+
+Passing in the institutionId above will skip the picker screen and go straight into the flow for that specific institution. For example the Id in the request above is for Coinbase, so instead of selecting Coinbase from a list of wallets you will go straight to the Coinbase login screen. This functionality only works for Mesh. You can get the institutionId from the [/institutions endpoint](https://docs.meld.io/reference/bank-linking-institutions-search).
+
+And here's a sample response:
+
+```json
+{
+    "id": "WQ4wQ4w475pjaRrNfT8KE0",
+    "externalSessionId": "transfersession1",
+    "externalCustomerId": "customer1",
+    "customerId": "WQ4toL6ECKWc96PZ8HufDU",
+    "widgetUrl": "https://meldcrypto.com/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjcnlwdG8iLCJtZXJjaGFudElkIjoiVzlrZzlpUDFzYnB5WnB0UURjQ01KdSIsImlzcyI6Im1lbGQuaW8iLCJzZXNzaW9uSWQiOiJXUTR3UTR3NDc1cGphUnJOZlQ4S0U5IiwiZXhwIjoxNzEzNTYxMjY1LCJpYXQiOjE3MTM1NTk0NjV9.5-7MEH9dMdVGDwQstKSVxWYmpV8-8rYnRy-ynuYakvA",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjcnlwdG8iLCJtZXJjaGFudElkIjoiVzlrZzlpUDFzYnB5WnB0UURjQ01KdSIsImlzcyI6Im1lbGQuaW8iLCJzZXNzaW9uSWQiOiJXUTR3UTR3NDc1cGphUnJOZlQ4S0U5IiwiZXhwIjoxNzEzNTYxMjY1LCJpYXQiOjE3MTM1NTk0NjV9.5-7MEH9dMdVGDwQstKSVxWYmpV8-8rYnRy-ynuYakvA"
+}
+```
+
+## Webhooks
+
+Here is a sample of a `TRANSACTION_CRYPTO_PENDING` webhook, which is the first webhook you will receive for any transaction. See more about the various webhooks [here](https://docs.meld.io/docs/webhook-events-crypto).
+
+```json
+{
+    "eventType": "TRANSACTION_CRYPTO_PENDING",
+    "eventId": "AAsuLXHXD3mS1cjNBuHHzv",
+    "timestamp": "2024-02-24T16:36:41.717262Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "version": "2024-02-02",
+    "payload": {
+      "accountId": "W2aRZnYGPwhBWB94iFsZus",
+      "paymentTransactionId": "W9k9Tg12BFk1i68WpQYQY0",
+      "customerId": "WQ4toL6ECKWc96PZ8HufDU",
+      "externalCustomerId": "customer1",
+      "externalSessionId": "transfersession1",
+      "paymentTransactionStatus": "PENDING"
+    }
+}
+```
+
+## Transaction Data
+
+Once you call the [/transactions](https://docs.meld.io/reference/payments-transactions-get-1) with a transactionId (the `paymentTransactionId` in the webhook above), this is a sample response:
+
+```json
+{
+    "key": "LYoQeP31CEkFxmsZvBKqy2EcRvgHiKdSqdsLQNA9C23DAg4ahRPdaSWeL7esWooQb9tMZaEdd7SLukWCSD95zzciDE",
+    "id": "W9k9Tg12BFk1i68WpQYQY0",
+    "parentPaymentTransactionId": null,
+    "accountId": "W9kg9iP1sbpyZptQDcCMJu",
+    "isPassthrough": false,
+    "passthroughReference": null,
+    "isImported": false,
+    "customer": {
+        "id": "WQ4toL6ECKWc96PZ8HufDU",
+        "accountId": "W2aRZnYGPwhBWB94iFsZus",
+        "name": {
+            "firstName": null,
+            "lastName": null
+        },
+        "addresses": []
+    },
+    "transactionType": "CRYPTO_TRANSFER",
+    "status": "SETTLED",
+    "sourceAmount": 0.02872325,
+    "sourceCurrencyCode": "ETH",
+    "destinationAmount": null,
+    "destinationCurrencyCode": "ETH",
+    "paymentMethodType": "CREDIT_DEBIT_CARD",
+    "serviceProvider": "MESH",
+    "serviceTransactionId": "Z838383833838",
+    "description": null,
+    "externalReferenceId": null,
+    "serviceProviderDetails": {
+        "networkFee": 0.77,
+        "type": "mesh",
+        "quoteId": "edff5599-3999-46d5-a887-9dc340ef0323",
+        "processingFee": null,
+        "cryptoCurrency": "ETH",
+        "txnHash": "6E54FC71179F741EEE63569A4BA554FEF5A9FDDEDBDF2765225DF54433443343",
+        "totalFee": 1.77,
+        "requestId": "fa0f7454-0f6d-4e71-b274-d9b1c843a3c5",
+        "cryptoCurrencyAmount": 0.02872325,
+        "partnerUserId": "WQ4wmNrDmELekUBRFJZg7K",
+        "walletAddress": "testWalletAddress",
+        "status": "completed",
+        "partnerFee": 1
+    },
+    "multiFactorAuthorizationStatus": null,
+    "createdAt": "2024-04-19T20:47:36.578875Z",
+    "updatedAt": "2024-04-19T20:49:04.616555Z",
+    "countryCode": "US",
+    "sessionId": "WQ4wQ4w475pjaRrNfT8KE9",
+    "externalSessionId": null,
+    "paymentDetails": null,
+    "cryptoDetails": {
+        "walletAddress": "testWalletAddress",
+        "networkFee": 0.77,
+        "transactionFee": null,
+        "partnerFee": 1,
+        "totalFee": 1.77,
+        "networkFeeInUsd": null,
+        "transactionFeeInUsd": null,
+        "partnerFeeInUsd": null,
+        "totalFeeInUsd": null,
+        "blockchainTransactionId": "6E54FC71179F741EEE63569A4BA554FEF5A9FDDEDBDF2765225DF54433443343",
+        "institution": null,
+        "chainId": 1
+    },
+    "externalCustomerId": null,
+    "fiatAmountInUsd": 96.73,
+    "sessionClientTags": null,
+    "apiAccessProfileId": "WGuwgsCEsfyyrzmZfb4y2t"
+}
+```
+
+The `serviceProviderDetails` are directly the fields from the onramp's own transactions endpoint so the specific field and field names will vary per onramp.

@@ -1,0 +1,191 @@
+---
+title: "Webhook Events"
+---
+
+# Webhook Events
+
+Webhooks provide real-time notifications when transaction statuses change. Instead of polling for updates, Meld sends HTTP POST requests to your configured endpoint whenever events occur. You should use the webhooks as triggers to call the Meld [transactions endpoint](https://docs.meld.io/reference/payments-transactions-get-1) to fetch the latest details on the transaction.
+
+## Benefits
+
+* **Real-time updates**: Immediate notification of status changes
+* **Reduced latency**: No polling delays
+* **Lower infrastructure cost**: No need for frequent API calls
+* **Reliable delivery**: Built-in retry mechanisms
+
+## Event Structure
+
+All webhook events share the same base structure:
+
+### Common Attributes
+
+| Field             | Type           | Description                                            |
+| ----------------- | -------------- | ------------------------------------------------------ |
+| `eventType`       | String         | Type of event (e.g., `TRANSACTION_CRYPTO_PENDING`)     |
+| `eventId`         | String         | Meld's unique identifier for this event                |
+| `timestamp`       | OffsetDateTime | When the event was created                             |
+| `accountId`       | String         | Your Meld account identifier                           |
+| `profileId`       | String         | Webhook profile responsible for sending this event     |
+| `version`         | Date           | API version (e.g., `2025-03-01`)                       |
+| `payload`         | Object         | Event-specific data containing transaction details     |
+| `transactionType` | String         | `CRYPTO_PURCHASE`, `CRYPTO_SELL`, or `CRYPTO_TRANSFER` |
+
+### Payload Fields
+
+The `payload` object contains transaction-specific information:
+
+| Field                      | Type   | Description                                            |
+| -------------------------- | ------ | ------------------------------------------------------ |
+| `accountId`                | String | Meld account identifier                                |
+| `customerId`               | String | Meld's internal customer identifier                    |
+| `externalCustomerId`       | String | Your customer ID (if provided during session creation) |
+| `externalSessionId`        | String | Your session ID (if provided during session creation)  |
+| `paymentTransactionId`     | String | Meld's unique transaction identifier                   |
+| `paymentTransactionStatus` | String | Current transaction status                             |
+| `sessionId`                | String | Meld's internal session identifier                     |
+
+
+<Warning>
+**Note**: For `PENDING_CREATED` status, `sessionId` and `externalSessionId` may be missing as the transaction hasn't been tied to a session yet. You can safely ignore these early-stage webhooks if needed.
+</Warning>
+
+
+## Event Types
+
+### `TRANSACTION_CRYPTO_PENDING`
+
+Triggered when a user starts the payment process (logged in, completed KYC).
+
+```json
+{
+  "eventType": "TRANSACTION_CRYPTO_PENDING",
+  "eventId": "AAsuLXHXD3mS1cjNBuHHzv",
+  "timestamp": "2022-02-24T16:36:41.717262Z",
+  "accountId": "W2aRZnYGPwhBWB94iFsZus",
+  "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+  "version": "2025-03-01",
+  "payload": {
+    "requestId": "f07f1accb7404aec9bd9a5d64975eed1",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "paymentTransactionId": "W9k9Tg12BFk1i68WpQYQY8",
+    "customerId": "W9k9TfNSJRZ6rDBe95bUA2",
+    "externalCustomerId": "customer_1234443",
+    "externalSessionId": "test_session1",
+    "paymentTransactionStatus": "PENDING",
+    "transactionType": "CRYPTO_PURCHASE",
+    "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ"
+  }
+}
+```
+
+### `TRANSACTION_CRYPTO_TRANSFERRING`
+
+Triggered when payment is approved and crypto transfer begins.
+
+```json
+{
+  "eventType": "TRANSACTION_CRYPTO_TRANSFERRING",
+  "eventId": "NQ7wCUFFuAgUCVyZkRu9cH",
+  "timestamp": "2022-02-15T23:05:43.782919Z",
+  "accountId": "W2aRZnYGPwhBWB94iFsZus",
+  "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+  "version": "2025-03-01",
+  "payload": {
+    "requestId": "f07f1accb7404aec9bd9a5d64975eed2",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "paymentTransactionId": "W9kNggNMASvX8NVK8LFCWg",
+    "customerId": "W9jtN15ukoLJKgQe8Xb5MS",
+    "externalCustomerId": "customer_1234443",
+    "externalSessionId": "test_session1",
+    "paymentTransactionStatus": "SETTLING",
+    "transactionType": "CRYPTO_PURCHASE",
+    "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ"
+  }
+}
+```
+
+### `TRANSACTION_CRYPTO_COMPLETE`
+
+Triggered when transaction completes successfully (crypto delivered).
+
+```json
+{
+  "eventType": "TRANSACTION_CRYPTO_COMPLETE",
+  "eventId": "4cpRbNMyteKPzivtZ2RT4o",
+  "timestamp": "2022-02-24T00:24:53.650382Z",
+  "accountId": "W2aRZnYGPwhBWB94iFsZus",
+  "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+  "version": "2025-03-01",
+  "payload": {
+    "requestId": "f07f1accb7404aec9bd9a5d64975eed3",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "paymentTransactionId": "W9jHTkUEacFrcBuEPjXtdE",
+    "customerId": "W9jtN15ukoLJKgQe8Xb5MS",
+    "externalCustomerId": "customer_1234443",
+    "externalSessionId": "test_session1",
+    "paymentTransactionStatus": "SETTLED",
+    "transactionType": "CRYPTO_PURCHASE",
+    "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ"
+  }
+}
+```
+
+### `TRANSACTION_CRYPTO_FAILED`
+
+Triggered when transaction fails or encounters an error.
+
+```json
+{
+  "eventType": "TRANSACTION_CRYPTO_FAILED",
+  "eventId": "AvCd2ZKy5PCdzyCYRU7ENe",
+  "timestamp": "2022-02-24T20:05:13.909581Z",
+  "accountId": "W2aRZnYGPwhBWB94iFsZus",
+  "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+  "version": "2025-03-01",
+  "payload": {
+    "requestId": "f07f1accb7404aec9bd9a5d64975eed4",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "paymentTransactionId": "W9kLVLCaQSXz8pgaUHYK4E",
+    "customerId": "W9kL817BBS7bNEwxAZaX4z",
+    "externalCustomerId": "customer_9888888",
+    "externalSessionId": "test_session1",
+    "paymentTransactionStatus": "ERROR",
+    "transactionType": "CRYPTO_PURCHASE",
+    "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ"
+   }
+}
+```
+
+### `CUSTOMER_KYC_STATUS_CHANGE`
+
+This is sent when you have Meld KYC a user and the user's KYC status is updated. Read more about this [here](https://docs.meld.io/docs/meld-kyces-the-user).
+
+```json
+{
+    "eventType": "CUSTOMER_KYC_STATUS_CHANGE",
+    "eventId": "4cWK83avakzy8jG4ztmBUk",
+    "timestamp": "2026-02-25T18:55:08.968360756Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "profileId": "WmZ1rqsv532RYW9ELxM4eo",
+    "version": "2026-02-02",
+    "payload": {
+      "requestId": "4456e4e9b0174c53b962227df6766ca7",
+      "customerId": "W9kL817BBS7bNEwxAZaX4z",
+      "serviceProvider": "SUMSUB",
+      "status": "APPROVED",
+      "statusUpdatedAt": "2026-02-25T18:55:08.960052Z"
+    }
+}
+```
+
+<br />
+
+## Implementation Tips
+
+**Response Requirements**: Your webhook endpoint must return a 2xx HTTP status code to acknowledge receipt.
+
+**Retry Logic**: Meld automatically retries failed webhook deliveries with exponential backoff.
+
+**Idempotency**: Use `eventId` to handle duplicate deliveries safely.
+
+**Error Handling**: Implement graceful error handling for malformed or unexpected webhook payloads.

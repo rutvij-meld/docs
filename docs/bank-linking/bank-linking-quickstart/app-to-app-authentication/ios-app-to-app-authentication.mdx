@@ -1,0 +1,350 @@
+---
+title: "iOS App to App Authentication"
+---
+
+This page outlines the steps to load the Meld bank linking widget inside your iOS mobile app using a WebView.
+
+# Project Setup
+
+## Step 1: Universal Links Setup
+
+Universal Links provide a seamless user experience by connecting a URL to a specific part of your iOS app, bypassing the browser. This guide is designed for beginners and explains how to set up and use Universal Links in your iOS applications.
+
+### Before you begin, ensure you have:
+
+* An iOS project in Xcode
+* Access to your website’s server to host the required files
+* An Apple Developer account to create and use App IDs and provisioning profiles
+
+### Universal Links Step 1: Enable Associated Domains
+
+* Create App ID: Log into the [Apple Developer Portal](https://developer.apple.com/), go to “Certificates, Identifiers & Profiles,” and create a new App ID for your project. Ensure that you enable “Associated Domains".
+* Update Xcode Project: In Xcode, open your project settings, select your target, and go to the “Signing & Capabilities” tab. Add the “Associated Domains” capability by clicking the “+” icon and selecting it from the list.
+
+### Universal Links Step 2: Configure Your Website
+
+* Create Apple-App-Site-Association File: You need to create a JSON file named apple-app-site-association (without any file extension) and host it at the root of your HTTPS-enabled web server or in the .well-known\
+  subdirectory. The content should look like this:
+
+```json JSON
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/Prop ertyList-1.0.dtd"><plist version="1.0"> 
+<dict> 
+ <key>com.apple.developer.associated-domains</key>  <array> 
+ <string>applinks:*.yourdomain.com</string> 
+ </array> 
+</dict> 
+</plist> 
+```
+
+* Replace TEAMID.BUNDLEID in the above code with your actual team ID and bundle identifier. The paths array should contain the URLs you want to link to your app.
+* Host the File: Ensure the apple-app-site-association file is accessible via HTTPS without any redirects at https\://`<yourdomain>`.com/apple-app-site-association.
+
+### Universal Links Step 3: Configure Associated Domains in Xcode
+
+* Modify Entitlements: In your Xcode project, under the “Associated Domains” capability you added earlier, add an entry: applinks:`<yourdomain.com>`
+
+### Universal Links Step 4: Handle Universal Links in Your App
+
+* Update AppDelegate: Open AppDelegate.swift and implement the following\
+  function to handle incoming universal links:
+
+```swift Swift
+func application(_ application: UIApplication,
+continue userActivity: NSUserActivity,
+restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+	if userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+		let url = userActivity.webpageURL {
+		// Handle URL and parse parameters if needed
+		return true
+	}
+	return false
+}
+```
+
+This code checks if the incoming activity type is a web browsing session and prints the URL, but you’ll likely want to redirect the user to the appropriate part of your app based on the URL.
+
+### Universal Links Step 5: Test Your Universal Links
+
+* Prepare Your Device: To test on a real device, ensure the device has the provisioning profile that includes the Associated Domains capability.
+* Test the Link: Send yourself an email or message with the link you configured earlier (e.g., https\://`<yourdomain>`.com/path/to/content). Tap the link on your device, and it should open your app directly, bypassing the browser.
+
+### Troubleshooting Tips
+
+* Verify Your AASA File: Use online tools like Apple’s AASA validator to ensure your apple-app-site-association file is correctly configured and accessible.
+* Check Console Logs: If the universal link is not working, check the device’s console logs for any errors related to universal links or associated domains.
+
+By following these steps, you should be able to implement and test Universal Links in your iOS apps effectively, providing users with a direct link into your app from web content.
+
+## Step 2: WKWebview Setup
+
+### WKWebview Step 1: Adding to View Controller
+
+* Start by setting up a standard Xcode project and add a WKWebView to your ViewController. Ensure you configure the WKWebView’s javaScriptCanOpenWindowsAutomatically setting to true.
+
+```swift Swift
+let preferences = WKPreferences()
+preferences.javaScriptCanOpenWindowsAutomatically = true
+let webConfiguration = WKWebViewConfiguration()
+webConfiguration.preferences = preferences
+webConfiguration.userContentController.add(self, name: meldMessageHandler)
+webView = WKWebView(frame: .zero, configuration: webConfiguration)
+webView.navigationDelegate = self
+webView.uiDelegate = self
+```
+
+### WKWebview Step 2: Load the Widget URL
+
+* After adding the WKWebView to your ViewController as described in the previous step, load the Widget URL, which you can obtain from the connect/start API. Once the Widget URL is successfully loaded into the WebView, it will display the bank picker interface. Ensure proper error handling and network checks are in place to manage the loading process smoothly.
+
+### WKWebview Step 3: Updating the Code
+
+* Add the following code:
+
+```swift
+let appScheme = "meldapp://" // Your apps custom scheme
+let atriumScheme = "atrium://" // MX atrium's default scheme (deprecated)
+let mxScheme = "mx://" // MX default scheme
+```
+
+### WKWebview Step 4: Manage Navigation Requests
+
+* To capture and address specific use-cases for specific service providers, developers need to manage all navigation requests within the WKWebView. This requires implementing the WKNavigationDelegate protocol, which provides methods to track and control the loading of web content. A crucial method to implement is **webView(\_:decidePolicyFor:decisionHandler:)**. This method determines whether a navigation request should proceed, be canceled, or handled differently based on the request’s characteristics.
+
+# Provider Specific Code
+
+Depending on which provider(s) your app uses, you will have to configure some provider specific code in order to make app to app authentication work. This section details what that code is.
+
+## MX
+
+1. This code needed since MX uses the custom URL schema and relies on loading the content inside the MX widget. It also extracts the url parts and loads inside the MX widget and decision handler cancels the navigating requests.
+
+```swift
+let isPostMessageFromMX = (urlString?.hasPrefix(appScheme) == true || urlString?.hasPrefix(atriumScheme) == true || urlString?.hasPrefix(mxScheme) == true)
+if (isPostMessageFromMX){
+    let urlc = URLComponents(string: urlString ?? "")
+    let path = urlc?.path ?? ""
+    // there is only one query param ("metadata") with each url, so just grab the first
+    let metaDataQueryItem = urlc?.queryItems?.first
+    if path == "/oauthRequested" {
+        handleOauthRedirect(payload: metaDataQueryItem)
+    }
+    decisionHandler(.cancel)
+    return
+}
+```
+
+2. handleOauthRedirect handles the APP to APP or APP to web passing
+
+```swift
+func handleOauthRedirect(payload: URLQueryItem?) {
+    let metadataString = payload?.value
+    do {
+        if let json = try JSONSerialization.jsonObject(with: Data(metadataString.utf8), options: []) as? [String: Any] {
+            if let url = json["url"] as? String {
+                  print("Intercepted Request inside:handleOauthRedirect \(url)")
+                    let options: [UIApplication.OpenExternalURLOptionsKey: Any] = [
+                        .universalLinksOnly: true, // Try to open the app via universal link
+                    ]
+                    UIApplication.shared.open(URL(string: url)!, options: options) { (success) in
+                        if success {
+                            print("The URL was successfully opened.")
+                        } else {
+                            print("The URL could not be opened.")
+                            self.presentWebView(with: URL(string: url)!)
+                        }
+                  }
+            }
+        }
+    } catch let error as NSError {
+        print("Failed to parse payload: \(error.localizedDescription)")
+    }
+}
+```
+
+3. The web view loaded in the case of MX is handled as follows in **webView(\_:decidePolicyFor:decisionHandler:)**:
+
+```swift
+let urlString = navigationAction.request.url?.absoluteString
+currentURLOpened = navigationAction.request.url
+let currentURLOpenedString = currentURLOpened?.absoluteString
+if(currentURLOpenedString!.contains("{{universal-link}}/?status")){
+    self.popupWebViewControllerExternal?.dismiss(animated: true)
+    popupWebView = nil
+}
+```
+
+## Plaid and Finicity
+
+1. To manage HTTPS requests from Plaid and Finicity, handle the navigation within the **webView(\_:decidePolicyFor:decisionHandler:)** method of the WKNavigationDelegate. Use the decision handler to allow navigation when these requests occur, enabling the WKWebView to securely load the relevant webpage.
+2. **Plaid specific:** Upon completing the Plaid process, it is essential to pass the **oauth\_state\_id** to the Meld backend. This should be done along with the initial URL that was saved earlier in the process. This specific code block is only for Plaid, and does not need to be implemented for Finicity.
+
+```swift
+if url.absoluteString.contains("{{universal-link}}/?oauth_state_id=") {
+	let urlString = url.absoluteString
+	self.dismiss(animated: true, completion: nil)
+	if let range = urlString.range(of: "=") {
+		let substring = urlString[range.upperBound...]                        
+		Let request = URLRequest(url: URL(string: connectUrlToSave!.absoluteString + "&plaidStateId=\(substring)")!)
+		webView.load(request)// Output: 11834d6d-7d09-459b-b757-068697a5a07b
+	}                   
+	decisionHandler(.cancel)
+	return
+}
+```
+
+All of the code under this message will need to be implemented for both Plaid and Finicity.
+
+Complete implementation for the **webView(\_:decidePolicyFor:decisionHandler:)**:
+
+```swift
+// handle navigation requests
+extension ConnectViewController: WKNavigationDelegate {
+    // Capture request URLs
+    public // Intercept all requests before they are loaded
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        let urlString = navigationAction.request.url?.absoluteString
+        currentURLOpened = navigationAction.request.url
+        let currentURLOpenedString = currentURLOpened?.absoluteString
+        if(currentURLOpenedString!.contains("{{universal-link}}/?status")){
+            self.popupWebViewControllerExternal?.dismiss(animated: true)
+            popupWebView = nil
+        }
+        let isPostMessageFromMX = (urlString?.hasPrefix(appScheme) == true || urlString?.hasPrefix(atriumScheme) == true || urlString?.hasPrefix(mxScheme) == true)
+        if (isPostMessageFromMX){
+                let urlc = URLComponents(string: urlString ?? "")
+                let path = urlc?.path ?? ""
+                // there is only one query param ("metadata") with each url, so just grab the first
+                let metaDataQueryItem = urlc?.queryItems?.first
+                if path == "/oauthRequested" {
+                    handleOauthRedirect(payload: metaDataQueryItem)
+                }
+            decisionHandler(.cancel)
+                return
+        }
+        else{
+            if let url = navigationAction.request.url {
+                // If needed, modify the request or block it
+                if url.absoluteString.contains("{{universal-link}}/?oauth_state_id=") {
+                    let urlString = url.absoluteString
+                    self.dismiss(animated: true, completion: nil)
+                    if let range = urlString.range(of: "=") {
+                        let substring = urlString[range.upperBound...]                        
+         Let request = URLRequest(url: URL(string: connectUrlToSave!.absoluteString + "&plaidStateId=\(substring)")!)
+                        webView.load(request)// Output: 11834d6d-7d09-459b-b757-068697a5a07b
+                    }                   
+                    decisionHandler(.cancel)
+                    return
+                }
+                // Check if the URL scheme is something other than http or https
+                if url.absoluteString.contains("closemyapp")  {
+                // Close the WebView or dismiss the view controller
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
+            decisionHandler(.allow)
+    }
+```
+
+# Listening to Front End Events
+
+1. This section applies to all service providers. Handle the UI requests so that app to web request can be handled internally.
+
+```swift
+/ handle UI requests
+extension ConnectViewController: WKUIDelegate {
+public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures _: WKWindowFeatures) -> WKWebView? {
+		// create a new webView
+    guard webView == view else {
+   		 debugPrint("MELD: popup cannot launch another webview")
+  		 return nil
+		}
+		let popup = WKWebView(frame: webView.bounds, configuration: configuration)
+		popup.uiDelegate = self
+		popup.navigationDelegate = self
+		popupWebView = popup
+		DispatchQueue.main.async {
+ 				let popupWebViewController = PopupWebViewController(with: popup)
+  			popupWebViewController.delegate = self
+  			self.present(popupWebViewController, animated: true)
+		}
+		return popupWebView
+}
+public func webViewDidClose(_ webView: WKWebView) {
+  // handle closing. make sure to pop if it's the root webView
+  // root view
+  if view == webView {
+    delegate?.cancel()
+    return
+  }
+  // close child view
+}
+```
+
+2. Meld emits events to inform the status of the handshake.intercept.
+
+```swift
+private enum ConnectHandlerResponse: String {
+    case debug = "[meld-connect]debug" // debug information
+    case initialize = "[meld-connect]init" // when the widget initializes
+    case error = "[meld-connect]error" // when the widget encounters an error
+    case complete = "[meld-connect]connect_complete" // once the call to /connect/complete has finished
+    case handover = "[meld-connect]handover" // when the connect has been completed
+    case cancel = "[meld-connect]cancel" // when your customer cancels the widget
+}
+ 
+public func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
+  guard message.name == meldMessageHandler else {
+    	return
+  }
+  guard let body = message.body as? String, body.hasPrefix("[meld-connect]") else {
+  		return // ignore
+  }
+  let parts = body.split(separator: "?", maxSplits: 1)
+  guard parts.count <= 2 else {
+   	 return
+  }
+  guard let response = ConnectHandlerResponse(rawValue: String(parts[0])) else {
+    	return // ignore
+  }
+  let payload: Any?
+      if parts.count >= 2, let payloadData = parts[1].data(using: .utf8) {
+        	payload = try? JSONSerialization.jsonObject(with: payloadData)
+      } 	else {
+        	payload = nil
+      }
+  switch response {
+    	case .debug:
+      		// Debug. Ignore
+      		debugPrint("MELD:debug")
+    	case .initialize:
+      		// Initialization. Ignore.
+      		debugPrint("MELD:init")
+  	  case .error:
+  	    	// An Error
+  	    	debugPrint("MELD:error")
+ 	   case .complete:
+  	    	// Complete — linking is done
+   	   		debugPrint("MELD:complete")
+   	   		DispatchQueue.main.async { [weak self] in
+        			debugPrint("got payload \(payload ?? "")")
+            	self?.delegate?.handover()
+        	}
+    	case .handover:
+    			// DONE. Dismiss and proceed
+      		debugPrint("MELD:handover")
+      		DispatchQueue.main.async { [weak self] in
+      				debugPrint("got payload \(payload ?? "")")
+      				self?.delegate?.handover()
+      		}
+			case .cancel:
+    			debugPrint("MELD:cancel")
+    			// Cancel. Dismiss
+    			DispatchQueue.main.async { [weak self] in
+    					self?.delegate?.cancel()
+      		}
+		}
+}
+```
+
+<br />

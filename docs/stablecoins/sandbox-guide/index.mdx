@@ -1,0 +1,172 @@
+---
+title: "Sandbox Testing Guide"
+---
+
+# Sandbox Environment Guide
+
+Welcome to the Meld Crypto Stack sandbox environment. This guide will help you understand the purpose, limitations, and best practices for testing your integration.
+
+Note that the countries, tokens, fiat currencies, and payment methods supported in sandbox are a small subset of the ones supported in production. We recommend you only test in sandbox with the below combinations for the best results:
+
+**Tokens**
+
+* BTC
+* ETH
+* USDC
+
+**Countries**
+
+* US
+* Europe
+
+**Payment Methods**
+
+* CREDIT_DEBIT_CARD
+* APPLE_PAY
+* GOOGLE_PAY
+
+**Fiat Currencies**
+
+* USD
+* EUR
+
+In production, you will be able to use thousands of other combinations, as shown [here](https://docs.meld.io/docs/digital-asset-coverage).
+
+<br />
+
+## ⚠️ Important: Sandbox Purpose and Limitations
+
+### What Sandbox is For
+
+The sandbox environment is designed for:
+
+* **Exploring transaction flows** and understanding how the process works
+* **Testing UI integration** and user experience
+* **Familiarizing yourself** with provider interfaces
+* **Initial development** and basic functionality testing
+* **Happy path combinations** of the most widely used tokens
+
+### What Sandbox is NOT For
+
+**🚨 Critical Warning:** The sandbox environment should **NOT** be relied upon for:
+
+* **Coding solutions related to calculations**
+* **Production data accuracy validation**
+* **Finalizing business logic** based on API responses
+* **Performance testing** with accurate response times
+* **Coverage testing** because onramp sandboxes are very limited in the tokens they support
+
+**API responses in the sandbox environment may lack complete data accuracy** and should only be used for understanding flow structure, not for building calculation logic.
+
+## 🌍 Environment Access
+
+| Environment    | Widget URL                  | API Base URL             |
+| -------------- | --------------------------- | ------------------------ |
+| **Sandbox**    | `https://sb.meldcrypto.com` | `https://api-sb.meld.io` |
+| **Production** | `https://meldcrypto.com`    | `https://api.meld.io`    |
+
+## 🏦 Sandbox-Friendly Providers
+
+### ✅ Recommended for Testing (Full Sandbox Support)
+
+These providers offer reliable sandbox environments ideal for testing:
+
+* **Unlimit** - Complete sandbox functionality with test cards
+* **Simplex** - Reliable test environment with test wallet support
+* **TransFi** - Good sandbox with specific test credentials
+* **Transak** - Full-featured sandbox with test SSN/PAN numbers
+* **Sardine** - Phone-based testing with predictable OTP system
+
+### ⚠️ Limited Sandbox Support
+
+These providers have sandbox limitations:
+
+* **Banxa** - Sandbox often rejects KYC/transactions; production testing recommended
+* **Stripe** - Functions like production; requires real payment for full testing
+* **Paybis** - Basic sandbox functionality
+* **BTC Direct** - Limited sandbox features
+
+### ❌ Production Only
+
+These providers do not offer sandbox environments:
+
+* **Robinhood** - Production environment only
+* **Coinbase Pay** - Production environment only
+* **Blockchain.com** - Production environment only
+* **Alchemy Pay** - Production-like sandbox requiring real payments
+
+## 🔄 Flow Testing Capabilities
+
+### Buy Flow (Onramp)
+
+* ✅ **Fully testable** end-to-end in sandbox
+* Complete transaction simulation available
+* Test cards and credentials work for most providers
+* **Recommended starting point** for all integrations
+
+### Sell Flow (Offramp)
+
+* ⚠️ **Limited testing** - quote generation only
+* Cannot complete full transactions in sandbox
+* Real cryptocurrency/fiat required for end-to-end testing
+* Use for UI flow testing only
+
+### Transfer Flow
+
+* ⚠️ **Limited testing** - configuration and quotes only
+* Cannot execute actual transfers in sandbox
+* Real wallet addresses required for testing
+* Currently available in **White-Label API only**
+
+## 🚀 Testing Best Practices
+
+### 1. Start with Buy Flow
+
+* Begin all integrations with buy flow testing
+* Use recommended providers (Unlimit, Simplex, TransFi)
+* Complete full transaction flow before moving to other flows
+
+### 2. Provider Selection for Testing
+
+* Choose providers from "Recommended for Testing" list
+* Avoid production-only providers during initial development
+* Test with multiple providers to understand variations
+
+### 3. Sandbox Data Handling
+
+* **Never build calculation logic** based on sandbox responses
+* Use sandbox only for flow understanding and UI testing
+* Validate all calculations and business logic in production
+
+### 4. Progressive Testing Approach
+
+```
+Sandbox (Flow Testing) → Staging (Integration Testing) → Production (Final Validation)
+```
+
+## 🔧 Integration Testing Workflow
+
+1. **Sandbox Flow Testing**
+   * Test UI integration
+   * Understand provider interfaces
+   * Validate basic functionality
+
+2. **Production Validation**
+   * Test with real (small) transactions
+   * Validate calculation accuracy
+   * Confirm webhook functionality
+
+3. **Go Live**
+   * Deploy with confidence
+   * Monitor real transaction data
+   * Iterate based on production insights
+
+## 📞 Support
+
+For sandbox-related questions or issues:
+
+* Check provider-specific testing credentials in the detailed testing guide
+* Review flow limitations before troubleshooting
+* Contact Meld support for integration guidance
+
+Remember: **Sandbox is for learning the flow, production is for validating the logic.**

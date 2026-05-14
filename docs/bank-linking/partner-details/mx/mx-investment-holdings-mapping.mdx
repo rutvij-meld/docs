@@ -1,0 +1,19 @@
+---
+title: "MX Investment Holdings Mapping"
+---
+
+This data comes from MX's [/users/\{user\_guid}/members/\{member\_guid}/holdings](https://docs.mx.com/api-reference/platform-api/reference/list-holdings-by-member) endpoint and is returned from Meld's [/bank-linking/investments/holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search) endpoint.
+
+| Meld Field   | Description                                                                | Mx Response Field      |
+| :----------- | :------------------------------------------------------------------------- | :--------------------- |
+| symbol       | The symbol of the security                                                 | symbol                 |
+| quantity     | The number of shares of the security                                       | shares                 |
+| currentValue | The total current value of the holding                                     | market\_value          |
+| costBasis    | The purchase price of the holding, per share                               | cost\_basis            |
+| currencyCode | The ISO currency code that was used to purchase the holding                | currency\_code         |
+| updatedAt    | The last time the details of this holding were updated                     | updated\_at            |
+| description  | A description of the holding                                               | **Not Available**      |
+| closePrice   | The price of the security at last market close                             | shares / market\_value |
+| isin         | The global ISO number for an individual security.                          | **Not Available**      |
+| cusip        | A shortened version of the isin used for North American securities.        | cusip                  |
+| type         | The type of holding (ex: stock, etf). This is normalized across providers. | holding\_type          |

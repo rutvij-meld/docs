@@ -1,0 +1,41 @@
+---
+title: "Getting started"
+---
+
+The Meld API is architected based on REST and contains resource-oriented URLs. All request and response bodies are in JSON format unless specified otherwise. When submitting your API key for authentication, you must specify "BASIC " before the key value pair.
+
+# Environments
+
+Meld offers both production and sandbox environments. The below table contains the URL for each environment:
+
+| Environment | API Base URL                  |
+| :---------- | :---------------------------- |
+| Sandbox     | https://api-sb.meld.io |
+| Production  | https://api.meld.io    |
+
+To obtain your API key for either Production or Sandbox environments, work with your Meld contact. Your API Key is a secret, treat it as such. Do not share it or send it through a front end call.
+
+
+<Note>
+Public Postman Workspace
+
+Meld offers public postman collections for our core endpoints to get you started. Please use it in conjunction with the documentation to understand the full power of Meld's API.
+
+The Postman workspace can be found [here](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection).
+</Note>
+
+
+# Security
+
+1. CORS -- Meld does not need to whitelist any of our customer's URL or IPs for them to call our public Production & Sandbox APIs. You can use whichever URL you desire, as we authenticate via your Meld API Key.
+
+2. For security reasons, Meld recommends using your backend server to make the calls to Meld's API. If you make these calls from your frontend instead, it may not work and you may get back a CORS error. This is because making calls to Meld APIs require that you passed in an Authentication header with the API Key we issued you. It is insecure to keep this API Key hardcoded in your mobile app or web app.
+
+3. All our customers need to treat the Meld API Key they've been issued like any other "password". It is an extremely sensitive credential that needs to be protected at all cost. The security measures you need to ensure are:\
+   a) strict controls to the backend server (as it has access to your Meld API Key),\
+   b) a way to authenticate your FE/app to your backend server\
+   c) reject/ignore all other calls to your backend server
+
+# Dates
+
+All Meld dates / timestamps returned via Meld's API are in UTC time.

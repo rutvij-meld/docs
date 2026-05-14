@@ -1,0 +1,88 @@
+---
+title: "FAQ"
+---
+
+# Frequently Asked Questions
+
+Common questions and answers about integrating with Meld's crypto infrastructure.
+
+## Integration Options
+
+### Which integration method should I choose: Meld Checkout or White-Label API?
+
+**Meld Checkout Integration** provides a complete UI that handles the entire transaction flow with minimal development effort. Simply redirect users to Meld's hosted interface.
+
+**White-Label API Integration** requires building your own UI but offers complete customization control. You collect transaction details through your interface, then use Meld's APIs for payment processing.
+
+The Virtual Account flow is only supported via a white-label integration.
+
+
+<Note>
+### **More details**: [Choose The Right Meld Product For You](https://docs.meld.io/docs/crypto-overview_)
+</Note>
+
+
+## API and Development
+
+### How do I find supported countries, payment methods, and currencies?
+
+Use Meld's service provider properties endpoints to query available options:
+
+* Add `accountFilter=true` parameter to see only providers enabled for your account
+* Filter by specific providers or query all available options
+* Results show supported countries, payment methods, fiat currencies, and tokens
+
+
+<Note>
+### **API Reference**: [Service Provider Properties](https://docs.meld.io/reference/service-providers-search)
+</Note>
+
+
+### Should I use webhooks or polling for transaction status updates?
+
+**Use webhooks** - they provide much lower latency and reduce infrastructure strain, and therefore a better user experience. Meld strongly recommends webhooks over polling.
+
+<br />
+
+### How can I specify the blockchain network when creating a crypto widget (for example, USDT on TRON)?
+
+Meld does not accept the blockchain network (chain) as a separate API parameter. Instead, each supported blockchain version of a token is represented by a unique **asset currency code**.
+
+You can find the full list of supported asset currency codes here:  
+[https://www.meld.io/coverage/cryptocurrencies](https://www.meld.io/coverage/cryptocurrencies)
+
+For example, if you want to create a widget to buy **USDT on the TRON network**, you should use the following asset code:
+
+**USDT_TRON**
+
+This asset code ensures the transaction is routed to the correct blockchain network.
+
+## Data and Storage
+
+### Do I need to store transaction data from Meld?
+
+**No, it's optional**. Whether using Widget or White-Label API integration, you can:
+
+* **View transactions** in the Meld dashboard
+* **Export data** as CSV files from the dashboard
+* **Store locally** if needed for your own analytics or record-keeping
+
+Choose based on your business requirements for data retention and analysis.
+
+## Support and Troubleshooting
+
+### Who should handle customer support issues — Meld or the payment provider?
+
+**Contact Meld first** if you experience:
+
+* UI bugs or unexpected behavior in the widget or checkout
+* Meld API failures or integration errors
+* Issues related to the Meld platform, dashboard.
+
+**Contact the customer support team ramp partner directly** for payment-specific matters:
+
+* KYC status, verification delays, or compliance checks
+* Payment processing or bank/card transaction issues
+* Crypto delivery delays or payment settlement questions
+
+Meld does **not handle user funds or perform KYC**. For payment, KYC, or delivery concerns, the ramp network partner will have the most accurate user-specific information and can assist more effectively.

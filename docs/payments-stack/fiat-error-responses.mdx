@@ -1,0 +1,298 @@
+---
+title: "Error responses"
+---
+
+When a request fails, Meld endpoints return a response that includes the errors fields in the body. The following table lists the error code you might receive from our API. 
+
+The error message includes both Meld's error code and the service provider's error details. Reference [Error schema](https://docs.meld.io/docs/error-schema).
+
+# General
+
+<Table align={["left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Error code
+      </th>
+
+      <th>
+        Error message
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        `UNKNOWN`
+      </td>
+
+      <td>
+        Unknown Error
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `BAD_REQUEST`
+      </td>
+
+      <td>
+        Bad request
+
+        * \*Note:\*\* When a bad request is received, the system will return a user-friendly representation of the error, such as:
+          <li>[amount] Must be a decimal value greater than zero</li>
+          <li>[serviceProvider] Must be a service provider</li>
+          <li>[serviceTransactionId] must not be blank</li>
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+# Payments
+
+<Table align={["left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Error code
+      </th>
+
+      <th>
+        Error message
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        `INVALID_AMOUNT_OR_CURRENCY`
+      </td>
+
+      <td>
+        Invalid amount or currency
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `INITIAL_TRANSACTION_ERROR`
+      </td>
+
+      <td>
+        Error creating initial transaction
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `JSON_PROCESSING_ERROR`
+      </td>
+
+      <td>
+        Error processing JSON
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `PAYMENT_TRANSACTION_STATE_INVALID`
+      </td>
+
+      <td>
+        Payment transaction is null or invalid
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `PREVIOUS_TRANSACTION_STATE_INVALID`
+      </td>
+
+      <td>
+        Previous transaction state is null or invalid
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `SERVICE_PROVIDER_ERROR`
+      </td>
+
+      <td>
+        Service Provider Error
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_CREATION_ERROR`
+      </td>
+
+      <td>
+        Unable to create transaction
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_EXCEPTION`
+      </td>
+
+      <td>
+        Exception in transaction
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_INVALID_ID`
+      </td>
+
+      <td>
+        Transaction ID is invalid or it was not found
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_INVALID_STATE_ID`
+      </td>
+
+      <td>
+        Transaction state ID is invalid or it was not found
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_NO_RESULT`
+      </td>
+
+      <td>
+        No result from gateway
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_NO_RESPONSE`
+      </td>
+
+      <td>
+        No response from transaction
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_REQUEST_CREATION_ERROR`
+      </td>
+
+      <td>
+        Unable to create a transaction request
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_INVALID_PROVIDER`
+      </td>
+
+      <td>
+        Invalid service provider
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_UPDATE_NULL_ERROR`
+      </td>
+
+      <td>
+        Unable to update a null/invalid transaction
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_INVALID_SERVICE_TRANSACTION_ID`
+      </td>
+
+      <td>
+        Invalid service transaction ID
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_NULL_DATA`
+      </td>
+
+      <td>
+        Transaction data is null
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `NOT_SUPPORTED`
+      </td>
+
+      <td>
+        Operation not supported for service provider
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        ` FAILED_GETTING_TRANSACTION`
+      </td>
+
+      <td>
+        Failed getting transaction
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_MISSING_SERVICE_PROVIDER_DETAILS`
+      </td>
+
+      <td>
+        Request requires serviceProviderDetails property
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_MISSING_CARD_INFORMATION`
+      </td>
+
+      <td>
+        Missing credit/debit card information
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE`
+      </td>
+
+      <td>
+        Failed getting crypto quote
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        `TRANSACTION_CREDIT_CARD_INFO_NOT_SUPPORTED`
+      </td>
+
+      <td>
+        Transactions with credit card information are not supported by the provider. Try to use nonces
+      </td>
+    </tr>
+  </tbody>
+</Table>

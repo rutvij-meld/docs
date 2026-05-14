@@ -1,0 +1,125 @@
+---
+title: "Salt Edge to Meld Overall Mappings"
+---
+
+# Salt Edge to Meld Mappings
+
+**Note:** You can always compare the raw responses from SaltEdge in the `serviceProviderDetails` section of a financial account.
+
+[Financial Account Base Fields](#financial-account-base-fields)
+
+[Balances](https://docs.meld.io/docs/salt-edge-balances-mapping)
+
+[Identifiers](https://docs.meld.io/docs/salt-edge-identifiers-mapping)
+
+[Owners](https://docs.meld.io/docs/salt-edge-owners-mapping)
+
+[Transactions](https://docs.meld.io/docs/salt-edge-transactions-mapping)
+
+[Normalized Account Types and Subtypes](#normalized-account-types-and-subtypes)
+
+## Financial Account Base Fields
+
+This data comes from SaltEdge's [/api/v5/accounts](https://docs.saltedge.com/account_information/v5/#accounts-attributes) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Meld Field
+      </th>
+
+      <th>
+        Description
+      </th>
+
+      <th>
+        SaltEdge Response Field
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        name
+      </td>
+
+      <td>
+        The account name
+      </td>
+
+      <td>
+        name
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        truncatedAccount  
+        Number
+      </td>
+
+      <td>
+        The last 4 digits of the account number
+      </td>
+
+      <td>
+        extra.account_number  
+        If extra.account_number is null then:*  
+        extra.iban  
+        _If extra.iban is null then:_  
+        extra.bban  
+        _If extra.bban is null then:_  
+        extra.cards
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        status
+      </td>
+
+      <td>
+        The real-time status of the account
+      </td>
+
+      <td>
+        extra.status\ <br />Possible values:<br />  - `active`<br />  - `inactive`<br />  - `unauthorized`
+
+        * If null:_ `active`
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        type
+      </td>
+
+      <td>
+        The type of the account. Mapped to a Meld standardized type
+      </td>
+
+      <td>
+        nature
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        subtype
+      </td>
+
+      <td>
+        The subtype of the account. Mapped to a Meld standardized subtype
+      </td>
+
+      <td>
+        * None_. Meld subtype  
+          determined from SaltEdge type.
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+## Normalized Account Types and Subtypes

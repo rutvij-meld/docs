@@ -1,0 +1,67 @@
+---
+title: "Step 1: Create a Connect Token"
+---
+
+The first step to having a user connect their bank accounts is creating a connect token.
+
+Using the API Key that Meld has issued to you, send a `POST` request to the [\{api\_base\_url}/bank-linking/connect/start](https://docs.meld.io/reference/bank-linking-connect-create) endpoint. You will receive a connect token in response. Your API Key is a secret, treat it as such. Do not share it or send it through a front end call.
+
+The connect token is only used while the user is making the connection to their bank. It expires after 3 hours. You do not have to save it, as once the connection is completed it cannot be used for anything else. If you would like to track the status of a connection, Meld recommends using the customerId, which is returned in the response when creating a connect token, or the externalCustomerId, which is an optional ID you can pass in when creating a connect token.
+
+When creating a connect token, be careful when choosing the regions and products you want. In Step 3, when the user selects their institution, only the institutions that support all the requested products and are in one of the requested regions will show in the widget. Therefore choosing too many products or too few regions can restrict the institutions shown in the widget significantly. If you do not know the region in which your customer banks, Meld recommends not passing in the `regions` param at all.
+
+
+<Note>
+Disabling / Reenabling Service Providers
+
+If you disable a service provider from the Meld dashboard, then later enable it again (either with the same credentials or with a different set of credentials), then you should use new customerIds / externalCustomerIds from the ones you were using with that provider before you disabled it. Not doing so may result in an error when selecting an institution in the picker that says "Error creating user".
+</Note>
+
+
+## Skipping or Prepopulating the Meld Picker
+
+If you know which institution the user is going to pick (for example if you have your own UI where the user already selects their institution), you have 2 options to make the flow more seamless, with documentation found [here](https://docs.meld.io/reference/bank-linking-connect-create).
+
+1. You can pass in the name of the institution as a string when generating a connect token, and in the Meld picker the institution name will be autofilled so that search results for that string appear by default. The user can still edit the search string from the picker itself but this makes their bank show up without having to search for it.
+2. You can pass in the institutionId corresponding to the user's bank. This will involve mapping your institution(s) to Meld's institutions to get the ids from the [/institutions endpoint](https://docs.meld.io/reference/bank-linking-institutions-search). Doing this will skip the Meld picker screen completely and take the user straight to the next page.
+
+If you are building your institution picker UI, you can populate it using information from Meld's /institutions endpoint in production. Note that, at least for MX, not all institutions that support transactions also support historical transactions, therefore HISTORICAL\_TRANSACTIONS is listed as a separate product in that endpoint response so you know which institutions support it. However when listing products you want to get back data for in a connection, just pass in TRANSACTIONS, passing in HISTORICAL\_TRANSACTIONS is not supported as a separate product.
+
+**A key part of building the request body is the list of products chosen. For more information on the various products and which ones to use in your request, see[here](https://docs.meld.io/docs/supported-bank-linking-products).**
+
+
+## Sample request:
+
+```
+curl --location 'https://api-sb.meld.io/bank-linking/connect/start' \
+--header 'Meld-Version: 2022-11-10' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: BASIC ***Redacted API Key***' \
+--data '{
+  "externalCustomerId": "testCustomer",
+  "products": [
+    "BALANCES",
+    "OWNERS",
+    "IDENTIFIERS",
+    "TRANSACTIONS",
+    "INVESTMENT_HOLDINGS",
+    "INVESTMENT_TRANSACTIONS"
+  ],
+  "regions": ["US", "CA"],
+  "institutionSearchString": "Fidelity"  
+}'
+```
+
+## Sample Response:
+
+```json
+{
+    "id": "WQ46XEVzT14vrrDq6LSJVg",
+    "connectToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZWRpcmVjdCI6dHJ1ZSwicmVnaW9ucyI6WyJVUyIsIkNBIl0sImlzcyI6Im1lbGQuaW8iLCJjb25uZWN0aW9uIjoiV1E0NlhFVnpUMTR2cnJEcTZMU0pFZCIsImV4cCI6MTY4Njc5ODkzMywiaWF0IjoxNjg2Nzg0NTMzLCJhY2NvdW50IjoiVzlrYmtSbWU5VlQyaXo2cUFTZkFmMiIsImN1c3RvbWVyIjoiV1E0NlhEcllZTVlyZTlSQmt3YXl5USIsInByb2R1Y3RzIjpbIlRSQU5TQUNUSU9OUyIsIkJBTEFOQ0VTIiwiSURFTlRJRklFUlMiLCJPV05FUlMiXSwicm91dGluZ1Byb2ZpbGUiOiJXR3ZGWHRYYkRvQ2VXc3hVdHVpeFB5In0.jAwpUokwkSKi7BTwKJOY_Y6XAPv_O8yOi6mVaUKxnMI",
+    "customerId": "WQ46XDrYYMYre9RBkwayyZ",
+    "externalCustomerId": "testCustomer",
+    "widgetUrl": "https://institution-connect-sb.meld.io?connectToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZWRpcmVjdCI6dHJ1ZSwicmVnaW9ucyI6WyJVUyIsIkNBIl0sImlzcyI6Im1lbGQuaW8iLCJjb25uZWN0aW9uIjoiV1E0NlhFVnpUMTR2cnJEcTZMU0pFZCIsImV4cCI6MTY4Njc5ODkzMywiaWF0IjoxNjg2Nzg0NTMzLCJhY2NvdW50IjoiVzlrYmtSbWU5VlQyaXo2cUFTZkFmMiIsImN1c3RvbWVyIjoiV1E0NlhEcllZTVlyZTlSQmt3YXl5USIsInByb2R1Y3RzIjpbIlRSQU5TQUNUSU9OUyIsIkJBTEFOQ0VTIiwiSURFTlRJRklFUlMiLCJPV05FUlMiXSwicm91dGluZ1Byb2ZpbGUiOiJXR3ZGWHRYYkRvQ2VXc3hVdHVpeFB5In0.jAwpUokwkSKi7BTwKJOY_Y6XAPv_O8yOi6mVaUKxnMI"
+}
+```
+
+Now that you have your connect token, you are ready to move on to launching the widget.

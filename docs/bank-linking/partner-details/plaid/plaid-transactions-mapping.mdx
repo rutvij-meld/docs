@@ -1,0 +1,95 @@
+---
+title: "Plaid Transactions Mapping"
+---
+
+This data comes From Plaid's [/transactions/get](https://plaid.com/docs/api/products/#transactions-get-response-transactions-amount) endpoint and is returned from Meld's [/bank-linking/transactions](https://docs.meld.io/reference/bank-linking-transactions-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+        Meld Field
+      </th>
+      <th style={{ textAlign: "left" }}>
+        Description
+      </th>
+      <th style={{ textAlign: "left" }}>
+        Plaid Response Field
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        amount
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The amount of the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        amount
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        currency
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The currency used in the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        iso_currency_code
+        unofficial_currency_code (if iso_currency_code is null)
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        description
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The transaction's description
+      </td>
+      <td style={{ textAlign: "left" }}>
+        name
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        status
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The status of the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        pending<br />
+        * If returns `True`, Meld will populate the value as `PENDING`<br />
+        * If returns `False`, Meld will populate the value as `POSTED`
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        transactionDate
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The date and time the transaction was made
+      </td>
+      <td style={{ textAlign: "left" }}>
+        - For transactions with `PENDING` status: `date`<br />
+        - For transactions with `POSTED` status: `authorizedDate`<br />
+        - If the authorized date returns `null`, Meld will use the data from `date`
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        postedDate
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The date and time the transaction was posted
+      </td>
+      <td style={{ textAlign: "left" }}>
+        - For transactions with `PENDING` status, it will return `null`<br />
+        - For transactions with `POSTED` status: `date`
+      </td>
+    </tr>
+  </tbody>
+</Table>

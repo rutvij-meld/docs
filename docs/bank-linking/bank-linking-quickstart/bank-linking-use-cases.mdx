@@ -1,0 +1,38 @@
+---
+title: "Bank Linking Use Cases"
+---
+
+# How to Use the Product
+
+Here is a high level summary of how you can build an app that interacts with Meld, any bank linking provider, and your customer.
+
+1. [Create a connection](https://docs.meld.io/docs/creating-connections) to your customer's bank account(s).
+   1. Test credentials can be found in the [bank linking sandbox testing guide](https://docs.meld.io/docs/bank-linking-sandbox-testing-guide).
+   2. Make sure to tell the user the connection is complete while you are waiting to fetch the data, see more about this [here](https://docs.meld.io/docs/get-connection-data#informing-the-user-of-the-status).
+2. [Get connection data](https://docs.meld.io/docs/managing-completed-connections) to pull the financial data you need.
+   1. This data includes [balances](https://docs.meld.io/docs/account-balances), [identifiers](https://docs.meld.io/docs/account-identifiers), [owners](https://docs.meld.io/docs/account-owners), [transactions](https://docs.meld.io/docs/account-transactions), and [investments](https://docs.meld.io/docs/account-investments).
+   2. Configure and consume [webhooks](https://docs.meld.io/docs/webhook-events-bank-linking) as needed to know when new financial data is available or if a connection is broken.
+   3. You can also create a [processor token](https://docs.meld.io/docs/account-processor-token) for a financial account.
+3. [Manage connection status](https://dash.readme.com/project/melduniversal/v2023-12-19/docs/manage-connection-status) to keep your connections organized and up
+   1. [Refresh](https://docs.meld.io/docs/refreshing-connections) a connection to get the latest data.
+   2. [Repair](https://docs.meld.io/docs/repairing-connections) a connection to start receiving updates again.
+   3. [Delete](https://docs.meld.io/docs/deleting-connections) a connection as needed.
+4. [Route](https://docs.meld.io/docs/routing-overview#bank-linking-routing) between providers to optimize conversion.
+   1. Each service provider has different coverage, as well as its own details. Be sure to read through them before using a particular service provider. The list of service providers includes [Plaid](https://docs.meld.io/docs/plaid), [Finicity](https://docs.meld.io/docs/finicity), [MX](https://docs.meld.io/docs/mx), [Yodlee](https://docs.meld.io/docs/yodlee), [Salt Edge](https://docs.meld.io/docs/salt-edge), and [Salt Edge Partners](https://docs.meld.io/docs/salt-edge-partners).
+   2. Meld's Bank Linking stack allows you to route your customers to specific service providers based upon predefined defaults, a service provider waterfall based on institution coverage and availability, or specific financial institution based decisioning. > > Routing rules are defined within the Meld dashboard.
+5. If you have existing connections with a service provider that you would like to bring over to Meld, you can by [importing connections](https://docs.meld.io/docs/importing-connections).
+
+# Potential Use Cases
+
+Here are some potential use cases for Meld's bank linking product:
+
+1. See users' balances and invstment holdings to be able to give them financial advice.
+2. See users' balances and transactions to see if they would qualify for a loan.
+3. See users' owners information to verify their identity.
+4. See users' identifiers information (including account number and routing number) in order to perform an ACH transaction. See more about identity verification [here](https://docs.meld.io/docs/account-verification).
+
+# Building Your Own Institution Picker
+
+The first step of bank linking is knowing which institution the user wants to connect to. Most customers will launch Meld's widget which has an institution picker as the first screen. However, you have the ability to build you own picker, have the user select an institution, and pass that institutionId into the Meld [widget endpoint](https://docs.meld.io/reference/bank-linking-connect-create) as well, which will skip the institution picker screen in the Meld UI. To populate institutions along with their symbols in your own UI, fetch this data from the [institutions endpoint](https://docs.meld.io/reference/bank-linking-institutions-get). Note that this data rarely changes, so cache this response rather than calling this endpoint live every time.
+
+<br />

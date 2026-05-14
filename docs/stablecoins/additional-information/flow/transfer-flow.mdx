@@ -1,0 +1,58 @@
+---
+title: "Transfer Flow"
+---
+
+# Transfer Flow - Exchange Transfer
+
+Transfer Flow allows users to move cryptocurrency from an exchange wallet to any destination wallet address.
+
+**Note that Transfer only work with the Ramps Flow, and specifically with the White Label integration option.**
+
+## How the Transfer Flow Works
+
+1. **Source Selection:** User selects exchange where crypto is stored
+2. **Asset Selection:** User chooses cryptocurrency and amount to transfer
+3. **Destination:** Specify wallet address to receive the crypto
+4. **Authentication:** User logs into exchange through secure provider interface
+5. **Confirmation:** User reviews fees and confirm transfer
+6. **Execution:** Exchange transfers crypto to destination wallet
+
+## Key Features
+
+* **No Quotes Required:** Transfer flow doesn't use quote system
+* **No Payment Information:** No payment method is used for transfers
+* **Exchange Support:** Works with supported exchanges through Meld
+* **Network Fees:** Standard blockchain network fees apply
+* **Partner Fees:** Meld affiliate fees may apply
+* **Flexible Destination:** Can transfer to any compatible wallet address
+
+## Supported Configurations
+
+### Single Token Transfer
+
+Specify exact token and amount to transfer from exchange.
+
+### Multi-Token Selection
+
+Present user with available tokens after exchange login, let them choose which to transfer.
+
+## Example
+
+To trigger this flow, make a call like below to the /widget endpoint:
+
+```json
+{
+    "sessionData": {
+        "walletAddress": "0x0f7825ca1FB359e3914B6ce61f370E776C8CA87B",
+        "countryCode": "SG",
+        "sourceCurrencyCodes": ["USDT"],
+        "sourceAmount": "10",
+        "serviceProvider": "BINANCEPAY"
+    },
+    "sessionType": "TRANSFER",
+    "externalCustomerId": "testvideo-1",
+    "externalSessionId": "testvideo-12"
+}
+```
+
+The response will be the same as buy or sell. You can launch the onramp url and the user will then be taken to the onramp to complete the transfer of the token to your wallet.

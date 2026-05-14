@@ -1,0 +1,297 @@
+---
+title: "Ramp Intelligence"
+---
+
+# Ramp Intelligence
+
+Meld's intelligent quote ranking system maximizes conversion rates by guiding users toward the most suitable payment providers. Through advanced algorithms analyzing user history, provider performance, and KYC requirements, Meld helps developers achieve significantly higher success rates.
+
+
+<Note>
+### **Proven Results**
+
+  Meld's rampScore and lowKyc optimization features have enabled developers to achieve **69-94% end-to-end conversion rates** - a dramatic improvement over industry averages.
+</Note>
+
+
+## Overview
+
+Every quote response includes intelligent ranking data to help you:
+
+* **Prioritize familiar providers** where users have succeeded before
+* **Identify low-friction options** requiring minimal verification
+* **Optimize for user success** based on historical performance
+* **Reduce abandonment rates** through smart provider selection
+
+
+<Note>
+### **Scope**: These optimization features apply to buy transactions only and are included automatically in all quote responses.
+</Note>
+
+
+## Understanding KYC Impact
+
+**Know Your Customer (KYC)** verification significantly impacts conversion rates. Each provider has different requirements:
+
+* **Minimal KYC**: Email, phone, basic details (high conversion)
+* **Standard KYC**: Document uploads, identity verification (medium conversion)
+* **Enhanced KYC**: Bank statements, proof of funds (low conversion)
+
+Meld's optimization ensures users are directed to providers where they've already completed verification, dramatically reducing friction.
+
+## Key Optimization Parameters
+
+Every quote includes these conversion-critical fields:
+
+### `rampScore` (0-100)
+
+Meld's proprietary recommendation engine that predicts conversion likelihood for each user-provider pair. Higher scores indicate greater success probability. Meld recognizes users by their wallet address, so this score works across the entire Meld ecosystem, even if your user used the same wallet address via a different wallet before!
+
+### `lowKyc` (boolean)
+
+Indicates whether the transaction can complete without document uploads for new users.
+
+### Calculation Factors
+
+Meld's algorithm processes multiple data points, updated several times daily:
+
+**User History (Primary Factor)**
+
+* Previous successful transactions with each provider
+* Transaction recency and frequency
+* Failure patterns and recovery behavior
+* Cross-wallet transaction history within Meld network
+
+**Provider Performance**
+
+* Historical success rates by geography and payment method
+* Average processing times and reliability metrics
+* Fee competitiveness and spread analysis
+* Payment method diversity and regional support
+
+**Market Dynamics**
+
+* Real-time provider availability and capacity
+* Regional regulatory compliance status
+* Seasonal performance variations
+
+### Score Interpretation
+
+| Score Range | Meaning             | Recommendation                                    |
+| ----------- | ------------------- | ------------------------------------------------- |
+| 70-100      | **Excellent Match** | Multiple recent successes, prioritize prominently |
+| 30-69       | **Good Match**      | Some success history, feature positively          |
+| 0-29        | **New/Unknown**     | No significant history, standard positioning      |
+
+
+<Warning>
+**Implementation Note**: Always include the user's `walletAddress` in quote requests to enable personalized scoring.
+</Warning>
+
+
+### Implementation Strategy
+
+**Primary Sorting**: Always rank quotes by `rampScore` (highest first)
+
+**Visual Emphasis**: Highlight providers with scores > 30 using:
+
+* "⭐ Recommended" badges
+* Primary button styling
+* "You've used this before" messaging
+
+**Code Example**:
+
+```typescript
+interface Quote {
+  rampScore: number;
+  serviceProvider: string;
+  lowKyc: boolean | null;
+  partnerFee: number | null;
+  sourceAmount: number;
+  destinationAmount: number;
+  totalFee: number;
+  // ... other fields
+}
+
+function sortQuotesByRecommendation(quotes: Quote[]): Quote[] {
+  return quotes.sort((a, b) => b.rampScore - a.rampScore);
+}
+
+function getRecommendationBadge(score: number): string {
+  if (score >= 70) return "🏆 Your Best Choice";
+  if (score >= 30) return "⭐ Recommended";
+  return "";
+}
+```
+
+
+<Note>
+### **Best Practice**: Never hide or de-emphasize high-scoring options, even if they have higher fees. User familiarity typically outweighs small price differences in conversion impact.
+</Note>
+
+
+## Low KYC Optimization
+
+The `lowKyc` flag identifies providers where new users can complete transactions without document uploads, significantly reducing friction and improving conversion rates.
+
+### What Low KYC Means
+
+**✅ Low KYC Requirements:**
+
+* Basic information: email, phone, name
+* Simple verification: SMS codes, email confirmation
+* Optional: SSN or tax ID (varies by country)
+* **No document uploads required**
+
+**❌ Standard KYC Requirements:**
+
+* Government ID photos (license, passport)
+* Proof of address documents
+* Bank statements or financial verification
+* Selfie verification
+
+### Response Values
+
+| Value   | Meaning                                              | User Experience                     |
+| ------- | ---------------------------------------------------- | ----------------------------------- |
+| `true`  | No documents needed for this amount                  | ⚡ Fast completion (2-5 minutes)     |
+| `false` | Documents required                                   | 📋 Standard process (10-30 minutes) |
+| `null`  | Provider doesn't specify or amount exceeds threshold | 🤷 Unknown requirements             |
+
+### Implementation Guidelines
+
+**Badge Messaging**:
+
+* `lowKyc: true` → "⚡ No Documents Required"
+* `lowKyc: false` → Standard presentation
+* `lowKyc: null` → No special treatment
+
+**Code Example**:
+
+```typescript
+function getLowKycBadge(lowKyc: boolean | null): string {
+  return lowKyc === true ? "⚡ No Documents Required" : "";
+}
+
+function shouldHighlightForSpeed(quote: Quote): boolean {
+  return quote.lowKyc === true;
+}
+```
+
+
+<Note>
+### **Conversion Impact**: Low KYC options can improve completion rates by 40-60% for new users, making them valuable for customer acquisition.
+</Note>
+
+
+## Implementation Example
+
+Here's a realistic quote response showing how optimization parameters work together:
+
+```json
+{
+  "quotes": [
+    {
+      "transactionType": "CRYPTO_PURCHASE",
+      "sourceAmount": 200.00,
+      "sourceAmountWithoutFees": 195.83,
+      "destinationAmount": 0.04308219,
+      "destinationCurrencyCode": "ETH",
+      "exchangeRate": 4642.29,
+      "paymentMethodType": "CREDIT_DEBIT_CARD",  
+      "serviceProvider": "UNLIMIT",
+      "partnerFee": 2,
+      "rampIntelligence": {
+        "rampScore": 78.5,
+        "lowKyc": null
+      }
+    },
+    {
+      "transactionType": "CRYPTO_PURCHASE", 
+      "sourceAmount": 200.00,
+      "sourceAmountWithoutFees": 193.09,
+      "destinationAmount": 0.04176125,
+      "destinationCurrencyCode": "ETH",
+      "exchangeRate": 4789.13,
+      "paymentMethodType": "CREDIT_DEBIT_CARD",
+      "serviceProvider": "KRYPTONIM",
+      "partnerFee": 2,
+      "rampIntelligence": {
+        "rampScore": 45.2,
+        "lowKyc": true
+      }
+    },
+    {
+      "transactionType": "CRYPTO_PURCHASE",
+      "sourceAmount": 200.00,
+      "sourceAmountWithoutFees": 190.07,
+      "destinationAmount": 0.041154,
+      "destinationCurrencyCode": "ETH", 
+      "exchangeRate": 4859.80,
+      "paymentMethodType": "CREDIT_DEBIT_CARD",
+      "serviceProvider": "STRIPE",
+      "partnerFee": 2,
+      "rampIntelligence": {
+        "rampScore": 12.1,
+        "lowKyc": false
+      }
+    }
+  ]
+}
+```
+
+### Analysis & UI Recommendations
+
+**1. UNLIMIT (Score: 78.5)**
+
+* 🏆 **Primary Recommendation**: Highest customer score indicates strong success history
+* **UI Treatment**: Featured position, "Your Best Choice" badge
+* **Conversion Expectation**: Very high (user familiarity)
+
+**2. KRYPTONIM (Score: 45.2)**
+
+* ⚡ **Speed Advantage**: `lowKyc: true` means fast completion for new users
+* **UI Treatment**: "No Documents Required" badge
+* **Conversion Expectation**: Good for new users, moderate for returning
+
+**3. STRIPE (Score: 12.1)**
+
+* **Standard Treatment**: Lowest score, no special advantages
+* **UI Treatment**: Regular presentation
+* **Conversion Expectation**: Lower (unknown user history)
+
+### Optimal Implementation Strategy
+
+```typescript
+// Sort quotes optimally
+function optimizeQuoteDisplay(quotes: Quote[]): Quote[] {
+  return quotes
+    .sort((a, b) => b.rampScore - a.rampScore)
+    .map(quote => ({
+      ...quote,
+      recommendationBadge: getRecommendationBadge(quote.rampScore),
+      speedBadge: getLowKycBadge(quote.lowKyc),
+      isPrimary: quote.rampScore >= 70,
+      isRecommended: quote.rampScore >= 30
+    }));
+}
+```
+
+
+<Note>
+### **Key Principle**: Rank by `rampScore` first, then enhance with `lowKyc` badges. Never let low KYC override strong user history - familiarity typically wins over convenience.
+</Note>
+
+
+## Summary
+
+Meld's conversion optimization combines user history intelligence with friction analysis to maximize transaction success rates. By implementing proper quote ranking and visual emphasis, developers can achieve industry-leading conversion performance.
+
+**Implementation Checklist:**
+
+* ✅ Always include `walletAddress` in quote requests
+* ✅ Sort quotes by `rampScore` (highest first)
+* ✅ Add visual badges for scores > 30
+* ✅ Highlight `lowKyc: true` options with speed messaging
+* ✅ Never override high rampScore with other factors
+* ✅ Monitor conversion metrics and iterate

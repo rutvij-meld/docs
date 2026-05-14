@@ -1,0 +1,84 @@
+---
+title: "All in One Wizard"
+---
+
+```mdx
+# Example
+
+You can see Meld's all in one wizard being used [here](https://quickswap.exchange/#/) by Quickswap (click the Buy Now button). Quickswap has embedded the widget on their website and the user uses this UI start to finish in order to purchase crypto.
+
+# Introduction
+
+The Crypto Wizard is a standalone UI that you can embed in your website or app that has the full functionality of the Meld Crypto Stack ready to use right away. It includes a UI and the full backend feature set that allows you to have your customers purchase crypto through you and Meld with ease. The Wizard UI is linked at the end of this page.
+
+## Wizard User Interface
+
+Feel free to play around with the interactive wizard below and familiarize yourself with the flow.
+
+
+## Setup
+
+Once you have configured your crypto accounts via the Integrations tab of the Meld Dashboard, you are able to use the wizard using the public key that is generated in the Developer tab of the dashboard. Your crypto wizard can be found at these urls:
+
+| Environment | Crypto Wizard Url                                         |
+| :---------- | :-------------------------------------------------------- |
+| Sandbox     | https://sb.meldcrypto.com/?publicKey=insertKeyHere |
+| Production  | https://meldcrypto.com/?publicKey=insertKeyHere    |
+
+## URL Parameters
+
+The Meld All in One Wizard accepts several url parameters, which allows you to pass in relevant user information such as what cryptocurrency the user is trying to buy and where they are trying to buy it from. To stack params in the url use the & symbol, for example **[https://www.meldcrypto.com/?publicKey=testkey\&countryCode=GB\&sourceAmount=200\&sourceCurrencyCode=EUR\&destinationCurrencyCode=BTC\&walletAddress=2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm](https://www.meldcrypto.com/?publicKey=testkey\&countryCode=GB\&sourceAmount=200\&sourceCurrencyCode=EUR\&destinationCurrencyCode=BTC\&walletAddress=2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm)**. The params are as follows:
+
+* REQUIRED: **publicKey** -- Your public key which you can find on the Meld Dashboard, which allows Meld to know which account is using that particular wizard instance. This key will be called Public Crypto Wizard Key.
+
+* **countryCode** -- The ISO 2 letter code for a particular country; if not passed in, the default is the country where the user is
+
+* **paymentMethodType** -- How the user plans to pay for their cryptocurrency (ex: VISA)
+
+* **sourceAmount** -- The amount of fiat currency to be exchanged for cryptocurrency; if not passed in, the default value is 100
+
+* **sourceCurrencyCode** -- The type of fiat currency used to purchase cryptocurrency; if not passed in, what shows is the default fiat currency of the country selected
+
+* **destinationCurrencyCode** -- The cryptocurrency to be purchased; if not passed in, the default is BTC
+
+* **walletAddress** -- The user's wallet address
+
+* **walletTag** -- Commonly known as wallet tag, destination tag, or memo, this field is only used for certain cryptocurrencies (EOS, STX, XLM, XMR, XRP, BNB, XEM, and HBAR) and must be passed in on top of the wallet address for these cryptocurrencies for the transaction to succeed
+
+* **theme** - This sets the default theme for the wizard, the values that can be passed in here are *lightMode* and *darkMode*
+
+* **customerId** - This is Meld's id for a customer, you can use this to connect a user to a wizard session to a particular transaction; do not pass in both customerId and externalCustomerId
+
+* **externalCustomerId** - This is your id for a customer, you can use this to connect a user to a wizard session to a particular transaction; do not pass in both customerId and externalCustomerId
+
+* **externalSessionId** - This is your id for a wizard session, you can use this to connect a wizard session to a particular transaction
+
+* **transactionType** - This tells the wizard whether to default to the Buy or Sell flow. The possible values this param can have are *BUY* and *SELL*. If not passed in, the wizard will default to the Buy flow.
+
+* **redirectUrl** - This tells the onramp which url to redirect the user to after they complete a transaction. This param also accepts deeplinks, so you can use it for example to force close the webview you open on mobile for the onramp's widget.
+
+Note that for any param if you pass in a value that's not recognized or not supported, it will be ignored.
+
+### Locking Fields
+
+**countryCode**, **paymentMethodType**, **sourceAmount**, **sourceCurrencyCode**, **destinationCurrencyCode**, **walletAddress**, and **theme** can each be locked within the wizard by passing in the param with the word *Locked* after it. Locking a field will make it so that the user cannot edit the values passed into those fields. The locked params are as follows: **countryCodeLocked**, **paymentMethodTypeLocked**, **sourceAmountLocked**, **sourceCurrencyCodeLocked**, **destinationCurrencyCodeLocked**, **walletAddressLocked**, and **themeLocked**. If you pass in both the unlocked and locked version of a param, for example **countryCode** and **countryCodeLocked**, the locked param will be used. If you lock the sourceCurrencyCode/destinationCurrencyCode or walletAddress field in the wizard, then that field will also be locked in the provider's widget for the [providers that support it](https://docs.meld.io/docs/crypto-widget#locking-fields).
+
+## Styling
+
+The Meld All in One Wizard comes with a dark mode and light mode, which can be toggled by the user, with the default being dark mode. 
+
+## Quotes
+
+By default, the wizard will show the user quotes from all service providers that can satisfy the requirements of the quote. If you would like to limit the number of quotes shown in the wizard to a particular number (e.g. 3), reach out the Meld to set this up for your account. Note that quotes in the wizard are organized based on the highest amount of crypto the user receives (for buying) so limiting quotes to 3 quotes will result in the 3 quotes with the highest amount of crypto being shown in the wizard and the rest of the quotes hidden.
+
+# Embedding the Wizard
+
+Meld supports embedding the All in One wizard within an iframe. The recommended iframe dimensions are 790 px (height) x 450 px (width). The minimum height that should be used for embedding is 745 px, any less and UI elements may overlap.
+
+![](https://files.readme.io/c9614cb9035fee2ba601a767906d87ae47a1286927a3c3a241ef0710eaecf470-image.png)
+
+<br />
+
+<br />
+
+```

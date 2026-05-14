@@ -1,0 +1,15 @@
+---
+title: "Importing Connections"
+---
+
+If you have existing connections with a service provider and want to bring them over to Meld, you can. Importing a connection does not involve the user, and there is no reauthentication required.
+
+**Currently, importing connections is supported for Plaid and Akoya.**
+
+To import a connection to Meld, use the [import connections endpoint](https://docs.meld.io/reference/bank-linking-connections-import). Use the externalCustomerId field to tie each connection you import to an id of your choice, to keep track of the connections. Importing a connection will do the following:
+
+1. Add a connection and all its financial accounts to Meld.
+2. Tie each connection to an externalCustomerId, if provided.
+3. Tell the provider to send webhoks for that connection to Meld from now on, instead of sending them to you.
+4. Refresh the connection at the time of import.
+5. Send you webhooks for each connection based on the refresh, which are similar to the webhooks you would see for a new connection.

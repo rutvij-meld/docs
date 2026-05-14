@@ -1,0 +1,36 @@
+---
+title: "Salt Edge Partner Details"
+---
+
+This page will cover supported countries and config settings for Salt Edge.
+
+## Supported Countries
+
+Meld supports Salt Edge institutions in the United States (US), Argentina (AR), Australia (AU), Austria (AT), Belarus (BY), Brazil (BR), Bulgaria (BG), Canada (CA), Chile (CL), Dominican Republic (DR), Ecuador (EC), Egypt (EG), France (FR), Germany (DE), Hong Kong (HK), Hungary (HU), India (IN), Ireland (IE), Israel (IL), Italy (IT), Malaysia (MY), Mexico (MX), Netherlands (NL), New Zealand (NZ), North Macedonia (MK), Pakistan (PJ), Philippines (PH), Poland (PL), Republic of Moldova (MD), Romania (RO), Saudi Arabia (SA), Singapore (SG), Slovakia (SK), South Africa (ZA), Spain (ES), Switzerland (CH), Thailand (TH), Turkey (TR), Ukraine (UA), United Arab Emirates (AE), and United Kingdom (GB).
+
+## Configuration Settings
+
+If you have your own [Salt Edge](https://www.saltedge.com/) (Open Banking) account that you wish to integrate with Meld, you will need to provide the following credentials securely on the Meld Integrations Tab on the dashboard:
+
+* _App ID_
+* _Secret_
+* _Signature Key_
+
+![](https://files.readme.io/555c2a2-image.png)
+
+## Salt Edge Webhooks
+
+Salt Edge needs several webhook urls, which can be seen in the Meld dashboard:
+
+![](https://files.readme.io/936ae11-image.png)
+
+All of the urls will start with \<base_url>/webhook/saltedge/`{accountId}`/ but at the end will have a different event, such as `success`, `fail`, `destroy`, `notify`, `interactive`, or `service`. Here is how they would look in the Salt Edge dashboard:
+
+![](https://files.readme.io/b54472a-image.png)
+
+## Special Considerations:
+
+* Meld loads the last 90 days of transaction data by default for Salt Edge connections (if transactions is a requested product)
+* Salt Edge also may require a signature, more information about this can be found [here](https://docs.saltedge.com/general/v5/#signature)
+
+<br />

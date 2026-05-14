@@ -1,0 +1,111 @@
+---
+title: "Salt Edge Transactions Mapping"
+---
+
+This data comes from SaltEdge's [/api/v5/transactions](https://docs.saltedge.com/account_information/v5/#transactions-list) endpoint and is returned from Meld's [/bank-linking/transactions](https://docs.meld.io/reference/bank-linking-transactions-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+        Meld Field
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        Description
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        SaltEdge Response Field
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        amount
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The amount of the transaction
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        amount
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        currency
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The currency used in the transaction
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        currency\_code
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        payee
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The recipient of the transaction
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        description
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        status
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The status of the transaction
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        status
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        transactionDate
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The date and time the transaction was made
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        made\_on
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        postedDate
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The date and time the transaction was posted
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        extra.posting\_date\
+        *If extra.posting\_date is null then:*\
+        made\_on
+      </td>
+    </tr>
+  </tbody>
+</Table>

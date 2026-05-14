@@ -1,0 +1,146 @@
+---
+title: "Card Testing Guide"
+---
+
+# Create a payment using nonce method
+
+When create a payment using the nonce method, only the payment method token is required. You can use `meld-fake-valid-nonce` for all service providers besides Checkout, or use each service provider's supported nonces listed on their websites. This nonce is provided by Meld for testing. To create a nonce in production, use a nonce generator provided by the service provider. 
+
+
+<Note>
+Reference [Supported service providers](https://docs.meld.io/docs/fiat-supported-service-providers) to know which service providers are supporting the nonce method.
+</Note>
+
+
+# Create a payment using card method
+
+Genuine card information cannot be used in test mode. Instead, use any of the following test card numbers, a valid expiration date in the future, and any random CVC number, to create a successful payment. 
+
+## Authorize.net
+
+### U.S. test cards
+
+| Card number      | Brand            | CVC          | Expiration date |
+| :--------------- | :--------------- | :----------- | :-------------- |
+| 370000000000002  | American Express | Any 3 digits | Any future date |
+| 6011000000000012 | Discover         | Any 3 digits | Any future date |
+| 3088000000000017 | JCB              | Any 3 digits | Any future date |
+| 4007000000027    | Visa             | Any 3 digits | Any future date |
+| 4012888818888    | Visa             | Any 3 digits | Any future date |
+| 4111111111111111 | Visa             | Any 3 digits | Any future date |
+| 5424000000000015 | Mastercard       | Any 3 digits | Any future date |
+| 2223000010309703 | Mastercard       | Any 3 digits | Any future date |
+| 2223000010309711 | Mastercard       | Any 3 digits | Any future date |
+
+## Braintree
+
+### U.S. test cards
+
+Note: Braintree does not support credit cards, but you can use the cards below to create [nonces](https://developer.paypal.com/braintree/docs/reference/request/payment-method-nonce/create) with which to test.
+
+| Card number         | Brand            | CVC          | Expiration date |
+| :------------------ | :--------------- | :----------- | :-------------- |
+| 37144963539843      | American Express | Any 3 digits | Any future date |
+| 5555 5555 5555 4444 | Mastercard       | Any 3 digits | Any future date |
+| 4111111111111111    | Visa             | Any 3 digits | Any future date |
+
+## Checkout
+
+### U.S. test cards
+
+| Card number      | Brand            | CVC          | Expiration date |
+| :--------------- | :--------------- | :----------- | :-------------- |
+| 4242424242424242 | Visa             | Any 3 digits | Any future date |
+| 4273149019799094 | Visa             | Any 3 digits | Any future date |
+| 4273149019799094 | Visa             | Any 3 digits | Any future date |
+| 4539467987109256 | Visa             | Any 3 digits | Any future date |
+| 4916301720257093 | Visa             | Any 3 digits | Any future date |
+| 4095254802642505 | Visa             | Any 3 digits | Any future date |
+| 4485899805156040 | Visa             | Any 3 digits | Any future date |
+| 5436031030606378 | Mastercard       | Any 3 digits | Any future date |
+| 5585076576791786 | Mastercard       | Any 3 digits | Any future date |
+| 345678901234564  | American Express | Any 3 digits | Any future date |
+| 341829238058580  | American Express | Any 3 digits | Any future date |
+| 6011111111111117 | Discover         | Any 3 digits | Any future date |
+| 6011111111111118 | Discover         | Any 3 digits | Any future date |
+
+## Circle
+
+### U.S. test cards
+
+| Card number      | Brand      | CVC          | Expiration date |
+| :--------------- | :--------- | :----------- | :-------------- |
+| 4007400000000007 | Visa       | Any 3 digits | Any future date |
+| 4007410000000006 | Visa       | Any 3 digits | Any future date |
+| 4200000000000000 | Visa       | Any 3 digits | Any future date |
+| 4757140000000001 | Visa       | Any 3 digits | Any future date |
+| 5102420000000006 | Mastercard | Any 3 digits | Any future date |
+| 5173375000000006 | Mastercard | Any 3 digits | Any future date |
+| 5555555555554444 | Mastercard | Any 3 digits | Any future date |
+
+## NMI
+
+### U.S. test cards
+
+| Card number       | Brand              | CVC          | Expiration date |
+| :---------------- | :----------------- | :----------- | :-------------- |
+| 371111111111114   | American Express   | Any 3 digits | Any future date |
+| 3001111111111116  | Diners Club        | Any 3 digits | Any future date |
+| 6011111111111117  | Discover           | Any 3 digits | Any future date |
+| 35281111111111119 | JCB                | Any 3 digits | Any future date |
+| 56410411111111113 | Maestro            | Any 3 digits | Any future date |
+| 5411111111111115  | Mastercard         | Any 3 digits | Any future date |
+| 5511111111111114  | Mastercard (debit) | Any 3 digits | Any future date |
+| 4532111111111112  | Visa               | Any 3 digits | Any future date |
+| 4751271111111118  | Visa (debit)       | Any 3 digits | Any future date |
+
+## Square
+
+### U.S. test cards
+
+Note: Square does not support credit cards, but you can use the cards below to create nonces with which to test.
+
+| Card number      | Brand            | CVC  | Expiration date |
+| :--------------- | :--------------- | :--- | :-------------- |
+| 4111111111111111 | Visa             | 111  | Any future date |
+| 5105105105105100 | Mastercard       | 111  | Any future date |
+| 6011000000000004 | Discover         | 111  | Any future date |
+| 30000000000004   | Diners Club      | 111  | Any future date |
+| 3569990010095841 | JCB              | 111  | Any future date |
+| 340000000000009  | American Express | 1111 | Any future date |
+| 7783320000000000 | Square Gift Card | N/A  | N/A             |
+
+### International test cards
+
+You can use any of the following test cards to simulate a successful payment for different billing countries.
+
+| Card number      | Brand          | CVC | Expiration date | Country    |
+| :--------------- | :------------- | :-- | :-------------- | :--------- |
+| 6222988812340000 | China UnionPay | 123 | Any future date | China (CN) |
+
+## Stripe
+
+### U.S. test cards
+
+| Card number      | Brand                                                                                                                                    | CVC          | Expiration date |
+| :--------------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :----------- | :-------------- |
+| 4242424242424242 | Visa                                                                                                                                     | Any 3 digits | Any future date |
+| 4000056655665556 | Visa (debit)                                                                                                                             | Any 3 digits | Any future date |
+| 5555555555554444 | Mastercard                                                                                                                               | Any 3 digits | Any future date |
+| 2223003122003222 | [Mastercard (2-series)](https://www.mastercard.us/content/dam/mccom/en-us/documents/merchant-2-series-BIN-impact-checklist-aug-2016.pdf) | Any 3 digits | Any future date |
+| 5200828282828210 | Mastercard (debit)                                                                                                                       | Any 3 digits | Any future date |
+| 5105105105105100 | Mastercard (prepaid)                                                                                                                     | Any 3 digits | Any future date |
+
+### International test cards
+
+You can use any of the following test cards to simulate a successful payment for different billing countries.
+
+| Card number      | Brand | CVC          | Expiration date | Country     |
+| :--------------- | :---- | :----------- | :-------------- | :---------- |
+| 4000001240000000 | Visa  | Any 3 digits | Any future date | Canada (CA) |
+| 4000004840008001 | Visa  | Any 3 digits | Any future date | Mexico (MX) |
+
+
+<Note>
+Reference [Supported service providers](https://docs.meld.io/docs/fiat-supported-service-providers) to know which service providers are supporting the card method.
+</Note>

@@ -1,0 +1,191 @@
+---
+title: "Sandbox Buy Flow Testing Guide"
+---
+
+This page is for how to test the buy flow using onramp's sandboxes. To test the sell, transfer, or NFT Checkout flow, see [here](https://docs.meld.io/docs/testing-sell-transfer-and-nft-checkout).
+
+# Testing Information
+
+Several service providers have test wallet addresses and card numbers that must be used for test purchases through the widget, and the list is below. Some service providers validate wallet addresses to make sure they match the cryptocurrency being purchased while others do not.
+
+Generally, KYC is fairly lax in service provider sandboxes, and you should be able to complete it without submitting sensitive information, such as your real SSN or passport photo.
+
+On this page you will find testing information for [Unlimit](https://docs.meld.io/docs/crypto-testing-guide#unlimit), [Banxa](https://docs.meld.io/docs/crypto-testing-guide#banxa), [BTC Direct](https://docs.meld.io/docs/crypto-testing-guide#btc-direct), [Simplex](https://docs.meld.io/docs/crypto-testing-guide#simplex), [TransFi](https://docs.meld.io/docs/crypto-testing-guide#transfi), [Transak](https://docs.meld.io/docs/crypto-testing-guide#transak), [Sardine](https://docs.meld.io/docs/crypto-testing-guide#sardine), [Onramp Money](https://docs.meld.io/docs/crypto-testing-guide#onramp-money), [Fonbnk](https://docs.meld.io/docs/crypto-testing-guide#fonbnk), [Paybis](https://docs.meld.io/docs/crypto-testing-guide#paybis), [Koywe](https://docs.meld.io/v2022-11-10/docs/crypto-testing-guide#koywe), [Robinhood](https://docs.meld.io/v2022-11-10/docs/crypto-testing-guide#robinhood), [Coinbase Pay](https://docs.meld.io/v2022-11-10/docs/crypto-testing-guide#coinbase-pay), [Blockchain.com](https://docs.meld.io/v2022-11-10/docs/crypto-testing-guide#blockchaincom), [Stripe](https://docs.meld.io/v2022-11-10/docs/crypto-testing-guide#stripe), [Alchemy Pay](https://docs.meld.io/docs/crypto-testing-guide#alchemy-pay), and [Mercuryo](https://docs.meld.io/v2023-12-19/docs/crypto-testing-guide#mercuryo).
+
+## Unlimit
+
+Use the following test cards when testing in [Unlimit's](https://docs.gatefi.com/docs/gatefi-docs/iwo4e6yo25au3-sandbox-environment) sandbox.
+
+| Card Type  | Card Number         | Expiration | CVV |
+| :--------- | :------------------ | :--------- | --- |
+| Visa       | 4000 0000 0000 0085 | 10/30      | 123 |
+| Mastercard | 5100 0000 0000 0065 | 10/30      | 123 |
+
+Use a real wallet address when testing, for example when trying to buy `ETH_GOERLI` (ETH on TestNet) use a real `ETH` wallet address.
+
+## Banxa
+
+**While Banxa's sandbox does sometimes allow users to complete transactions, often KYC or transactions are rejected. Therefore Meld recommends testing in Banxa's production rather than its sandbox.** In Banxa's sandbox, the OTP is **7203**.
+
+Use the following test cards when testing in [Banxa's](https://docs.banxa.com/docs/testing-information) sandbox.
+
+| Card Type | Info | Card Number         | Expiration | CVV |
+| :-------- | :--- | :------------------ | :--------- | --- |
+| Visa      | US   | 4111 1111 1111 1111 | 01/30      | 555 |
+
+Banxa allows real wallet addresses while testing in their sandbox.
+
+## BTC Direct
+
+Use the following test cards when testing in [BTC Direct's](https://docs.adyen.com/development-resources/testing/test-card-numbers/#visa) sandbox.
+
+| Card Type  | Card Number         | Expiration | CVV |
+| :--------- | :------------------ | :--------- | --- |
+| Visa       | 4111 1111 4555 1142 | 03/30      | 737 |
+| Mastercard | 2222 4000 7000 0005 | 03/30      | 737 |
+
+BTC Direct allows real wallet addresses while testing in their sandbox.
+
+## Simplex
+
+Use the following test cards when testing in [Simplex's](https://integrations.simplex.com/docs/testing-information) sandbox.
+
+| Card Type | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| Visa      | 4711 1000 0000 0000 | 10/30      | 123 |
+
+Simplex allows real wallet addresses while testing in their sandbox.
+
+## TransFi
+
+Use the following test cards when testing in [TransFi's](https://docs.transfi.com/guides/testing-widget) sandbox.
+
+| Card Name | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| FL-BRW1   | 4000 0278 9138 0961 | 11/30      | 123 |
+
+Test in TransFi's sandbox using `BTC` and the wallet address `2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm`.
+
+## Transak
+
+Use the following test cards when testing in [Transak's](https://docs.transak.com/docs/test-credentials) sandbox.
+
+| Card Type | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| Visa      | 4111 1111 1111 1111 | 10/33      | 123 |
+| Visa      | 4485 1415 2054 4212 | 10/33      | 100 |
+
+For US: Use SSN number `000000001` to create a test account.\
+For India: Use PAN number `ABCDE1234A` to place an INR order.
+
+Transak requires a wallet address that matches the token passed in, for example if you are testing with `BTC_TESTNET` then use wallet address `2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm`.
+
+## Sardine
+
+Use the following test information when testing in [Sardine's](https://docs.sardine.ai/docs/integrate-payments/on-ramp-testing-payment-flows) sandbox.
+
+To create a test account, input any phone number starting with 99 as a test user. The OTP for the test account will be last 6 digits of the test phone number.
+
+For example, if the phone number is `991-234-5678`, then the OTP will be `345678`. However don't use this specific number.
+
+If you run into an error, try using a different phone number that starts with 99.
+
+| Card Type | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| Visa      | 4659 1055 6905 1157 | 10/30      | 123 |
+
+Simplex allows real wallet addresses while testing in their sandbox.
+
+## Onramp Money
+
+In Onramp.Money's Sandbox, to get past the phone number screen, you can use the phone number `+91 8660031402` and the passcode `112233`. Use any real wallet address when testing, and Meld recommends testing with the token ETH.
+
+## Mesh
+
+Mesh's sandbox environment supports configuring and previewing transfers, but does not actually execute them. You will need a real wallet address in order to configure a transfer. Mesh's sandbox widget provides the username and password when selecting an institution to execute the transfer through.
+
+## Fonbnk
+
+Fonbnk requires a real wallet address for whatever token is selected in their sandbox. Also, there is no test card available, since the payment methods Fonbnk supports are Bank Transfer and Airtime. Use Bank Transfer for testing purposes.
+
+## Paybis
+
+Use the following test cards when testing in Paybis' sandbox.
+
+| Card Type | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| Visa      | 4111 1111 1111 1111 | 10/30      | 123 |
+
+Paybis requires a wallet address that matches the token passed in, for example if you are testing with `BTC_TESTNET` then use wallet address `2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm`.
+
+## Koywe
+
+When testing in Koywe's sandbox, a single user will only be able to make transactions in 1 particular country. Koywe also requires real ID for it's sandbox, but it doesn't have to match the country of the transaction (for example a US ID will work even when making a Chile transaction). We recommend testing with Chile and the payment method Khipu in order for transactions to be completed successfully. Use the following values to complete a transaction.
+
+| Amount                                         | Payment Method | RUT          | Khipu Password | Khipu Secondary Codes | Bank Account |
+| :--------------------------------------------- | :------------- | :----------- | -------------- | :-------------------- | :----------- |
+| 20000 CLP (Khipu won't work if its over 25000) | Khipu          | 28.666.939-5 | 1234           | 11, 22, 33            | Any          |
+
+## Robinhood
+
+Robinhood does not have a sandbox, only a production environment. Therefore you will have to make a real payment to fully test Robinhood's onramp.
+
+## Coinbase Pay
+
+Coinbase Pay does not have a sandbox, only a production environment. Therefore you will have to make a real payment to fully test Coinbase Pay's onramp.
+
+## Blockchain.com
+
+Blockchain.com does not have a sandbox, only a production environment. Therefore you will have to make a real payment to fully test Blockchain.com's onramp.
+
+## Stripe
+
+Use the following test values when testing in [Stripe's](https://docs.stripe.com/crypto/integrate-the-onramp#test-mode-values) sandbox.
+
+| OTP    | SSN       | Address Line 1       | Card Number         | Expiration | CVV |
+| :----- | :-------- | :------------------- | ------------------- | :--------- | :-- |
+| 000000 | 000000000 | address\_full\_match | 4242 4242 4242 4242 | 10/30      | 123 |
+
+If you are bringing over your own Stripe account: 
+
+1. please reach out to Stripe to enable `preferred_payment_method` and `source_total_amount` for your account, or else you will see errors.
+2. When setting up Stripe webhooks, do the following steps in order:
+   1. Grab your Stripe API keys from the Stripe dashboard and put them in the Meld dashboard, putting in any value for the Webhook Secret.
+   2. Take the Meld webhook url from the Meld dashboard and go to the Stripe dashboard and set up webhooks to Meld. Select all events.
+   3. Take the generated Stripe webhook secret and go back to the Meld dashboard and edit that value to add that in so that webhooks work properly.
+
+## Alchemy Pay
+
+Alchemy Pay's sandbox functions like a real production environment. Therefore you will have to make a real payment to fully test Alchemy Pay's onramp.
+
+## Topper
+
+Use the following test information when testing [Topper](https://docs.topperpay.com/environments/) in sandbox. You can use rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg for the token XRP\_XRPLEDGER and if prompted for a wallet tag use 224333255 
+
+| Card Type | Card Number      | Expiration      | CVV         |
+| :-------- | :--------------- | :-------------- | ----------- |
+| Visa      | 4921817844445119 | Any future date | Any 3 digit |
+
+<br />
+
+
+## Meso
+
+Use the following test values when testing in [Meso\`s](https://developers.meso.network/environments#testing-values) sandbox.
+
+| Card Type | Card Number      | Expiration | CVV |
+| :-------- | :--------------- | :--------- | --- |
+| Visa      | 5305484748800098 | 12/2025    | 435 |
+
+Use 000000 for One time Passcode (SMS), Taxpayer ID (last 4 digits of SSN) and 0000 will require the user enter a fully valid SSN (you can use 123345432) Any other 4-digit combination will pass.
+
+## Mercuryo
+
+Use the following test values when testing in Mercuryo's sandbox.
+
+| Card Type | Cardholder Name | Card Number         | Expiration      | CVV                               |
+| :-------- | :-------------- | :------------------ | :-------------- | --------------------------------- |
+| Visa      | Cardholder Name | 4444 4444 4444 3333 | any future date | 123                               |
+| Visa      | Cardholder Name | 5555 4444 3333 1111 | any future date | CVV 123 for success, 555 for fail |
+
+Your IP address must be whitelisted by Mercuryo in order to launch their sandbox widget.

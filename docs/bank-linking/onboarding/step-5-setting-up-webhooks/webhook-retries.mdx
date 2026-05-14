@@ -1,0 +1,13 @@
+---
+title: "Webhooks Retries"
+---
+
+If we do not receive a 200 response or it takes longer than 10 seconds to get a response when sending a webhook event, we will attempt to send it again. The first attempt will happen about one minute later. The period between attempts will double each time until we get to an hour between attempts. Then attempts will continue every hour for up to three days.
+
+A retried event will include two headers:
+
+* `Meld-Retry-Count` - The retry attempt count for this event.
+* `Meld-Retry-Reason` - The reason the last attempt failed and needed to be retried. Some possible reasons are:
+  * `Timeout` - It took longer than 10 seconds to get a response when sending the event.
+  * `HTTP error: XXX` - XXX is any response code we received other than 200.
+  * `Could not connect` - Any other problem. Could be because the URL is malformed or unreachable.

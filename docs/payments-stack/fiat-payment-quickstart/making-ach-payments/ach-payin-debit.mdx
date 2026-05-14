@@ -1,0 +1,192 @@
+---
+title: "ACH Payin (Debit)"
+---
+
+ACH Payins are any transaction where money flows from the buyer to the merchant. 
+
+Make sure you have a [Meld customerId](https://docs.meld.io/docs/creating-a-payments-customer) for the buyer ready before continuing. Sample API calls for all the steps for making a payin are found on this page.
+
+# Make an ACH Debit (aka Payin) transaction
+
+1. Call Meld's [/transactions endpoint](https://docs.meld.io/reference/payments-transactions-create) in order to make an ACH Payin. Make sure to pass in the customerId of the buyer you created in the [Creating a Customer](https://docs.meld.io/docs/creating-a-payments-customer) stage. This is where you will pass in the ACH details including the account type, account number and routing number. 
+2. Once the transaction has been submitted, listen for the [TRANSACTION\_FIAT\_CREATED webhook](https://docs.meld.io/docs/webhook-events-fiat-payment#transaction_fiat_created) to know that a transaction has been initiated. You can use this webhook as a trigger to call Meld's [get transaction endpoint](https://docs.meld.io/reference/payments-transactions-get) to fetch the latest transaction details.
+3. Depending on the underlying service provider, you may receive a [TRANSACTION\_FIAT\_UPDATED webhook](https://docs.meld.io/docs/webhook-events-fiat-payment#transaction_fiat_updated) letting you know if the transaction has succeeded, or failed, or if something else has occurred. Use this webhook as a trigger to fetch the latest transaction details. For certain providers who do not support webhooks, you will not receive updates after the transaction is submitted, however, if the transaction fails upon submission you will see that through response object immediately. 
+
+
+<Note>
+Webhook Support
+
+To know which providers support webhooks and which don't, see our provider [testing guide](https://docs.meld.io/docs/ach-testing).
+</Note>
+
+
+# API Calls
+
+## Make a Payin
+
+Here is a sample call to [/transactions](https://docs.meld.io/reference/payments-transactions-create) to make an ACH Payin transaction:
+
+Note that the call is different for testing in Moov's sandbox, see [here](https://docs.meld.io/docs/ach-testing-guide#moov) for more information.
+
+```json
+{
+    "customerId": "WXDeHGgNJ1t1nFnoVY43Bh",
+    "sourceAmount": "10.00",
+    "sourceCurrencyCode": "USD",
+    "paymentMethod" : {
+        "type" : "ACH",
+        "details": {
+            "accountType" : "CHECKING", // should be CHECKING, SAVINGS, or BUSINESS_CHECKING
+            "routingNumber": "123456789",
+            "accountNumber": "12341234"
+        }
+    },
+    "serviceProvider": "MOOV"
+}
+```
+
+Here is a sample response:
+
+```json
+{
+    "transaction": {
+        "id": "WXDpaGwDM9pW8zyFG4A7LM",
+        "parentPaymentTransactionId": null,
+        "accountId": "W2bJdfJRoJQHjsNnUeUNRA",
+        "isPassthrough": false,
+        "passthroughReference": null,
+        "isImported": false,
+        "customer": {
+            "id": "WXDeHGgNJ1t1nFnoVY43Bh",
+            "accountId": "W2bJdfJRoJQHjsNnUeUNRA",
+            "externalId": "testcustomer1",
+            "name": {
+                "firstName": "John",
+                "lastName": "Smith"
+            },
+            "email": "testcustomer1@example.com",
+            "addresses": [
+                {
+                    "type": "BILLING",
+                    "addressDetails": {
+                        "lineOne": "123 Fake St",
+                        "lineTwo": null,
+                        "city": "Boston",
+                        "region": "MA",
+                        "country": "US",
+                        "postalCode": "02112",
+                        "firstName": "John",
+                        "lastName": "Smith"
+                    }
+                }
+            ]
+        },
+        "transactionType": "CHARGE",
+        "status": "PENDING",
+        "sourceAmount": 10.00,
+        "sourceCurrencyCode": "USD",
+        "destinationAmount": null,
+        "destinationCurrencyCode": null,
+        "paymentMethodType": "ACH",
+        "serviceProvider": "MOOV",
+        "serviceTransactionId": "91f290b1-3f82-4353-a319-996ace69ca6c",
+        "description": null,
+        "externalReferenceId": null,
+        "serviceProviderDetails": {
+            "input": null,
+            "response": null
+        },
+        "multiFactorAuthorizationStatus": null,
+        "createdAt": "2024-06-11T21:48:28.738274Z",
+        "updatedAt": "2024-06-11T21:48:31.952499Z",
+        "countryCode": "US",
+        "sessionId": null,
+        "externalSessionId": null,
+        "paymentDetails": {
+            "authAmount": null,
+            "captureAmount": null
+        },
+        "cryptoDetails": null,
+        "externalCustomerId": "testcustomer1",
+        "fiatAmountInUsd": null,
+        "sessionClientTags": null,
+        "serviceProviderTransactionUrl": null
+    }
+}
+```
+
+## Fetching Transaction Details
+
+When you call [/transactions/:transactionId](https://docs.meld.io/v0.0/reference/payments-transactions-get) to fetch the details of the transaction you made, here is a sample response:
+
+```json
+{
+    "transaction": {
+        "id": "WXDpaGwDM9pW8zyFG4A7LM",
+        "parentPaymentTransactionId": null,
+        "accountId": "W2bJdfJRoJQHjsNnUeUNRA",
+        "isPassthrough": false,
+        "passthroughReference": null,
+        "isImported": false,
+        "customer": {
+            "id": "WXDeHGgNJ1t1nFnoVY43Bh",
+            "accountId": "W2bJdfJRoJQHjsNnUeUNRA",
+            "externalId": "testcustomer1",
+            "name": {
+                "firstName": "John",
+                "lastName": "Smith"
+            },
+            "email": "testcustomer1@example.com",
+            "addresses": [
+                {
+                    "type": "BILLING",
+                    "addressDetails": {
+                        "lineOne": "123 Fake St",
+                        "lineTwo": null,
+                        "city": "Boston",
+                        "region": "MA",
+                        "country": "US",
+                        "postalCode": "02112",
+                        "firstName": "John",
+                        "lastName": "Smith"
+                    }
+                }
+            ]
+        },
+        "transactionType": "CHARGE",
+        "status": "SETTLED",
+        "sourceAmount": 10.00,
+        "sourceCurrencyCode": "USD",
+        "destinationAmount": null,
+        "destinationCurrencyCode": null,
+        "paymentMethodType": "ACH",
+        "serviceProvider": "MOOV",
+        "serviceTransactionId": "91f290b1-3f82-4353-a319-996ace69ca6c",
+        "description": null,
+        "externalReferenceId": null,
+        "serviceProviderDetails": {
+            "input": null,
+            "response": null
+        },
+        "multiFactorAuthorizationStatus": null,
+        "createdAt": "2024-06-11T20:47:43.157537Z",
+        "updatedAt": "2024-06-11T21:18:34.359515Z",
+        "countryCode": "US",
+        "sessionId": null,
+        "externalSessionId": null,
+        "paymentDetails": {
+            "authAmount": null,
+            "captureAmount": null
+        },
+        "cryptoDetails": null,
+        "externalCustomerId": "testcustomer1",
+        "fiatAmountInUsd": 10.00,
+        "sessionClientTags": null,
+        "serviceProviderTransactionUrl": null
+    }
+}
+```
+
+<br />
+
+<br />

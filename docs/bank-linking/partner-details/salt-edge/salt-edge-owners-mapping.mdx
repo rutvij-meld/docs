@@ -1,0 +1,23 @@
+---
+title: "Salt Edge Owners Mapping"
+---
+
+This data comes from SaltEdge's [/api/v5/holder_info](https://docs.saltedge.com/account_information/v5/#holder_info-show) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+| Meld Field       | Description                                           | SaltEdge Response Field                            |
+| :--------------- | :---------------------------------------------------- | :------------------------------------------------- |
+| addresses        | The address(es) associated with this owner            | addresses                                          |
+|    data          | The address data object                               |                                                    |
+|       street     | The street and residence number                       | street                                             |
+|       city       | The city                                              | city                                               |
+|       region     | The region/state                                      | state                                              |
+|       postalCode | The postal or zip code                                | post_code                                          |
+|       country    | The ISO 3166-1 alpha-2 country code                   | country_code                                       |
+|    primary       | Indicates if this is the owner's primary residence    | Does not provide.<br />Meld will default to `UNKNOWN` |
+| emails           | The email(s) associated with this owner               | emails                                             |
+|    data          | The email address                                     |                                                    |
+|    primary       | Indicates if this is the owner's primary email        | Does not provide.<br />Meld will default to `UNKNOWN` |
+| names            | The name(s) of this owner                             | names                                              |
+| phoneNumbers     | The phone number(s) associated with this owner        | phone_numbers                                      |
+|    data          | The phone number                                      |                                                    |
+|    primary       | Indicates if this is the owner's primary phone number | Does not provide.<br />Meld will default to `UNKNOWN` |

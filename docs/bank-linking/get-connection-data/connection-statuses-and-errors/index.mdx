@@ -1,0 +1,45 @@
+---
+title: "Connection Statuses and Errors"
+---
+
+# Connection Statuses
+
+A connection is started immediately upon initialization in the [Create a Connection](https://docs.meld.io/reference/bank-linking-connect-create) endpoint and can transition through multiple statuses in its lifespan. These statuses give crucial information about the connection and its refreshability/reconnectability. Connection status changes to error states typically occur during daily aggregations.
+
+***Note*: Connection statuses are only for the connection, not its financial accounts. Financial account statuses are entirely independent and will only ever be active/inactive.**
+
+***Note*: All connection status changes occur after the widget flow is completed/abandoned (except for when it is first created and set to `IN_PROGRESS`). Therefore any errors within the service provider widget flow that are displayed for the customer will not lead to connection status changes and are usually resolvable by the customer immediately (i.e. "wrong password, try again"). For information about these widget errors, this information is recorded in the [activity log](https://docs.meld.io/docs/debugging-activity-log).**
+
+Below are the various connection statuses and what they mean:
+
+* `IN_PROGRESS` - A connection is in progress when it is first initialized and the customer is in the widget flow. It will remain in this status until it completes and becomes `ACTIVE` or is never finished and becomes `EXPIRED`.\
+  ***Note*: Connections that are being actively repaired do not go back to `IN_PROGRESS`. They will stay in their previous status until completed.**\
+  ***Note*: A connection with this status cannot be refreshed nor repaired as it is currently in progress with the customer.**
+* `EXPIRED` - A connection becomes expired if it was never completed in the allowed timeframe (4 hours) since its initialization. This usually indicates the customer abandoned the widget flow or encountered issues within the service provider widget and never finished it.\
+  ***Note*: A connection with this status is terminal and cannot be refreshed nor repaired.**
+* `ACTIVE` - A connection becomes active once the user successfully completes the widget flow and access to the underlying financial accounts is authorized. The [BANK\_LINKING\_CONNECTION\_COMPLETED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_completed) webhook will indicate once a connection becomes `ACTIVE`. A connection will remain active indefinitely unless an error occurs during a forced or background refresh, or it is deleted. Following the initial connection, an `ACTIVE` status does not necessarily imply that the initial aggregation of desired products has completed, but rather that the connection to the underlying institution is complete and aggregation is in progress. The [BANK\_LINKING\_ACCOUNTS\_UPDATED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_accounts_updated) webhook will notify of aggregation completion.\
+  ***Note*: A connection with this status is refreshable, but not repairable (unless the `statusReason` is `ACCESS_EXPIRING_SOON` or `NEW_ACCOUNTS_AVAILABLE`.**
+* `PARTIALLY_ACTIVE` - This status represents connections that may have partially aggregated, but not fully. This can occur if only some accounts belonging to the connection successfully aggregated, but not all. This status is also used for duplicate connections that have the same underlying service provider id, and only the active duplicate is routinely updated. In such case, the status reason will be `INACTIVE_DUPLICATE`.\
+  ***Note*: A connection with this status is refreshable and repairable.**
+* `DEGRADED` - The connection is experiencing temporary issues that are preventing aggregation, but it is still "connected". This can occur due to temporary institution issues, or the customer may need to take action with their institution directly (such as authorizing access). In the latter case, it is recommended to forward along this message to the customer, and the specific reasons/actions for this status can be found in the service provider details of the [BANK\_LINKING\_CONNECTION\_STATUS\_CHANGE](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_status_change) webhook.\
+  ***Note*: A connection with this status is refreshable and repairable.**
+* `RECONNECT_REQUIRED` - Indicates that a once `ACTIVE` connection is now failing and needs to be repaired in order to capture the most up to date data. When a connection enters this status, you will be notified via webhooks of the status change. Depending on the cause for error, the connection should be repaired via the [repair flow](https://docs.meld.io/reference/bank-linking-connect-repair).  A common situation that might cause this is if a customer changes their bank password after connecting their accounts, or the underlying service provider consent to the accounts expired. Repairing the connection will make it `ACTIVE` again.\
+  ***Note*: A connection with this status cannot be refreshed and will not update until it is repaired.**
+* `UNRECOVERABLE` - The connection is permanently broken and can no longer be aggregated. We still allow repairing the connection in the rare chance that it can be recovered.\
+  ***Note*: A connection with this status is repairable but not refreshable.**
+* `DELETED`  - A connection that is marked deleted is in a final state. This indicates that it will no longer be updated nor actively billed. A customer revoking consent to an existing connection with their bank will cause a connection to be deleted. Deleting a connection can also be triggered from the client-side, i.e. via the [delete a connection](https://docs.meld.io/reference/bank-linking-connections-delete) endpoint. Deleting a customer will also delete all of its connections. A [BANK\_LINKING\_CONNECTION\_DELETED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_deleted) webhook will be sent when a connection has been deleted. A deleted connection cannot be recovered; a new connection must be started.\
+  ***Note*: A connection with this status is terminal and cannot be refreshed nor repaired.**
+* `UNDETERMINED` - Indicates an unforeseen service provider error, or an internal Meld error. Refreshes and reconnects are allowed as the error's true cause is not yet known.\
+  ***Note*: A connection with this status can be both refreshed and repaired as its true status is not yet known.**
+
+To understand why a connection may be in each of these statuses and learn if the connection can be refreshed or reconnected, see [here](https://docs.meld.io/docs/connection-errors-and-reasons).
+
+## Widget Flow Errors
+
+
+<Note>
+We recommend capturing the following events to close the widget iframe when an error occurs or your customer does not complete the authentication step.
+
+* `[meld-connect]error` -- Emitted when the widget encounters an error
+* `[meld-connect]cancel` -- Emitted when your customer cancels the widget
+</Note>

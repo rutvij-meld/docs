@@ -1,0 +1,243 @@
+---
+title: "Plaid Owners Mapping"
+---
+
+This data comes From Plaid's [/identity/get](https://plaid.com/docs/api/products/identity/#identity-get-response-accounts-owners-addresses-data-street) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+        Meld Field
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        Description
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        Plaid Response Field
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        addresses
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The address(es) associated with this owner
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+           data
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The address data object
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+              street
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The street and residence number
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.addresses\
+        .data.street
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+              city
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The city
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.addresses\
+        .data.city
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+              region
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The region/state 
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.addresses\
+        .data.region
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+              postalCode
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The postal or zip code
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.addresses\
+        .data.postal\_code
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+              country
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The ISO 3166-1 alpha-2 country code
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.addresses\
+        .data.country
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+           primary
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        Indicates if this is the owner's primary residence
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.addresses\
+        .primary
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        emails
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The email(s) associated with this owner
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+           data
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The email address
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.emails.data
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+           primary
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        Indicates if this is the owner's primary email
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.emails.primary
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        names
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The name(s) of this owner
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners.names
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        phoneNumbers
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The phone number(s) associated with this owner
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+           data
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        The phone number
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners\
+        .phone\_numbers.data
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+           primary
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        Indicates if this is the owner's primary phone number
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        accounts.owners\
+        .phone\_numbers.primary
+      </td>
+    </tr>
+  </tbody>
+</Table>

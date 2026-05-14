@@ -1,0 +1,306 @@
+---
+title: "Customization"
+description: "This discusses the customization options available to you for the Meld Checkout flow"
+---
+
+# Meld Checkout Customization & Advanced Configuration
+
+Customize your Meld Checkout Integration appearance, behavior, and user experience through dashboard settings and advanced configuration options.
+
+## Meld Support Required
+
+Contact Meld for these advanced customizations:
+
+### Account Logo
+
+Update your account logo in the top-left corner of the UI.
+
+**Process:** Send your logo file (PNG/SVG preferred) to Meld support with specifications:
+
+* **Size:** 200x60px recommended
+* **Format:** PNG with transparent background or SVG
+* **Colors:** Optimized for both light and dark themes
+
+### Flow Management
+
+Control which transaction types are available:
+
+* **Disable Buy Flow** - Show only sell/offramp functionality
+* **Disable Sell Flow** - Show only buy/onramp functionality
+* **Custom Flow Logic** - Advanced routing based on user profile
+
+### Token Restrictions
+
+Limit available cryptocurrencies:
+
+* **Chain-specific tokens** - Only show tokens from specific blockchains
+* **Curated token list** - Custom selection of supported cryptocurrencies
+* **Partner tokens** - Highlight specific tokens for partnerships
+
+### Quote Management
+
+Customize provider quote display:
+
+* **Provider prioritization** - Promote specific providers to top of list
+* **Quote limits** - Control number of quotes shown to users
+* **Custom provider branding** - Special provider highlighting
+
+### Default Settings
+
+Set account-wide defaults:
+
+* **Default redirect URL** - Fallback URL for transaction completion
+* **Theme defaults** - Account-wide light/dark mode preference
+
+## Dashboard Customization
+
+Access these options in the **Meld Dashboard → Developer Tab → Preferences**:
+
+### Visual Branding
+
+#### Button Color
+
+Customize the primary **Buy** or **Sell** CTA button color at the bottom of the UI.
+
+```css
+/* Example color values */
+Button Color: #3498db    /* Blue */
+Button Color: #e74c3c    /* Red */  
+Button Color: #2ecc71    /* Green */
+Button Color: #9b59b6    /* Purple */
+```
+
+#### Button Text Color
+
+Set the text color inside the CTA button for optimal contrast.
+
+```css
+/* Common combinations */
+Button Color: #3498db, Text Color: #ffffff    /* Blue background, white text */
+Button Color: #ffffff, Text Color: #333333    /* White background, dark text */
+Button Color: #2c3e50, Text Color: #ecf0f1    /* Dark background, light text */
+```
+
+![](https://files.readme.io/ba42d402322fcd88e1fd9fa5c3f3c3070dc7cc8c24e68d67b03a877e0e3762b3-image.png)
+
+**Reset Option:** Use the **Reset** button to restore default values at any time.
+
+## Theme Configuration
+
+### Light/Dark Mode Implementation
+
+Control the UI appearance with the theme parameter:
+
+```javascript
+// Light theme (default)
+const lightThemeUrl = `https://meldcrypto.com/?publicKey=${publicKey}&theme=lightMode`;
+
+// Dark theme
+const darkThemeUrl = `https://meldcrypto.com/?publicKey=${publicKey}&theme=darkMode`;
+
+// Dynamic theme based on user preference
+const userTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'darkMode' : 'lightMode';
+const dynamicUrl = `https://meldcrypto.com/?publicKey=${publicKey}&theme=${userTheme}`;
+```
+
+### Theme Locking
+
+Prevent users from changing the theme:
+
+```javascript
+const lockedThemeUrl = `https://meldcrypto.com/?publicKey=${publicKey}&theme=darkMode&themeLocked=true`;
+```
+
+## Mobile Optimization
+
+### Deep Link Configuration
+
+Seamlessly return users to your mobile app after transactions:
+
+```javascript
+// iOS Deep Link
+const iosUrl = `https://meldcrypto.com/?publicKey=${publicKey}&redirectUrl=myapp://crypto-success`;
+
+// Android Deep Link  
+const androidUrl = `https://meldcrypto.com/?publicKey=${publicKey}&redirectUrl=myapp://crypto-success`;
+
+// Universal Link
+const universalUrl = `https://meldcrypto.com/?publicKey=${publicKey}&redirectUrl=https://myapp.com/crypto-success`;
+```
+
+### Responsive Implementation
+
+Optimize the UI display for different screen sizes:
+
+```javascript
+// Mobile-first approach
+function getMobileOptimizedUrl() {
+  const isMobile = window.innerWidth <= 768;
+  const baseUrl = `https://meldcrypto.com/?publicKey=${publicKey}`;
+  
+  if (isMobile) {
+    // Full screen redirect for mobile
+    return `${baseUrl}&redirectUrl=myapp://success`;
+  } else {
+    // Iframe embedding for desktop
+    return baseUrl;
+  }
+}
+```
+
+### Mobile iframe Considerations
+
+```html
+<!-- Mobile-responsive iframe -->
+<iframe 
+  src="https://meldcrypto.com/?publicKey=YOUR_KEY"
+  style="width: 100%; max-width: 450px; height: 790px; border: none;"
+  allow="camera; microphone; payment; encrypted-media">
+</iframe>
+```
+
+## Analytics & Tracking
+
+### Customer Identification Strategy
+
+Track users across sessions for analytics:
+
+```javascript
+// Use external customer ID for consistent tracking
+const analyticsUrl = `https://meldcrypto.com/?publicKey=${publicKey}` +
+  `&externalCustomerId=${userId}` +
+  `&externalSessionId=${sessionId}`;
+
+// Example: E-commerce integration
+function trackCryptoTransaction(userId, orderId) {
+  const trackingUrl = `https://meldcrypto.com/?publicKey=${publicKey}` +
+    `&externalCustomerId=${userId}` +
+    `&externalSessionId=order_${orderId}` +
+    `&redirectUrl=https://shop.com/order-complete?id=${orderId}`;
+  
+  window.location.href = trackingUrl;
+}
+```
+
+### Conversion Optimization
+
+Pre-fill known information to improve conversion rates:
+
+```javascript
+// Optimize for returning customers
+function getOptimizedCheckoutUrl(userProfile) {
+  let url = `https://meldcrypto.com/?publicKey=${publicKey}`;
+  
+  // Only override country if specifically needed (auto-detection usually works)
+  if (userProfile.Country) {
+    url += `&countryCode=${userProfile.Country}`;
+  }
+  
+  if (userProfile.preferredCrypto) {
+    url += `&destinationCurrencyCode=${userProfile.preferredCrypto}`;
+  }
+  
+  if (userProfile.wallet) {
+    url += `&walletAddress=${userProfile.wallet}&walletAddressLocked=true`;
+  }
+  
+  return url;
+}
+```
+
+## Advanced Use Cases
+
+### Marketplace Integration
+
+Configure the Meld Checkout for NFT marketplace or token sales:
+
+```javascript
+// Token sale configuration
+function createTokenSaleCheckout(tokenInfo) {
+  return `https://meldcrypto.com/?publicKey=${publicKey}` +
+    `&destinationCurrencyCode=${tokenInfo.currency}` +
+    `&destinationCurrencyCodeLocked=true` +
+    `&sourceAmount=${tokenInfo.price}` +
+    `&sourceAmountLocked=true` +
+    `&theme=darkMode` +
+    `&redirectUrl=https://marketplace.com/purchase-complete`;
+}
+
+// Usage
+const nftSaleUrl = createTokenSaleCheckout({
+  currency: 'ETH',
+  price: 150
+});
+```
+
+### Multi-Currency Support
+
+Offer multiple cryptocurrency options:
+
+```javascript
+// Dynamic currency selection
+function createCurrencyCheckout(selectedCrypto) {
+  const cryptoOptions = {
+    'bitcoin': 'BTC',
+    'ethereum': 'ETH', 
+    'usdc': 'USDC',
+    'solana': 'SOL'
+  };
+  
+  return `https://meldcrypto.com/?publicKey=${publicKey}` +
+    `&destinationCurrencyCode=${cryptoOptions[selectedCrypto]}` +
+    `&theme=lightMode`;
+}
+```
+
+### Geographic Customization
+
+Optimize currency and amounts for specific regions:
+
+> **Note:** Country is automatically detected in the Meld Checkout Integration. Use countryCode parameter only when you need to override the detection for special cases.
+
+```javascript
+// Region-specific currency and amount configuration
+function getRegionalCheckout(overrideCountry = null) {
+  const regionalConfig = {
+    'US': { currency: 'USD', amount: 100 },
+    'GB': { currency: 'GBP', amount: 75 },
+    'EU': { currency: 'EUR', amount: 85 },
+    'CA': { currency: 'CAD', amount: 130 }
+  };
+  
+  const config = regionalConfig[overrideCountry] || regionalConfig['US'];
+  let url = `https://meldcrypto.com/?publicKey=${publicKey}` +
+    `&sourceCurrencyCode=${config.currency}` +
+    `&sourceAmount=${config.amount}`;
+    
+  // Only add countryCode if overriding auto-detection
+  if (overrideCountry) {
+    url += `&countryCode=${overrideCountry}`;
+  }
+  
+  return url;
+}
+```
+
+## Contact Meld
+
+For advanced customizations requiring Meld support:
+
+**Email/Slack/Telegram:** Contact your integration specialist or support team  
+**Documentation:** Reference this guide when making requests
+
+### Request Template:
+
+```
+Subject: Meld Checkout Customization Request - [Your Account Name]
+
+Customization Type: [Logo Update/Flow Management/Token Restrictions/etc.]
+Current Setup: [Description of current checkout configuration]
+Desired Changes: [Specific requirements and use case]
+Timeline: [When you need changes implemented]
+```
+
+***
+
+**Implementation Complete!** Your Meld Checkout Integration is now optimized for your specific use case and user experience requirements.

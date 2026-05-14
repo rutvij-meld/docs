@@ -1,0 +1,24 @@
+---
+title: "Salt Edge Identifiers Mapping"
+---
+
+This data comes from SaltEdge's [/api/v5/accounts](https://docs.saltedge.com/account_information/v5/#accounts-extra) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+| Meld Field           | Description                                                                                          | SaltEdge Response Field |
+| :------------------- | :--------------------------------------------------------------------------------------------------- | :---------------------- |
+| ach                  | ACH data object                                                                                      |                         |
+|    accountNumber     | The account number                                                                                   | _None_                  |
+|    routingNumber     | The account routing number. Reference [Routing number](https://en.wikipedia.org/wiki/Routing_number) | _None_                  |
+| eft                  | EFT data object                                                                                      |                         |
+|    accountNumber     | The account number                                                                                   | _None_                  |
+|    institutionNumber | The account institution number                                                                       | _None_                  |
+|    branchNumber      | The institution branch number                                                                        | _None_                  |
+| international        | International data object                                                                            |                         |
+|    iban              | The International Bank Account Number (IBAN) for the financial account                               | extra.iban              |
+|    bic               | The Bank Identifier Code (BIC) for the financial account                                             | extra.swift             |
+| bacs                 | The BACS data object                                                                                 |                         |
+|    accountNumber     | BACS account number                                                                                  | extra.account_number    |
+|    sortCode          | BACS sort code                                                                                       | extra.sort_code         |
+
+<div></div>
+<style>{`.UpdatedAt { display: none; }`}</style>

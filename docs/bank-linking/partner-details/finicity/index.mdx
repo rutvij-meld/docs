@@ -1,0 +1,27 @@
+---
+title: "Finicity Partner Details"
+---
+
+This page will cover supported countries, config settings, and Finicity specific information.
+
+**Do not attempt to set up webhooks from Finicity to Meld, Meld will pass Finicity the correct webhook url when initiating the Finicity widget (in any environment).**
+
+## Supported Countries
+
+Meld supports Finicity institutions in the United States (US) and Canada (CA).
+
+## Configuration Settings
+
+If you have your own [Finicity](https://www.finicity.com/) account that you wish to integrate with Meld, you will need to provide the following credentials securely on the Meld Integrations Tab on the dashboard:
+
+* *App Key*
+* *Partner Id*
+* *Partner Secret*
+* *Experience Id*
+
+![](https://files.readme.io/b593fe1-image.png)
+
+## Special considerations
+
+* Finicity refreshes existing connections once a day with the institution. They do not notify when these updates occur, so Meld polls daily to check for updates
+* Finicity bills extra for aggregating historical transactions. Meld loads them by default on the initial connection. Contact Meld if you would instead like to configure Finicity connections to only load historical transactions once the first forced refresh is triggered for the connection.

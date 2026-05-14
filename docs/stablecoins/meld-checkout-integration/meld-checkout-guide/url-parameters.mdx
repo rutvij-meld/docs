@@ -1,0 +1,258 @@
+---
+title: "URL Parameters"
+description: "Review the URL params you can use to prefill the Meld Checkout UI"
+---
+
+# Meld Checkout URL Parameters Reference
+
+Complete technical reference for all Meld Checkout Integration URL parameters. Use these parameters to prefill information and customize the user experience.
+
+## Transaction Parameters
+
+### transactionType
+
+Default transaction type to display first. If not passed in, the Meld Checkout will default to the Buy flow.
+
+```
+&transactionType=BUY     # Default to buy flow (default)
+&transactionType=SELL    # Default to sell flow
+```
+
+### sourceAmount
+
+Amount of fiat currency to exchange.
+
+```
+&sourceAmount=50         # $50
+&sourceAmount=100        # $100 (default)
+&sourceAmount=1000       # $1000
+```
+
+### sourceCurrencyCode
+
+Fiat currency for the transaction. Defaults to country's primary currency if not provided.
+
+```
+&sourceCurrencyCode=USD  # US Dollars
+&sourceCurrencyCode=EUR  # Euros
+&sourceCurrencyCode=GBP  # British Pounds
+```
+
+### destinationCurrencyCode
+
+Cryptocurrency to purchase or sell.
+
+```
+&destinationCurrencyCode=BTC              # Bitcoin
+&destinationCurrencyCode=ETH              # Ethereum
+&destinationCurrencyCode=USDC_BASE        # USDC on Base
+&destinationCurrencyCode=SOL              # Solana
+```
+
+## Wallet Parameters
+
+### walletAddress
+
+User's wallet address for the destination cryptocurrency.
+
+```
+&walletAddress=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh          # Bitcoin
+&walletAddress=0x742c8f2e0ce07Dd3f7E78A31E5A97D45c50fF2c8          # Ethereum
+&walletAddress=So11111111111111111111111111111111111111112         # Solana
+```
+
+### walletTag
+
+Commonly known as wallet tag, destination tag, or memo, this field is only used for certain cryptocurrencies (EOS, STX, XLM, XMR, XRP, BNB, XEM, and HBAR) and must be passed in on top of the wallet address for these cryptocurrencies for the transaction to succeed.
+
+```
+&walletAddress=rDsbeomae4FXwgQjRq9bCVFeVbU8c65pNF&walletTag=123456789
+```
+
+## Location Parameters
+
+### countryCode
+
+ISO 2-letter country code to override auto-detected country.
+
+> **Note:** Country is automatically detected based on user location in the Meld Checkout Integration. Use this parameter only when you need to override the automatic detection.
+
+```
+&countryCode=US    # United States
+&countryCode=GB    # United Kingdom  
+&countryCode=CA    # Canada
+&countryCode=DE    # Germany
+&countryCode=AU    # Australia
+```
+
+## Payment Parameters
+
+### paymentMethodType
+
+How the user plans to pay for cryptocurrency.
+
+```
+&paymentMethodType=CREDIT_DEBIT_CARD    # Credit/Debit Card
+&paymentMethodType=BANK_TRANSFER        # Bank Transfer
+&paymentMethodType=APPLE_PAY            # Apple Pay
+&paymentMethodType=GOOGLE_PAY           # Google Pay
+```
+
+## User Identification
+
+### customerId
+
+Meld's internal customer ID. Do not use with externalCustomerId.
+
+```
+&customerId=cust_abc123def456
+```
+
+### externalCustomerId
+
+Your internal customer ID. Do not use with customerId.
+
+```
+&externalCustomerId=user_789
+&externalCustomerId=customer_12345
+```
+
+### externalSessionId
+
+Your internal session ID for tracking and analytics.
+
+```
+&externalSessionId=session_abc123
+&externalSessionId=checkout_456
+```
+
+## UI Parameters
+
+### theme
+
+Meld Checkout color theme.
+
+```
+&theme=lightMode     # Light theme (default)
+&theme=darkMode      # Dark theme
+```
+
+### redirectUrl
+
+URL to redirect users after transaction completion. Supports deep links for mobile apps.
+
+<br />
+
+> **Note:** Meld does not pass transaction completion data or status through redirect parameters. The redirectUrl is used only to navigate users back to your application. Use webhooks to track transaction status and completion.
+
+```
+&redirectUrl=https://yourapp.com/success              # Website
+&redirectUrl=myapp://transaction-complete             # Mobile deep link
+&redirectUrl=https://yourapp.com/crypto/complete      # Custom success page
+```
+
+## Field Locking
+
+Lock any parameter to prevent user editing by passing the parameter with the word "Locked" after it. Locking a field will make it so that the user cannot edit the values passed into those fields.
+
+> **Important:** Field locking only applies to the Meld Checkout interface. However, if you lock the sourceCurrencyCode/destinationCurrencyCode or walletAddress field in the Meld Checkout widget, then that field will also be locked in the partner's widget for the providers that support it. Read more about this [here](https://docs.meld.io/docs/white-label-cutomization#locking-fields).
+
+### Lockable Parameters:
+
+The locked params are as follows:
+
+* `countryCodeLocked` - Pass the country code value (e.g., `countryCodeLocked=US`)
+* `paymentMethodTypeLocked` - Pass the payment method value (e.g., `paymentMethodTypeLocked=CREDIT_DEBIT_CARD`)
+* `sourceAmountLocked` - Pass the amount value (e.g., `sourceAmountLocked=100`)
+* `sourceCurrencyCodeLocked` - Pass the currency code value (e.g., `sourceCurrencyCodeLocked=USD`)
+* `destinationCurrencyCodeLocked` - Pass the crypto code value (e.g., `destinationCurrencyCodeLocked=BTC`)
+* `walletAddressLocked` - Pass the wallet address value (e.g., `walletAddressLocked=bc1qxy2k...`)
+* `themeLocked` - Pass the theme value (e.g., `themeLocked=darkMode`)
+
+### Important Rules:
+
+* If you pass in both the unlocked and locked version of a param (for example `countryCode` and `countryCodeLocked`), the locked param will be used
+* Locked parameters take the actual value, not `=true`
+
+### Field Locking Example:
+
+```
+meldcrypto.com/?publicKey=your_public_key&destinationCurrencyCodeLocked=BTC&walletAddressLocked=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+```
+
+## Complete Examples
+
+### Basic Bitcoin Purchase
+
+```
+meldcrypto.com/?publicKey=your_public_key&sourceAmount=100&destinationCurrencyCode=BTC&countryCode=US
+```
+
+### Locked Ethereum Purchase
+
+```
+meldcrypto.com/?publicKey=your_public_key&destinationCurrencyCodeLocked=ETH&walletAddressLocked=0x742c8f2e0ce07Dd3f7E78A31E5A97D45c50fF2c8&themeLocked=darkMode
+```
+
+### Mobile App Integration
+
+```
+meldcrypto.com/?publicKey=your_public_key&externalCustomerId=user_12345&externalSessionId=session_abc789&redirectUrl=myapp://crypto-success&theme=lightMode
+```
+
+### Locked BONK Purchase on Solana
+
+```
+meldcrypto.com/?publicKey=your_public_key&destinationCurrencyCodeLocked=BONK_SOLANA&walletAddressLocked=6chn9n4CLhNdyBpiLLj9ouUUUmEQYBLWfpUMMuHB9K3k&themeLocked=darkMode
+```
+
+### Marketplace Token Sale
+
+```
+meldcrypto.com/?publicKey=your_public_key&destinationCurrencyCodeLocked=USDC&sourceAmountLocked=50&countryCodeLocked=US
+```
+
+## Parameter Validation Rules
+
+### Required Combinations:
+
+* **walletTag** requires **walletAddress** for supported cryptocurrencies (EOS, STX, XLM, XMR, XRP, BNB, XEM, and HBAR)
+* **customerId** and **externalCustomerId** are mutually exclusive - do not pass in both
+
+### Important Parameter Rules:
+
+* **Locked parameters override unlocked versions**: If you pass in both the unlocked and locked version of a param (for example `countryCode` and `countryCodeLocked`), the locked param will be used
+* **Provider UI locking**: If you lock the sourceCurrencyCode/destinationCurrencyCode or walletAddress field in the Meld Checkout, then that field will also be locked in the partner's widget for the providers that support it
+* **Locked parameters take actual values**: Pass the actual value, not `=true` (e.g., `walletAddressLocked=6chn9n...` not `walletAddressLocked=true`)
+
+### Invalid Parameter Handling:
+
+* **Unrecognized parameters** are ignored silently
+* **Invalid values** fall back to defaults
+* **Any param with unrecognized or unsupported values** will be ignored
+
+## URL Encoding
+
+Always URL encode parameter values that contain special characters:
+
+```javascript
+const walletAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+const redirectUrl = 'https://myapp.com/success?transaction=complete';
+const meldCheckoutUrl = 'meldcrypto.com/?publicKey=your_public_key';
+
+const url = `${meldCheckoutUrl}&walletAddress=${encodeURIComponent(walletAddress)}&redirectUrl=${encodeURIComponent(redirectUrl)}`;
+```
+
+## Testing Parameters
+
+Focus on successful transaction flows in sandbox environment:
+
+```
+meldcrypto.com/?publicKey=your_public_key&sourceAmount=10&destinationCurrencyCode=BTC&countryCode=US
+```
+
+Use small amounts and focus on green path flows to validate your integration.
+
+***
+
+**Next:** [Customization Options](customization) for advanced styling and configuration.

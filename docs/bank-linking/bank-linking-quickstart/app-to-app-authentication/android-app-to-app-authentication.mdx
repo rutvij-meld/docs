@@ -1,0 +1,261 @@
+---
+title: "Android App to App Authentication"
+---
+
+This page outlines the steps to load the Meld bank linking widget inside your Android mobile app using a WebView.
+
+# Project Setup
+
+## Step 1: App Links Setup
+
+App Links are the Android equivalent of iOS's universal links.
+
+### App Links Step 1: Setup Android app links following this [guide](https://developer.android.com/training/app-links).
+
+* Here is an example of what **AndroidManifest.xml** will look like:
+
+```xml XML
+<activity
+   // ...>
+    <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data android:scheme="meldapp" android:host="<yourdomain.com>" />
+    </intent-filter>
+</activity> 
+```
+
+### App Links Step 2: Redirect URL
+
+* We need to pass the redirectUrl in Meld's [connect/start endpoint](https://docs.meld.io/reference/bank-linking-connect-create).
+* Ensure that the redirectUrl parameter is an HTTP URL and not a deep link. It should specifically be formatted as an Android App Link. For detailed guidance on creating App Links, refer to the instructions provided in this [guide](https://developer.android.com/training/app-links).
+
+### App Links Step 3: Opening the Widget URL in a Webview
+
+* Add the following settings to the webview to give the proper permissions:
+
+```kotlin Kotlin
+private lateinit var webView : WebView
+private lateinit var childWebView : WebView
+override fun onCreate(savedInstanceState: Bundle?) {
+  	// ...
+    webView = findViewById<WebView>(R.id.webView); // please name accordingly
+		// Using a custom WebView Client as we have to override the url loading functionality
+		webView.webViewClient = CustomWebViewClient()
+		webView.settings.apply {
+		    domStorageEnabled = true
+		    javaScriptEnabled = true
+		    javaScriptCanOpenWindowsAutomatically =true
+		}	
+		// This webView will handle the login screen
+    childWebView = findViewById<WebView>(R.id.childWebView); // please name accordingly
+		childWebView.webViewClient = CustomWebViewClient()
+		childWebView.settings.apply {
+		    domStorageEnabled = true
+		    javaScriptEnabled = true
+		    javaScriptCanOpenWindowsAutomatically =true
+		}
+		// This will handle the incoming meld events like connect_complete, handover, cancel etc
+		// Follow step #3 for the implementation 
+		webView.addJavascriptInterface(JsObject(), "Android")
+}
+```
+
+* Here’s the definition of the **CustomWebViewClient** class:
+
+```kotlin Kotlin
+private inner class CustomWebViewClient :WebViewClient() {
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+    		// we'll add the code here based on different providers
+    		val parsedUri = request?.url
+        val uriString = parsedUri.toString()
+      	return false
+    }
+}
+```
+
+# Enable Visibility
+
+To enable app to app authentication, you may need to declare specific apps as visible to your app by adding queries in your **AndroidManifest.xml** file. For example, to enable visibility for the Chase app, include the following:
+
+```xml XML
+<queries>    
+  <!-- Declare visibility for the all the banking app -->   
+   <package android:name="com.chase.sig.android" />  // this will make the chase app visible to your app
+</queries>
+```
+
+The above example is specific to the Chase app. If you wish to enable app to app authentication with additional apps, include the respective package entries for each additional app in the `<queries>` section.
+
+## Important Considerations for QUERY\_ALL\_PACKAGES Permission
+
+From Android 11 (API level 30), the **QUERY\_ALL\_PACKAGES** permission is restricted to apps that target API level 30 or later on devices running Android 11 or newer. To use this permission, your app must fulfill specific criteria outlined by the Google Play policy. This includes having a core purpose that requires visibility of all installed apps on the device and providing a sufficient justification as to why alternative, less intrusive methods of app visibility would not enable the app’s policy-compliant, user-facing functionality.
+
+In some cases, Android may restrict visibility of certain apps to your app. If your app needs to access a comprehensive list of all installed apps on the device, include the **QUERY\_ALL\_PACKAGES** permission in the Android manifest. Be aware that if you intend to publish your app on Google Play, the usage of this permission is subject to [Google Play’s approval process](https://support.google.com/googleplay/android-developer/answer/10158779).
+
+# Provider Specific Code
+
+Depending on which provider(s) your app uses, you will have to configure some provider specific code in order to make app to app authentication works. This section details what that code is.
+
+## MX
+
+1. To handle the MX service provider appropriately, incorporate the following code snippet within the **shouldOverrideUrlLoading** function:
+
+```kotlin Kotlin
+override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+    // ...
+	  val isMessageFromConnect = uriString.startsWith("meldapp://") || uriString.startsWith("atrium://")
+		if (isMessageFromConnect) {
+      	// 2. Handle OAuth redirects if the URL is related to OAuth
+    		return mxHandler(parsedUri, view);
+  	}
+}
+fun mxHandler(uri: Uri?, view: WebView?): Boolean {
+    if (uri?.path == "/oauthRequested") {
+        try {
+            val mxMetaData = JSONObject(uri?.getQueryParameter("metadata"))
+            val oauthURL = mxMetaData.getString("url")
+            val oauthPage = Uri.parse(oauthURL)
+            if (isAppLink(context, oauthURL)) {
+                val intent = Intent(Intent.ACTION_VIEW, oauthPage)
+                view?.context?.startActivity(intent)
+            } else {
+                view?.loadUrl(oauthPage.toString())
+            }
+        } catch (err: Exception) {
+            Log.e("MX:Error with OAuth URL", err.message!!)
+        }
+    }
+    return true
+}
+```
+
+## Plaid and Finicity
+
+1. For Plaid and Finicity, integrate the following code into the **shouldOverrideUrlLoading** function. This addition functions as an “else” case subsequent to the “if” condition handling the MX provider:
+
+```kotlin Kotlin
+val isMessageFromConnect = uriString.startsWith("<yourappschema>://") || uriString.startsWith("atrium://")
+if (isMessageFromConnect) {
+    // 2. Handle OAuth redirects if the URL is related to OAuth
+    return mxHandler(parsedUri, view);
+} else {
+    // 3. Handle HTTP(S) URLs (open in browser or load in WebView)
+    if (parsedUri?.scheme == "https" || parsedUri?.scheme == "http" || uriString != widgetUrl) {
+      	if(parsedUri.toString().contains("<yourdomain.com>") && uriString.contains("oauth_state_id")) {
+		        val oauthStateId = parsedUri?.getQueryParameter("oauth_state_id")
+		        val newWidgetUrl = Uri.parse(widgetUrl).buildUpon().appendQueryParameter("plaidStateId", oauthStateId)
+		        webView.visibility = View.GONE
+					  		childWebView.visibility = View.VISIBLE
+					  		childWebView.loadUrl(uriString)
+								return true
+		    }
+        if (isAppLink(context, parsedUri.toString())) { // checking if an app is available to handle this url
+            view?.context?.startActivity(Intent(Intent.ACTION_VIEW, parsedUri))
+            return true
+        }
+        if(uriString != widgetUrl) {
+           	webView.visibility = View.GONE
+					 			childWebView.visibility = View.VISIBLE
+					 			childWebView.loadUrl(uriString)
+								return true
+        }
+    }
+}
+```
+
+```kotlin Kotlin
+// Helper function to check if there is an app that can handle this URL
+fun isAppLink(context: Context, url: String): Boolean {
+    val uri = Uri.parse(url)
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    val resolveInfo = context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+    return resolveInfo != null
+}
+```
+
+# Listening to Front End Events
+
+1. Currently these events work for only Plaid & Finicity, not MX. After a successful OAuth process Meld’s widget will emit a handful of events which will need to be appropriately handled when control returns back to the app of origin.
+2. You can listen to couple of pre-defined events which can be used to detect if the authentication process is completed, canceled, or if there was an error.
+
+```kotlin Kotlin
+enum class ConnectHandlerResponse(val message: String) {
+    /**
+     * Emitted when the widget initializes
+     */
+    INIT("[meld-connect]init"),
+    /**
+     *  Emitted at various times with debug information:
+     *  When your customer cancels an integrated service provider's embedded widget
+     *  Whenever your customer navigates to another screen within an integrated service provider's embedded widget
+     */
+    DEBUG("[meld-connect]debug"),
+    /**
+     * when the widget initializes
+     */
+    INITIALIZE("[meld-connect]init"),
+    /**
+     * Emitted when the widget encounters an error
+     * Will be accompanied by query-string metadata, containing details and reason keys, as available
+     */
+    ERROR("[meld-connect]error"),
+    /**
+     * Emitted once the call to /connect/complete has finished
+     * Will be accompanied by query-string metadata, containing:
+     * institutionId: Meld's institution ID for the institution your customer chose to connect with
+     * institutionName: The name of the same institution
+     * accountCount: The number of accounts your customer has connected
+     * accounts: Where available, an array of connected accounts including details such as name, type, and mask; null otherwise
+     */
+    COMPLETE("[meld-connect]connect_complete"),
+    /**
+     * Emitted when the connect has been completed
+     */
+    HANDOVER("[meld-connect]handover"),
+    /**
+     * Emitted when your customer cancels the widget
+     */
+    CANCEL("[meld-connect]cancel")
+}
+private inner class JsObject {
+    private  val TAG = "MeldActivity"
+    @JavascriptInterface
+    fun postMessage( event : String) {
+        if (!event.isNullOrEmpty() && event.startsWith("[meld-connect]")){
+            var eventData : String? = null
+            val event = if (event.contains("?")) {
+                val splitResult = event.split("?")
+                eventData = splitResult[1]
+                splitResult.firstOrNull()
+            } else event
+
+            when(connectHandlerResponseFindValueOf(event.orEmpty())){
+                ConnectHandlerResponse.DEBUG -> {}
+                ConnectHandlerResponse.INITIALIZE -> {}
+                ConnectHandlerResponse.ERROR -> {}
+                ConnectHandlerResponse.COMPLETE -> {
+                    Log.d("connectComplete", eventData.toString())
+                }
+                ConnectHandlerResponse.HANDOVER -> {
+                    // close the Meld Connect Widget
+                    setResult(RESULT_OK)
+                    finish()
+                }
+                ConnectHandlerResponse.CANCEL -> {
+                    setResult(RESULT_CANCELED)
+                    finish()
+                }
+                else -> {}
+            }
+        } else {
+            Log.d(TAG, "postMessage: MELD: got unknown response: $event")
+        }
+    }
+}
+```
+
+<br />

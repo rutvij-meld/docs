@@ -1,0 +1,132 @@
+---
+title: "Crypto Webhooks"
+---
+
+## Attributes
+
+All webhook events have the same attributes.
+
+| Key               | Type           | Description                                                                                            |
+| :---------------- | :------------- | :----------------------------------------------------------------------------------------------------- |
+| `eventType`       | String         | Type of event                                                                                          |
+| `eventId`         | String         | Meld's unique identifier for the event                                                                 |
+| `timestamp`       | OffsetDateTime | The date and time the event was created                                                                |
+| `accountId`       | String         | Account id                                                                                             |
+| `profileId`       | String         | Id of the webhook profile responsible for this event to be sent                                        |
+| `version`         | Date           | [Version](versioning)                                                                                  |
+| `payload`         | Object         | An object containing additional information of the event depending on the event type                   |
+| `transactionType` | String         | The type of transaction, where the options are `CRYPTO_PURCHASE`, `CRYPTO_SELL`, and `CRYPTO_TRANSFER` |
+
+Note that if the transaction status is `PENDING_CREATED`, the sessionId and the externalSessionId will be missing from the payload of the webhook, because that transaction has not been tied to a Meld session yet. `PENDING_CREATED` is a premature transaction state, feel free to ignore these webhooks if you would like.
+
+## `TRANSACTION_CRYPTO_{TYPE}`
+
+### Payload Attributes
+
+| Key                        | Type   | Description                                                                                                                                                               |
+| :------------------------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `accountId`                | String | Meld's unique identifier for the account                                                                                                                                  |
+| `customerId`               | String | Meld's unique identifier for the customer                                                                                                                                 |
+| `externalCustomerId`       | String | Your customer unique identifier. This is only returned if you pass it in when calling the [widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create). |
+| `externalSessionId`        | String | Your session unique identifier. This is only returned if you pass it in when calling the [widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create).  |
+| `paymentTransactionId`     | String | Meld's unique identifier for the transaction                                                                                                                              |
+| `paymentTransactionStatus` | String | Status of the transaction                                                                                                                                                 |
+
+### `TRANSACTION_CRYPTO_PENDING`
+
+```json
+{
+    "eventType": "TRANSACTION_CRYPTO_PENDING",
+    "eventId": "AAsuLXHXD3mS1cjNBuHHzv",
+    "timestamp": "2022-02-24T16:36:41.717262Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+    "version": "2025-03-01",
+    "payload": {
+      "requestId": "f07f1accb7404aec9bd9a5d64975eed1",
+      "accountId": "W2aRZnYGPwhBWB94iFsZus",
+      "paymentTransactionId": "W9k9Tg12BFk1i68WpQYQY8",
+      "customerId": "W9k9TfNSJRZ6rDBe95bUA2",
+      "externalCustomerId": "customer_1234443",
+      "externalSessionId": "march2423_1234323",
+      "paymentTransactionStatus": "PENDING",
+      "transactionType": "CRYPTO_PURCAHSE",
+      "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ",
+      "externalSessionId": "test_session1",
+    }
+}
+```
+
+### `TRANSACTION_CRYPTO_TRANSFERRING`
+
+```json
+{
+    "eventType": "TRANSACTION_CRYPTO_TRANSFERRING",
+    "eventId": "NQ7wCUFFuAgUCVyZkRu9cH",
+    "timestamp": "2022-02-15T23:05:43.782919Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+    "version": "2025-03-01",
+    "payload": {
+      "requestId": "f07f1accb7404aec9bd9a5d64975eed2",
+      "accountId": "W2aRZnYGPwhBWB94iFsZus",
+      "paymentTransactionId": "W9kNggNMASvX8NVK8LFCWg",
+      "customerId": "W9jtN15ukoLJKgQe8Xb5MS",
+      "externalCustomerId": "customer_1234443",
+      "externalSessionId": "march2423_1234323",
+      "paymentTransactionStatus": "SETTLING",
+      "transactionType": "CRYPTO_PURCAHSE",
+      "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ",
+      "externalSessionId": "test_session1"
+    }
+  }
+```
+
+### `TRANSACTION_CRYPTO_COMPLETE`
+
+```json
+{
+    "eventType": "TRANSACTION_CRYPTO_COMPLETE",
+    "eventId": "4cpRbNMyteKPzivtZ2RT4o",
+    "timestamp": "2022-02-24T00:24:53.650382Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+    "version": "2025-03-01",
+    "payload": {
+      "requestId": "f07f1accb7404aec9bd9a5d64975eed3",
+      "accountId": "W2aRZnYGPwhBWB94iFsZus",
+      "paymentTransactionId": "W9jHTkUEacFrcBuEPjXtdE",
+      "customerId": "W9jtN15ukoLJKgQe8Xb5MS",
+      "externalCustomerId": "customer_1234443",
+      "externalSessionId": "march2423_1234323",
+      "paymentTransactionStatus": "SETTLED",
+      "transactionType": "CRYPTO_PURCAHSE",
+      "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ",
+      "externalSessionId": "test_session1",
+    }
+}
+```
+
+### `TRANSACTION_CRYPTO_FAILED`
+
+```json
+{
+    "eventType": "TRANSACTION_CRYPTO_FAILED",
+    "eventId": "AvCd2ZKy5PCdzyCYRU7ENe",
+    "timestamp": "2022-02-24T20:05:13.909581Z",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+    "version": "2025-03-01",
+    "payload": {
+      "requestId": "f07f1accb7404aec9bd9a5d64975eed4",
+      "accountId": "W2aRZnYGPwhBWB94iFsZus",
+      "paymentTransactionId": "W9kLVLCaQSXz8pgaUHYK4E",
+      "customerId": "W9kL817BBS7bNEwxAZaX4z",
+      "externalCustomerId": "customer_9888888",
+      "paymentTransactionStatus": "ERROR",
+      "transactionType": "CRYPTO_PURCAHSE",
+      "sessionId": "WeQBQxGxq3AyHdcaoUDoAJ",
+      "externalSessionId": "test_session1"
+    }
+}
+```

@@ -1,0 +1,19 @@
+---
+title: "Finicity Investment Holdings Mapping"
+---
+
+This data comes from Finicity's [/aggregation/v1/customers/\{customerId}/institutionLogins/\{institutionLoginId}/accounts](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#GetCustomerAccountsByInstitutionLogin) endpoint and is returned from Meld's [/bank-linking/investments/holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search) endpoint.
+
+| Meld Field   | Description                                                                | Finicity Response Field |
+| :----------- | :------------------------------------------------------------------------- | :---------------------- |
+| symbol       | The symbol of the security                                                 | symbol                  |
+| quantity     | The number of shares of the security                                       | units                   |
+| currentValue | The total current value of the holding                                     | marketValue             |
+| costBasis    | The purchase price of the holding, per share                               | cost\_basis             |
+| currencyCode | The ISO currency code that was used to purchase the holding                | securityCurrency        |
+| updatedAt    | The last time the details of this holding were updated                     | currentPriceDate        |
+| description  | A description of the holding                                               | **Not Available**       |
+| closePrice   | The price of the security at last market close                             | **Not Available**       |
+| isin         | The global ISO number for an individual security.                          | Securities.isin         |
+| cusip        | A shortened version of the isin used for North American securities.        | cusipNo                 |
+| type         | The type of holding (ex: stock, etf). This is normalized across providers. | securityType            |

@@ -1,0 +1,210 @@
+---
+title: "KYC Testing"
+---
+
+# Testing Overview
+
+This guide provides detailed testing instructions for the customer KYC process in the Meld sandbox environment.
+
+Meld generally recommends testing the unified KYC flow in production for a realistic experience.
+
+However, if you would like to test the flow end-to-end Meld's sandbox, please follow this guide.
+
+When testing from the Meld Sandbox environment, you will be testing against Sumsub and Virtual Account providers' Sandbox environments as well. This means you can enter fake data, provide fake documents, and provide any answers to the questionnaires. Only the liveliness check will be performed by Sumsub for real (you will need to perform simple moving actions in front of the camera).
+
+## Quick Start
+
+**New to testing?** Start with our **[Sandbox Environment Guide](sandbox-guide)** to understand sandbox limitations and best practices.
+
+**Ready to test?** This page contains specific testing credentials for each provider.
+
+# KYC Flow Testing
+
+## Prerequisite
+
+Meld is currently integrated with a single KYC Provider, Sumsub. This means that the user's KYC data that is shared with Sumsub can later be automatically shared with onramps, which improves user experience and reduces the friction. To make the user pass the KYC on Sumsub, there are 2 options
+
+### 1. Meld KYCes the user
+
+Please refer to [Meld KYCes the User](https://docs.meld.io/update/docs/meld-kyces-the-user)
+
+To KYC the user, call the [initiate KYC endpoint](https://docs.meld.io/reference/accounts-customers-kyc-initiate). The customerId will be in the path, and your request body will look like this:
+
+```json
+{
+  "serviceProvider": "SUMSUB",
+	"mode": "HOSTED_URL"
+}
+```
+
+The response will be a Sumsub URL that you should then launch from your UI. The response will look like this:
+
+```json
+{
+	"customerId": "W912345678",
+	"serviceProvider": "SUMSUB",
+	"status": "PENDING",
+	"url": "https://kyclink.com"
+}
+```
+
+As the user goes through the KYC flow, you will receive webhooks informing you that the KYC status of the user has changed. The body of the webhook will look like this:
+
+```json
+{
+    "eventType": "CUSTOMER_KYC_STATUS_CHANGE",
+    "eventId": "4cWK83avakzy8jG4ztmBUk",
+    "timestamp": "2026-02-25T18:55:08.968360756Z",
+    "accountId": "W9jSUfLiRWx1GkaMGt7DTT",
+    "profileId": "WmZ1rqsv532RYW9ELxM4eo",
+    "version": "2026-02-02",
+    "payload": {
+      "requestId": "4456e4e9b0174c53b962227df6766ca7",
+      "customerId": "W912345678",
+      "serviceProvider": "SUMSUB",
+      "status": "APPROVED",
+      "statusUpdatedAt": "2026-02-25T18:55:08.960052Z"
+    }
+}
+```
+
+If the `serviceProviderCustomers.kyc.status` is `REJECTED`, this means the user has failed KYC. Either the user has to go through the KYC flow once again (repeat this step), or the user will be unable to use this flow, and is unlikely to be able to buy crypto. Note that a user who fails KYC in this flow will very likely also fail KYC directly with any onramp.
+
+### 2. You already KYCed the user with your Sumsub account
+
+If you already have a user who has passed KYC on your Sumsub account, you can import it into Meld by sharing the Sumsub applicant token (TOKEN_SHARE mode). [See Sumsub requirements for importing the applicant](https://docs.sumsub.com/docs/copy-applicant#how-to-enable-copy-applicant).
+
+To import the KYC of the user, call the [initiate KYC endpoint](https://docs.meld.io/reference/accounts-customers-kyc-initiate). You will need to pass the Sumsub KYC token, generated for **meld.io_75082** client. The customerId will be in the path, and your request body will look like this:
+
+```json
+{
+  "serviceProvider": "SUMSUB",
+  "mode": "TOKEN_IMPORT",
+  "serviceProviderDetails": {
+    "kycToken": "_act-sbx-jwt-eyJhbGciOiJub25lIn0.eyJqdGkiOiJfYWN0LXNieC1mNGFlNWYwYy1iYjFmLTQwZmUtYTk1YS1jZWM0MmY3OTBjYmIiLCJ1cmwiOiJodHRwczovL2FwaS5zdW1zdWIuY29tIn0.",
+		"applicantId": "Sumsub applicant id"
+	}
+}
+```
+
+The response will be a Sumsub URL that you should then launch from your UI. The status would either be **APPROVED** if your Sumsub account's verification level matches that of Meld, or **PENDING**  otherwise. In case of **PENDING** status, please proceed with the steps described in the previous chapter (Meld KYCes the user).
+
+```json
+{
+	"customerId": "W912345678",
+	"serviceProvider": "SUMSUB",
+	"status": "APPROVED",
+	"url": "https://kyclink.com"
+}
+```
+
+## Sharing KYC with onramps with widget (synchronous KYC)
+
+If you completed previous steps and successfully KYCed the user with Meld or imported your Sumsub KYC applicant with Meld, all it takes is to share the KYC with the Network Partner **bypassKyc=true** in the body of the [Create Widget request](https://docs.meld.io/reference/crypto-session-widget-create). Meld then will recognize this and pass KYC data to Onramp through Sumsub. Onramp may still require some additional KYC in case Sumsub shared data is not enough, but all already provided data should be prefilled.
+
+```json
+{
+  "sessionData": {
+    "countryCode": "US",
+    "destinationCurrencyCode": "BTC",
+    "serviceProvider": "TRANSAK",
+    "sourceAmount": "100",
+    "sourceCurrencyCode": "USD",
+    "walletAddress": "1EEo4ioA4spdJ2ZxiSQ1hWsp3Ve81ZRZ2F"
+  },
+  "sessionType": "BUY",
+	"bypassKyc": true
+}
+```
+
+Widget-based Onramps that currently support passing the user's KYC data:
+
+* Mercuryo
+* Paybis
+* Topper
+* Unlimit
+
+## Sharing KYC with Virtual Account providers (asynchronous KYC)
+
+In both KYC initiation modes (**HOSTED_URL** and **TOKEN_IMPORT**), you can optionally specify Virtual Account providers you want to share the user's KYC with after Sumsub approves submission in the **kycShareProviders** field. Alternatively, you can add share providers later by calling the [Update KYC API](https://docs.meld.io/update/reference/accounts-customers-kyc-update).
+
+```json
+{
+  "serviceProvider": "SUMSUB",
+  "mode": "HOSTED_URL",
+	"kycShareProviders": ["NOAH", "DUENETWORK"]
+}
+```
+
+```json
+{
+  "serviceProvider": "SUMSUB",
+  "mode": "TOKEN_IMPORT",
+  "kycShareProviders": ["NOAH", "DUENETWORK"],
+	"serviceProviderDetails": {
+    "kycToken": "_act-sbx-jwt-eyJhbGciOiJub25lIn0.eyJqdGkiOiJfYWN0LXNieC1mNGFlNWYwYy1iYjFmLTQwZmUtYTk1YS1jZWM0MmY3OTBjYmIiLCJ1cmwiOiJodHRwczovL2FwaS5zdW1zdWIuY29tIn0.",
+		"applicantId": "Sumsub applicant id"
+	}
+}
+```
+
+After Sumsub verifies the user's submission, the KYC token will be automatically shared with all specified share Virtual Account providers, effectively onboarding the user on Virtual Account's platforms. The Virtual Account provider may require additional KYC for users in case the data shared by Sumsub is insufficient. To track this, you can either accept webhook CUSTOMER_KYC_STATUS_CHANGE events (recommended) or poll the Search Customer API
+
+**Expected Webhook Response**
+
+```json
+{
+  "eventType": "CUSTOMER_KYC_STATUS_CHANGE",
+  "eventId": "customerId",
+  "timestamp": "2022-02-24T16:36:41.717262Z",
+  "payload": {
+    "accountId": "WeP9eoFziQX4yXE5abcfec",
+    "customerId": "customerId",
+    "serviceProvider": "SUMSUB",
+    "status": "APPROVED",
+    "kycRecepient": {
+      "serviceProvider": "Virtual account provider",
+			"status": "PENDING" // PENDING, REJECTED, APPROVED
+    },
+    "statusUpdatedAt": "2022-02-24T16:36:41.717262Z"
+  }
+}
+```
+
+After receiving a webhook event, you can call [ Search Customer API](https://docs.meld.io/reference/accounts-customers-search) for more details. For example, when the Virtual Account provider requires additional KYC on their platform, you will receive a webhook event with **kycRecepient.status=PENDING** status. Then, when calling [ Search Customer API](https://docs.meld.io/reference/accounts-customers-search), you will receive the following response
+
+```json
+{
+  "id": "customerId",
+  "accountId": "accountId",
+  "serviceProviderCustomers": [
+  {
+    "serviceProvider": "Virtual Account Provider",
+    "id": "provider customer id",
+    "kyc": {
+      "status": "PENDING",
+      "updatedAt": "2026-04-08T20:04:20.457281Z",
+      "additionalInfo": {
+        "HostedURL": "https://virtual-provider-paltform.com/additionalKycHostedURL" 
+				// addtional provider specific kyc fields, like addtional requirements (documents, questionnaire, etc.)
+      },
+      "onboardingMethod": {
+        "kycProvider": "SUMSUB",
+        "onboardingType": "KYC_TOKEN_SHARE"
+      }
+    }
+  }
+  ],
+  "status": "ACTIVE",
+  "type": "INDIVIDUAL"
+}
+```
+
+You will need to direct your user to HostedURL for them to pass additional KYC on the Virtual Account provider platform. After users complete additional KYC and the Virtual Account provider verifies that, you will receive another **CUSTOMER_KYC_STATUS_CHANGE** with **kycRecepient.status=APPROVED** status, as well as this will be reflected in [ Search Customer API](https://docs.meld.io/reference/accounts-customers-search) response.
+
+Async KYC sharing is  currently supported with the following Virtual Account Onramps:
+
+* Noah
+* DueNetwork
+
+Brale **is not** supported

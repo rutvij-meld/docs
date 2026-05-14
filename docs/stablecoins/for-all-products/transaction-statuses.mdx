@@ -1,0 +1,68 @@
+---
+title: "Transaction Statuses"
+description: "This section goes over the various statuses Meld transactions can have and what they mean."
+---
+
+# Transaction Statuses
+
+Understanding transaction statuses helps you track payment progress and handle different scenarios in your integration. Transactions move through various states from initiation to completion or failure.
+
+## Common Transaction Flow
+
+The typical successful transaction follows this progression:
+
+**`PENDING`→`SETTLING` →`SETTLED`**
+
+* **PENDING**: User has started payment process
+* **SETTLING**: User submitted payment, funds being processed  
+* **SETTLED**: Payment completed successfully, crypto delivered to user
+* **FAILED**: Transaction unsuccessful at any stage
+
+## Status Types
+
+**TEMPORARY**: Status will continue to change as transaction progresses\
+**TERMINAL**: Final status - no further changes will occur
+
+## Current Transaction Statuses
+
+### Active Processing States
+
+| Status            | Description                                                      | Type      | User Action                  |
+| ----------------- | ---------------------------------------------------------------- | --------- | ---------------------------- |
+| `PENDING CREATED` | Transaction created in Meld system, awaiting provider processing | TEMPORARY | Wait for processing          |
+| `PENDING`         | Submitted to provider for review and verification                | TEMPORARY | Wait for approval            |
+| `SETTLING`        | Provider approved transaction, crypto transfer in progress       | TEMPORARY | Wait for completion          |
+| `TWO_FA_REQUIRED` | Payment info provided, awaiting 2FA verification                 | TEMPORARY | Complete 2FA verification    |
+| `TWO_FA_PROVIDED` | 2FA submitted, provider validating with card issuer              | TEMPORARY | Wait for validation          |
+| `ERROR`           | Technical error during processing - transaction may retry        | TEMPORARY | Monitor for retry or failure |
+
+### Final States
+
+| Status      | Description                                                           | Type     | Next Steps                           |
+| ----------- | --------------------------------------------------------------------- | -------- | ------------------------------------ |
+| `SETTLED`   | Transaction completed successfully, crypto delivered                  | TERMINAL | Transaction complete                 |
+| `FAILED`    | Transaction declined by payment systems                               | TERMINAL | User can retry with different method |
+| `DECLINED`  | Declined by provider or bank (insufficient funds, invalid card, etc.) | TERMINAL | User should check payment method     |
+| `CANCELLED` | Cancelled by user during payment process                              | TERMINAL | User can start new transaction       |
+| `REFUNDED`  | Crypto not delivered, full refund issued to customer                  | TERMINAL | Refund processed                     |
+
+## Legacy Statuses
+
+These statuses may appear in older transactions:
+
+| Status                  | Modern Equivalent | Type      |
+| ----------------------- | ----------------- | --------- |
+| `ACCEPTED`              | `PENDING`         | TEMPORARY |
+| `AUTHORIZED`            | `PENDING`         | TEMPORARY |
+| `PARTIALLY_SETTLED`     | `PENDING`         | TEMPORARY |
+| `AUTHORIZATION_EXPIRED` | `FAILED`          | TERMINAL  |
+
+## Implementation Notes
+
+**Webhook Handling**: Monitor for status changes via webhooks to update your UI in real-time
+
+**Error Handling**: For TERMINAL failure states (`FAILED`, `DECLINED`, `CANCELLED`), allow users to start a new transaction
+
+**User Communication**: Keep users informed during TEMPORARY states, especially longer processes like `SETTLING`
+
+<br />

@@ -1,0 +1,307 @@
+---
+title: "Customization"
+---
+
+# Locking fields
+
+Some service providers support locking the token and wallet address fields within their widgets. To do this, simply pass in the lockFields param to the [widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create) with the values of `destinationCurrencyCode`/`sourceCurrencyCode` (depending on buy vs sell flow), `walletAddress`, or both. Here are the service providers that support locking those fields in their widgets:
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}>
+          Locking cryptocurrency
+
+          <br />
+        </div>
+      </th>
+
+      <th style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}>
+          Locking wallet address
+
+          <br />
+        </div>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Banxa**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **BTC Direct**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Onramp Money**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Transak**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Binance Connect**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **TransFi**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in</div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Unlimit**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Paybis**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Fonbnk**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Koywe**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}>Always locked when passed in</div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}>Always locked when passed in</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Robinhood**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in</div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Coinbase**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Blockchain**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in</div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Always locked when passed in</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Kryptonim**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Topper**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Mercuryo**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Swapped**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not Supported </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        **Guardarian**
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Not Supported </div>
+      </td>
+
+      <td style={{ textAlign: "left" }}>
+        <div style={{ textAlign: "center" }}> Supported </div>
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+Here's a sample buy request with both the token and wallet address fields locked:
+
+```json
+{
+    "sessionData": {
+        "walletAddress": "2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm",
+        "countryCode": "US",
+        "sourceCurrencyCode": "USD",
+        "sourceAmount": "100",
+        "destinationCurrencyCode": "USDC",
+        "serviceProvider": "TRANSAK",
+        "lockFields": ["destinationCurrencyCode","walletAddress"]
+    },
+    "externalCustomerId": "test1",
+    "externalSessionId": "test1"
+}
+```
+
+<br />

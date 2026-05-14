@@ -1,0 +1,31 @@
+---
+title: "Optional Products"
+---
+
+Right now Meld filters the institutions shown in the picker based on ones that support all the products specified in the [/connect/start](https://docs.meld.io/reference/bank-linking-connect-create) request. However, sometimes you may want your users to see institutions that may not support all the products, and then fetch data for whichever products are supported. To solve this use case, Meld has a feature called optional products.
+
+Here's a sample request to /connect/start with optional products specified:
+
+```
+curl --location 'https://api-sb.meld.io/bank-linking/connect/start' \
+--header 'Meld-Version: 2022-11-10' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: BASIC ***Redacted API Key***' \
+--data '{
+  "externalCustomerId": "testCustomer",
+  "products": [
+    "BALANCES",
+    "TRANSACTIONS"
+  ],
+  "optionalProducts": [
+    "INVESTMENT_HOLDINGS",
+    "INVESTMENT_TRANSACTIONS"
+  ] 
+}'
+```
+
+This will filter the institutions in the picker based on ones that support BALANCES and TRANSACTIONS, but it will not filter out institutions who may not support the investment products. If the financial accounts connected do have investment data associated with them, that data will be retrieved and returned from Meld endpoints (and you will receive webhooks indicating so). Optional products is a powerful tool to provide you flexibility to get whatever data is available, but does that guarantee that data will be returned for all of those products.
+
+Note that you must specify at least one product as a "required" product in the `products` array, and that the same product cannot both be in the `products` and `optionalProducts` arrays.
+
+<br />

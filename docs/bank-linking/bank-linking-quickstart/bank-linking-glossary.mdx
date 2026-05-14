@@ -1,0 +1,21 @@
+---
+title: "Bank Linking Glossary"
+---
+
+Here is a glossary of Meld terms related to Bank Linking.
+
+* **Account** -- Your Meld account, which represent your company. 
+
+* **Customers** -- A customer you create with Meld. A single customer usually represents a single person or business and can have multiple bank connections. Track customers using a customerId, which a Meld generated unique ID, or if you have your own Id, you can pass it in as the externalCustomerId.
+
+* **Service Provider** -- A service provider aka provider is the entity that is responsible for completing a connection between a user and bank account. Plaid, Finicity, MX, Yodlee, and Salt Edge are all service providers.
+
+* **Connection** -- A connection is a link between a service provider and a login to a bank. A connection can have several financial accounts associated with it, for example a checking account and savings account. A connection is tied to a particular institution.
+
+* **Institution** -- A financial entity where one stores money. A bank is the most common type of institution. Credit unions are another type of institution.
+
+* **Financial Account** -- Financial accounts include a checking account, savings account, 401k, IRA, credit card account, etc. A single connection can have multiple financial accounts, and individual accounts may support different sets of products. For example, credit card accounts don't support identifiers (aka routing and account numbers).
+
+# Relationship Diagram
+
+![](https://files.readme.io/ba3de38-image.png)

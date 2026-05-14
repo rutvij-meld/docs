@@ -1,0 +1,22 @@
+---
+title: "Repairing Connections"
+---
+
+Connections that were initially successful, where their status is `ACTIVE`, can later require reconnection in which their status will move to `RECONNECT_REQUIRED`. The customer may also have the opportunity to reconnect to add additional financial accounts to the connection, in which case the connection status will remain `ACTIVE` but have a `statusReason` of  `NEW_ACCOUNTS_AVAILABLE`. When this happens, you will receive a [BANK\_LINKING\_CONNECTION\_STATUS\_CHANGE](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_status_change) informing you of this. 
+
+A connecton in `RECONNECT_REQUIRED` will no longer get updated, and the latest data available (which you can still access from Meld's endpoints) will be from before the connection becomes degraded.
+
+A connection can become degraded in any number of ways. One example is if a user changes their password after the initial connection. Another example is if the institution expires connections after a set amount of time and requires the user to log in again.
+
+If a connection is degraded, you can fix it by calling Meld's [repair endpoint](https://docs.meld.io/reference/bank-linking-connect-repair). This will generate a connect token where when you launch the widget, will go straight to the user's institution so that they can log in once again. This is an abridged flow that avoids the user having to reselect their institution. Once the user logs in successfully, you will receive a webhook indicating the connection is active once more, and therefore you can retrieve up to date data.
+
+# Sample Response
+
+```json
+{
+    "id": "WQ5RitxnrnggqcT8noLoZN",
+    "connectToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZWRpcmVjdCI6dHJ1ZSwicmVnaW9ucyI6WyJVUyJdLCJpc3MiOiJtZWxkLmlvIiwiY29ubmVjdGlvbiI6IldRNVJpdHhucm5nZ3FjVDhub0xvWk4iLCJleHAiOjE2ODcyMzM4NTgsImlhdCI6MTY4NzIxOTQ1OCwiYWNjb3VudCI6Ilc5a2JrUm1lOVZUMml6NnFBU2ZBZjIiLCJjdXN0b21lciI6IldRNVJpd2lBTkM5ZnhTdmhZRnpXOXIiLCJwcm9kdWN0cyI6WyJCQUxBTkNFUyIsIklERU5USUZJRVJTIiwiT1dORVJTIiwiVFJBTlNBQ1RJT05TIl0sInJvdXRpbmdQcm9maWxlIjoiV0d2Rlh0WGJEb0NlV3N4VXR1aXhQeSJ9.d_D-VTwLx51bT2DwtNwxpH38oaaKdnrLQD0SM-pXFpU",
+    "institutionId": "Ntj3AwgdridJc2rtfeheku",
+    "widgetUrl": "https://institution-connect-sb.meld.io?connectToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZWRpcmVjdCI6dHJ1ZSwicmVnaW9ucyI6WyJVUyJdLCJpc3MiOiJtZWxkLmlvIiwiY29ubmVjdGlvbiI6IldRNVJpdHhucm5nZ3FjVDhub0xvWk4iLCJleHAiOjE2ODcyMzM4NTgsImlhdCI6MTY4NzIxOTQ1OCwiYWNjb3VudCI6Ilc5a2JrUm1lOVZUMml6NnFBU2ZBZjIiLCJjdXN0b21lciI6IldRNVJpd2lBTkM5ZnhTdmhZRnpXOXIiLCJwcm9kdWN0cyI6WyJCQUxBTkNFUyIsIklERU5USUZJRVJTIiwiT1dORVJTIiwiVFJBTlNBQ1RJT05TIl0sInJvdXRpbmdQcm9maWxlIjoiV0d2Rlh0WGJEb0NlV3N4VXR1aXhQeSJ9.d_D-VTwLx51bT2DwtNwxpH38oaaKdnrLQD0SM-pXFpU"
+}
+```

@@ -1,0 +1,24 @@
+---
+title: "Plaid Identifiers Mapping"
+---
+
+This data comes From Plaid's [/auth/get](https://plaid.com/docs/api/products/auth/#auth-get-response-numbers-ach-account) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+| Meld Field           | Description                                                                                          | Plaid Response Field       |
+| :------------------- | :--------------------------------------------------------------------------------------------------- | :------------------------- |
+| ach                  | ACH data object                                                                                      |                            |
+|    accountNumber     | The account number                                                                                   | numbers.ach.account        |
+|    routingNumber     | The account routing number. Reference [Routing number](https://en.wikipedia.org/wiki/Routing_number) | numbers.ach.routing        |
+| eft                  | EFT data object                                                                                      |                            |
+|    accountNumber     | The account number                                                                                   | numbers.eft.account        |
+|    institutionNumber | The account institution number                                                                       | numbers.eft.institution    |
+|    branchNumber      | The institution branch number                                                                        | numbers.eft.branch         |
+| international        | International data object                                                                            |                            |
+|    iban              | The International Bank Account Number (IBAN) for the financial account                               | numbers.international.iban |
+|    bic               | The Bank Identifier Code (BIC) for the financial account                                             | numbers.international.bic  |
+| bacs                 | The BACS data object                                                                                 |                            |
+|    accountNumber     | BACS account number                                                                                  | numbers.bacs.account       |
+|    sortCode          | BACS sort code                                                                                       | numbers.bacs.sort_code     |
+
+<div></div>
+<style>{`.UpdatedAt { display: none; }`}</style>

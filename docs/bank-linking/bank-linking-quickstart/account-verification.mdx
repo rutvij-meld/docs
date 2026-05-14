@@ -1,0 +1,11 @@
+---
+title: "Account Verification"
+---
+
+One of the use cases for bank linking is account verification. This is needed for example to make [ACH transactions](https://docs.meld.io/docs/making-ach-payments), in order to know that the user has access to the bank they are requesting you to pull money from.
+
+Account verification involves making a connection that includes the [OWNERS](https://docs.meld.io/docs/account-owners) and [IDENTIFIERS](https://docs.meld.io/docs/account-identifiers) products. Through the owners product, you will get back the user's name and address. Through the identifiers product you will get back the user's account number and routing number.
+
+Once this is complete, you have verified the user's identity and access to that bank account, and can then perform an ACH transaction. Every bank linking connection has a Meld customerId associated with it, use that customerId later when [creating a customer](https://docs.meld.io/docs/creating-a-payments-customer).
+
+<br />

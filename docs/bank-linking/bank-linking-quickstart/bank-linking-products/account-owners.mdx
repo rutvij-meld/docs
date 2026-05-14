@@ -1,0 +1,87 @@
+---
+title: "Owners"
+---
+
+<Note>
+API Reference
+
+[Search financial accounts](https://docs.meld.io/reference/bank-linking-accounts-search)\
+[Get a specific financial account](https://docs.meld.io/reference/bank-linking-accounts-get)
+</Note>
+
+
+# Overview
+
+Account identity information helps you verify your customer's identity by accessing the data recorded with their financial institution, such as their full name, phone number, mailing address, and email address. 
+
+# Use cases
+
+There are many uses cases that will require you to verify a customer's identity, such as:
+
+<li> Verify an account before initiating an ACH transaction.</li>
+<li> Verify depository-type accounts such as checking and savings accounts and credit-type accounts such as credit cards.</li>
+<li> Verify the information provided by your customer with a trusted source when opening a new account.</li>
+<li> Verify the information provided by your customer with a trusted source when opening a new account.
+Verify customers you have identified as being higher risk based on data such as email address, location, financial institution, or activity patterns.</li>
+
+# Account identity data
+
+When calling the [financial account](https://docs.meld.io/reference/bank-linking-accounts-get) endpoint, you will be able to access the account's identity data for that account. Also see [here](https://docs.meld.io/docs/managing-completed-connections#get-balances-owners-and-identifiers-data) for an example.
+
+
+<Note>
+Note
+
+Specifying `IDENTITIES` as a product in [/bank-linking/connect/start](https://docs.meld.io/reference/bank-linking-connect-create) does not guarantee account owners data to be available for every account belonging to the connection. Some accounts do not have owners data, and others may only have some of the owners' fields.
+</Note>
+
+
+# Sample Response
+
+```json
+{
+    "id": "W9ja25UmrZF25xbG22wdd",
+    "accountId": "W9kbkRme9VT2iz6qdsaww2",
+    "customerId": "W9ja24edcTHBks8h2e2dww",
+    "institutionId": "Ntj3AwgdridJc2rasdssdd",
+    "institutionName": "Chase",
+    "status": "ACTIVE",
+    "type": "DEPOSITORY",
+    "subtype": "CHECKING",
+    "name": "Checking",
+    "truncatedAccountNumber": "1234",
+    "identifiers": {
+        // data
+    },
+    "balances": {
+        // data
+    },
+    "owners": [
+        {
+            "addresses": [
+                {
+                    "data": {
+                        "street": "123 Cherry Hill Lane",
+                        "city": "Palo Alto",
+                        "region": null,
+                        "postalCode": "94537-8038",
+                        "country": "USA",
+                        "full": "123 Cherry Hill Lane Palo Alto CA 94537-8038 USA"
+                    },
+                    "primary": "UNKNOWN"
+                }
+            ],
+            "emails": [
+                "gjones@hotmail.net"
+            ],
+            "names": [
+                "George Jones"
+            ],
+            "phoneNumbers": null
+        }
+    ],
+    "serviceProviderDetails": [
+        // data
+    ]
+}
+```

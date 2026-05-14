@@ -1,0 +1,117 @@
+---
+title: "MX to Meld Overall Mappings"
+---
+
+**Note:** You can always compare the raw responses from MX in the `serviceProviderDetails` section of a financial account.
+
+[Financial Account Base Fields](#financial-account-base-fields)
+
+[Balances](https://docs.meld.io/docs/mx-balances-mapping)
+
+[Identifiers](https://docs.meld.io/docs/mx-identifiers-mapping)
+
+[Owners](https://docs.meld.io/docs/mx-owners-mapping)
+
+[Transactions](https://docs.meld.io/docs/mx-transactions-mapping)
+
+[Normalized Account Types and Subtypes](#normalized-account-types-and-subtypes)
+
+## Financial Account Base Fields
+
+This data comes from MX's [/users/\{user\_guid}/accounts](https://docs.mx.com/api#core_resources_accounts_list_accounts) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Meld Field
+      </th>
+
+      <th>
+        Description
+      </th>
+
+      <th>
+        MX Response Field
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        name
+      </td>
+
+      <td>
+        The account name
+      </td>
+
+      <td>
+        name
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        truncatedAccount\
+        Number
+      </td>
+
+      <td>
+        The last 4 digits of the account number
+      </td>
+
+      <td>
+        accountNumber
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        status
+      </td>
+
+      <td>
+        The real-time status of the account
+      </td>
+
+      <td>
+        `INACTIVE` if MX fields```
+
+        is_closed = TRUE
+        ```or `is_hidden = TRUE`; Otherwise `ACTIVE`
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        type
+      </td>
+
+      <td>
+        The type of the account. Mapped to a Meld standardized type
+      </td>
+
+      <td>
+        type
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        subtype
+      </td>
+
+      <td>
+        The subtype of the account. Mapped to a Meld standardized subtype
+      </td>
+
+      <td>
+        subtype
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+## Normalized Account Types and Subtypes

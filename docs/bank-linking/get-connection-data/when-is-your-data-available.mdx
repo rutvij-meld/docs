@@ -1,0 +1,34 @@
+---
+title: "When Is Your Data Available"
+---
+
+# Account Aggregations
+
+Account aggregations represent the process of loading balance, transaction, and other account  data for each account belonging to an institution connection. 
+
+Aggregations are kicked off for a connection in each of the following scenarios:
+
+1. **Following initial connection:** An aggregation process is initiated whenever an institution connection is successfully made in the Meld widget. Depending on the underlying service provider, this process may even begin prior to the customer exiting the widget.
+2. **During routine background refreshes**: Background refreshes are ran behind the scenes to ensure that the connection and account data do not get stale. Depending on the service provider, these background aggregations typically occur from 1-3 times a day.
+3. **During forced refreshes:** When a connection is refreshed via the [Meld refresh endpoint](https://docs.meld.io/reference/bank-linking-connections-refresh) it triggers the underlying service provider to perform a *live* aggregation process as of that moment. Since background aggregations already occur on a frequent basis, forced refreshes usually aren't necessary, and they incur extra charges.
+
+# Data Availability During Aggregations
+
+Aggregation data becomes available in stages as an aggregation process completes, and webhooks are sent out coinciding with each step of this process. More details about each webhook can be found [here](https://docs.meld.io/docs/webhook-events-bank-linking). Some products load quicker than others, and this enables the access of basic account info and other fast-loading products immediately without having to wait for the entire aggregation process to complete.
+
+### Webhook flow:
+
+During an aggregation process expect webhooks as follows: 
+
+1. The [BANK\_LINKING\_CONNECTION\_COMPLETED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_completed) webhook is sent to indicate that the connection has successfully completed. However, this doesn't mean that data is available yet. Wait till the following webhooks arrive to know when your data can be fetched.
+2. The [BANK\_LINKING\_ACCOUNTS\_UPDATING](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_accounts_updating) webhook is sent once the financial accounts belonging to a connection are identified and in the process of aggregating. This webhook contains basic info such as id, type, and name for identifying the accounts, but does not mean the accounts nor their desired products have aggregated yet.
+3. The [BANK\_LINKING\_ACCOUNTS\_UPDATED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_accounts_updated) webhook is sent once the aggregation of non-transaction products for the accounts belonging to the connection is complete. It also details which products were loaded for each individual account, since not all account types support all products. Depending on the institution and which products were specified in the initial call to [create a connection](https://docs.meld.io/reference/bank-linking-connect-create), this webhook may take slightly longer to send. If the only product belonging to the connection is `TRANSACTIONS` then this webhook will never be sent. At this point, up-to-date financial account info is now ready to be fetched, and the Meld APIs can be queried for more details about each of the financial accounts belonging to the connection. 
+4. The [BANK\_LINKING\_TRANSACTIONS\_AGGREGATED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_transactions_aggregated) webhook is sent once transactions have finished aggregating for all the accounts belonging to the connection that have them. It also details how many transactions were added, updated, or removed for each account since the last aggregation occurred. Depending on how many transactions the financial account has, this webhook could take some time to arrive as the provider may take time to fetch all the transactions from the bank. At this point, up-to-date transaction data can now be queried for the accounts belonging to the connection  
+5. The [BANK\_LINKING\_HISTORICAL\_TRANSACTIONS\_AGGREGATED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_historical_transactions_aggregated) webhook is sent once historical transactions (up to 2 years of data) have finished aggregating for all accounts belonging to the connection that have them. This aggregation process can take a while longer than the others to finish, so it usually arrives last.\
+   **Note:** This aggregation will only ever occur at most once for a connection. By default, historical transactions are loaded during the initial aggregation, but retry attempts will be made during subsequent aggregations if it failed originally. Aggregating historical transactions is a premium service for Finicity, so if this is not desired please reach out to Meld support to disable this feature. After doing so, you can still aggregate historical transactions if so desired for any Finicity connection that has transactions as an available product upon the first time a forced [refresh](https://docs.meld.io/reference/bank-linking-connections-refresh) is triggered.
+
+# Updating Transaction Data
+
+Initially, only 30 days of transaction history is made available following the first aggregation of a connection with `TRANSACTIONS` enabled as a product. Not until the `BANK_LINKING_HISTORICAL_TRANSACTIONS_AGGREGATED` webhook is received does transaction history beyond 30 days become available. 
+
+When subsequent aggregations occur, then updating transactions becomes necessary so as to maintain transaction health and capture any changes that may have occurred. Examples of changes include the transition of a transaction from `PENDING` to `POSTED`, the modification to the amount of a transaction (such as from a tip being added), etc. See [Transaction States](https://docs.meld.io/docs/account-transactions#transaction-states) for more details regarding transaction state changes and their effects. Transactions that do change typically only ever do so within 2 weeks from the the original transaction date. Beyond 14 days, it is unlikely that a transaction will ever be modified. Hence, when updating transactions in response to the routine background aggregations that occur it is recommended to fetch around 14 days of transactions when checking for any changes, as anything beyond that is unnecessary.

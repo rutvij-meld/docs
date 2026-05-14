@@ -1,0 +1,20 @@
+---
+title: "MX Investment Transactions Mapping"
+---
+
+This data comes from MX's [/users/\{user\_guid} /accounts/\{account\_guid}/transactions](https://docs.mx.com/api-reference/platform-api/reference/list-transactions-by-account) endpoint and is returned from Meld's [/bank-linking/investments/transactions](https://docs.meld.io/reference/bank-linking-investment-transactions-search) endpoint.
+
+| Meld Field      | Description                                                 | Mx Response Field |
+| :-------------- | :---------------------------------------------------------- | :---------------- |
+| symbol          | The symbol of the security                                  | **Not available** |
+| quantity        | The number of shares of the security                        | **Not available** |
+| costBasis       | The purchase price of the holding, per share                | **Not available** |
+| cashBalance     | The cash balance of the account after the transaction       | account.balance   |
+| accountId       | The Id of the financial account                             | account.guid      |
+| amount          | The total currency involved in the transaction              | amount            |
+| currency        | The ISO currency code that was used to purchase the holding | currency\_code    |
+| description     | A description of the transaction                            | description       |
+| status          | The status of the transaction                               | status            |
+| transactionDate | The date the transaction was initiated                      | transacted\_at    |
+| postedDate      | The date the transaction was finalized                      | posted\_at        |
+| type            | The investment transaction's type                           | category          |

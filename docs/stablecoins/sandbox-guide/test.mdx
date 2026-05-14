@@ -1,0 +1,178 @@
+---
+title: "White-Label API and Meld Checkout Testing Credentials"
+---
+
+# Testing Overview
+
+This guide provides detailed testing credentials and instructions for service providers in the Meld Crypto Stack sandbox environment.
+
+## Quick Start
+
+**New to testing?** Start with our **[Sandbox Environment Guide](sandbox-guide)** to understand sandbox limitations and best practices.
+
+**Ready to test?** This page contains specific testing credentials for each provider.
+
+# Provider Testing Credentials
+
+⚠️ **Important:** Before testing, review our [Sandbox Environment Guide](sandbox-guide) to understand sandbox limitations.
+
+## Testing Notes
+
+* Most providers have relaxed KYC requirements in sandbox
+* Some providers validate wallet addresses match the cryptocurrency type
+* Use test credentials provided below for each provider
+* Start with **Buy Flow testing** as it's fully supported in sandbox
+
+## Unlimit
+
+Use the following test cards when testing in [Unlimit's](https://docs.gatefi.com/docs/gatefi-docs/iwo4e6yo25au3-sandbox-environment) sandbox.
+
+| Card Type  | Card Number         | Expiration | CVV |
+| :--------- | :------------------ | :--------- | --- |
+| Visa       | 4000 0000 0000 0085 | 10/30      | 123 |
+| Mastercard | 5100 0000 0000 0065 | 10/30      | 123 |
+
+Use a real wallet address when testing, for example when trying to buy `ETH_GOERLI` (ETH on TestNet) use a real `ETH` wallet address.
+
+## Banxa
+
+**While Banxa's sandbox does sometimes allow users to complete transactions, often KYC or transactions are rejected. Therefore Meld recommends testing in Banxa's production rather than its sandbox.** In Banxa's sandbox, the OTP is **7203**.
+
+Use the following test cards when testing in [Banxa's](https://docs.banxa.com/docs/testing-information) sandbox.
+
+| Card Type | Info | Card Number         | Expiration | CVV |
+| :-------- | :--- | :------------------ | :--------- | --- |
+| Visa      | US   | 4111 1111 1111 1111 | 01/30      | 555 |
+
+Banxa allows real wallet addresses while testing in their sandbox.
+
+## BTC Direct
+
+Use the following test cards when testing in [BTC Direct's](https://docs.adyen.com/development-resources/testing/test-card-numbers/#visa) sandbox.
+
+| Card Type  | Card Number         | Expiration | CVV |
+| :--------- | :------------------ | :--------- | --- |
+| Visa       | 4111 1111 4555 1142 | 03/30      | 737 |
+| Mastercard | 2222 4000 7000 0005 | 03/30      | 737 |
+
+BTC Direct allows real wallet addresses while testing in their sandbox.
+
+## TransFi
+
+Use the following test cards when testing in [TransFi's](https://docs.transfi.com/guides/testing-widget) sandbox.
+
+| Card Name | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| FL-BRW1   | 4000 0278 9138 0961 | 11/30      | 123 |
+
+Test in TransFi's sandbox using `BTC` and the wallet address `2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm`.
+
+## Transak
+
+Use the following test cards when testing in [Transak's](https://docs.transak.com/docs/test-credentials) sandbox.
+
+| Card Type | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| Visa      | 4111 1111 1111 1111 | 10/33      | 123 |
+| Visa      | 4485 1415 2054 4212 | 10/33      | 100 |
+
+For US: Use SSN number `000000001` to create a test account.  
+For India: Use PAN number `ABCDE1234A` to place an INR order.
+
+Transak requires a wallet address that matches the token passed in, for example if you are testing with `BTC_TESTNET` then use wallet address `2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm`.
+
+## Onramp Money
+
+In Onramp.Money's Sandbox, to get past the phone number screen, you can use the phone number `+91 8660031402` and the passcode `112233`. Use any real wallet address when testing, and Meld recommends testing with the token ETH.
+
+## Fonbnk
+
+Fonbnk requires a real wallet address for whatever token is selected in their sandbox. Also, there is no test card available, since the payment methods Fonbnk supports are Bank Transfer and Airtime. Use Bank Transfer for testing purposes.
+
+## Paybis
+
+Use the following test cards when testing in Paybis' sandbox.
+
+| Card Type | Card Number         | Expiration | CVV |
+| :-------- | :------------------ | :--------- | --- |
+| Visa      | 4111 1111 1111 1111 | 10/30      | 123 |
+
+Paybis requires a wallet address that matches the token passed in, for example if you are testing with `BTC_TESTNET` then use wallet address `2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm`.
+
+## Koywe
+
+When testing in Koywe's sandbox, a single user will only be able to make transactions in 1 particular country. Koywe also requires real ID for it's sandbox, but it doesn't have to match the country of the transaction (for example a US ID will work even when making a Chile transaction). We recommend testing with Chile and the payment method Khipu in order for transactions to be completed successfully. Use the following values to complete a transaction.
+
+| Amount                                         | Payment Method | RUT          | Khipu Password | Khipu Secondary Codes | Bank Account |
+| :--------------------------------------------- | :------------- | :----------- | -------------- | :-------------------- | :----------- |
+| 20000 CLP (Khipu won't work if its over 25000) | Khipu          | 28.666.939-5 | 1234           | 11, 22, 33            | Any          |
+
+## Robinhood
+
+Robinhood does not have a sandbox, only a production environment. Therefore you will have to make a real payment to fully test Robinhood's onramp.
+
+## Coinbase Pay
+
+Coinbase Pay does not have a sandbox, only a production environment. Therefore you will have to make a real payment to fully test Coinbase Pay's onramp.
+
+## Blockchain.com
+
+Blockchain.com does not have a sandbox, only a production environment. Therefore you will have to make a real payment to fully test Blockchain.com's onramp.
+
+## Stripe
+
+Use the following test values when testing in [Stripe's](https://docs.stripe.com/crypto/integrate-the-onramp#test-mode-values) sandbox.
+
+| OTP    | SSN       | Address Line 1     | Card Number         | Expiration | CVV |
+| :----- | :-------- | :----------------- | ------------------- | :--------- | :-- |
+| 000000 | 000000000 | address_full_match | 4242 4242 4242 4242 | 10/30      | 123 |
+
+If you are bringing over your own Stripe account:
+
+1. please reach out to Stripe to enable `preferred_payment_method` and `source_total_amount` for your account, or else you will see errors.
+2. When setting up Stripe webhooks, do the following steps in order:
+   1. Grab your Stripe API keys from the Stripe dashboard and put them in the Meld dashboard, putting in any value for the Webhook Secret.
+   2. Take the Meld webhook url from the Meld dashboard and go to the Stripe dashboard and set up webhooks to Meld. Select all events.
+   3. Take the generated Stripe webhook secret and go back to the Meld dashboard and edit that value to add that in so that webhooks work properly.
+
+## Alchemy Pay
+
+Alchemy Pay's sandbox functions like a real production environment. Therefore you will have to make a real payment to fully test Alchemy Pay's onramp.
+
+## Topper
+
+Use the following test information when testing [Topper](https://docs.topperpay.com/environments/) in sandbox. You can use rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg for the token XRP_XRPLEDGER and if prompted for a wallet tag use 224333255
+
+| Card Type | Card Number      | Expiration      | CVV         |
+| :-------- | :--------------- | :-------------- | ----------- |
+| Visa      | 4921817844445119 | Any future date | Any 3 digit |
+
+## Mercuryo
+
+Use the following test values when testing in Mercuryo's sandbox.
+
+| Card Type | Cardholder Name | Card Number         | Expiration      | CVV                               |
+| :-------- | :-------------- | :------------------ | :-------------- | --------------------------------- |
+| Visa      | Cardholder Name | 4444 4444 4444 3333 | any future date | 123                               |
+| Visa      | Cardholder Name | 5555 4444 3333 1111 | any future date | CVV 123 for success, 555 for fail |
+
+Your IP address must be whitelisted by Mercuryo in order to launch their sandbox widget.
+
+## Kryptonim
+
+Use the following test values when testing in Kryptonim's sandbox.
+
+| Card Type | Cardholder Name | Card Number      | Expiration | CVV |
+| :-------- | :-------------- | :--------------- | :--------- | --- |
+| Visa      | any name        | 4929111260419572 | 05/2028    | 790 |
+
+## Swapped
+
+Use the following test values when testing in Swapped's sandbox.
+
+| Card Type | Cardholder Name | Card Number         | Expiration | CVV |
+| :-------- | :-------------- | :------------------ | :--------- | --- |
+| Visa      | any name        | 4929 4205 7359 5709 | 10/31      | 123 |
+
+
+<br />

@@ -1,0 +1,373 @@
+---
+title: "Bank Linking Webhooks"
+---
+
+These are the various webhooks you can expect to receive over the lifetime of a bank linking connection. To understand when to expect each webhook and what to do when it arrives, see [here](https://docs.meld.io/docs/when-is-your-data-available).
+
+## Attributes
+
+All webhook events have the same attributes.
+
+| Key         | Type           | Description                                                                          |
+| :---------- | :------------- | :----------------------------------------------------------------------------------- |
+| `eventType` | String         | Type of event                                                                        |
+| `eventId`   | String         | Meld's unique identifier for the event                                               |
+| `timestamp` | OffsetDateTime | The date and time the event was created                                              |
+| `accountId` | String         | Account id                                                                           |
+| `profileId` | String         | Id of the webhook profile responsible for this event to be sent                      |
+| `version`   | Date           | [Version](versioning)                                                                |
+| `payload`   | Object         | An object containing additional information of the event depending on the event type |
+
+# Connection Webhooks
+
+### Payload Attributes
+
+
+
+### `BANK_LINKING_CONNECTION_COMPLETED`
+
+Sent when the customer completes the connection with their institution either in the initial connect flow or a reconnect flow. This does not imply that financial account data has completed aggregating or is ready to be fetched, just that the customer has completed the widget flow.
+
+The `BANK_LINKING_CONNECTION_STATUS_CHANGE` webhook will be sent in tandem with this one (with the `newStatus` being `ACTIVE`). However, if a connection goes from a broken state to `ACTIVE` without the user needing to reconnect (i.e. sometimes connections may break due to temporary institution unavailability but are eventually resolved on their own) , then only `BANK_LINKING_CONNECTION_STATUS_CHANGE` will be issued containing both the old status and the new `ACTIVE` status. This is because `BANK_LINKING_CONNECTION_COMPLETED` is reserved solely for when the customer completes the widget flow.
+
+```json
+{
+  "eventType": "BANK_LINKING_CONNECTION_COMPLETED",
+  "eventId": "NGoTSGJYpd3cLv1iyHWSw9",
+  "timestamp": "2021-12-09T21:58:29.329186Z",
+  "accountId": "QfdzpX3te1cDaviihXA4D5dA6ghnT3",
+  "profileId": "W9kBgKB7afMxYoYuy3rJuZ",
+  "version": "2021-10-28",
+  "payload": {
+    "requestId": "91d7fb355e319532b178acc8a7ae1a69",
+    "customerId": "Qg56BnxskKokRV8rVo21Af3T4k6QKY",
+    "externalCustomerId": "testCustomer1",
+    "connectionId": "WQ4mBt3BEX2cmhCvSPyfTu",
+    "institutionId": "Ntj3AwgdridJc2rtfeheku",
+    "institutionName": "Chase",
+    "serviceProviderDetails": {
+      "serviceProvider": "PLAID",
+      "serviceProviderConnectionId": "NXrZpLwd1eUQQqymvl9nSkkV8DpeLLUWoXdZx"
+    }
+  }
+}
+```
+
+### `BANK_LINKING_CONNECTION_STATUS_CHANGE`
+
+Sent whenever a connection changes status. This webhook essentially encompasses all of the other connection status related webhooks and will be sent alongside them. It is advised to listen to this webhook instead. Any  service provider errors that occur post-completion will trigger this webhook as well, either due to an attempted aggregation failing or if the service provider notifies Meld via their own webhooks that a connection is in a broken state. This can happen when fetching products following an initial connection, or during daily/forced refreshes of existing connections. Following such a webhook, the connection will now have a status of `CUSTOMER_ACTION_REQUIRED`. Depending on the `newStatus` and `newStatusReason`, different actions may need to be taken. The `serviceProviderDetails` will provide additional information on what caused the connection to end up in such state. A list of potential `reasons` and actions to take for each of them can be found on the [bank linking errors](https://docs.meld.io/docs/connection-statuses-and-errors#connection-errors) page.
+
+If a connection requires a reconnect, you can still request information (such as balances, transactions, etc.) about the connection and you will receive the data from the last time the connection was still operational.
+
+```json
+{
+    "eventType": "BANK_LINKING_CONNECTION_STATUS_CHANGE",
+    "eventId": "UhK4iqKP57FeLPgqBi8EUk",
+    "timestamp": "2023-08-22T20:54:02.960285Z",
+    "accountId": "W9ju7atKP5Jaf5RPweGeis",
+    "profileId": "W9kBgKB7afMxYoYuy3rJuZ",
+    "version": "2023-07-31",
+    "payload": {
+      "customerId": "WQ4KqLo3SRSPeTVjxxwo2o",
+      "externalCustomerId": "20230822-67a",
+      "connectionId": "WQ4KqLuBYYTYHi2YATXYdB",
+      "institutionId": "W4AAAFPgUVB85QnQDu5xhU",
+      "oldStatus": "ACTIVE",
+      "oldStatusReason": null,
+      "newStatus": "RECONNECT_REQUIRED",
+      "newStatusReason": "LOGIN_REQUIRED",
+      "activeDuplicateConnectionId": null,
+      "serviceProviderDetails": {
+        "environment": "sandbox",
+        "error": {
+          "error_type": "ITEM_ERROR",
+          "error_code": "ITEM_LOGIN_REQUIRED",
+          "error_message": "the login details of this item have changed (credentials, MFA, or required user action) and a user login is required to update this information. use Link's update mode to restore the item to a good state",
+          "display_message": null,
+          "request_id": null,
+          "causes": null,
+          "status": 400,
+          "documentation_url": null,
+          "suggested_action": null
+        },
+        "item_id": "NXrZpLwd1eUQQqymvl9nSkkV8DpeLLUWoXdZx",
+        "serviceProvider": "PLAID",
+        "serviceProviderConnectionId": "NXrZpLwd1eUQQqymvl9nSkkV8DpeLLUWoXdZx",
+        "webhook_code": "ERROR",
+        "webhook_type": "ITEM"
+      }
+    }
+  }
+```
+
+# Financial Account Webhooks
+
+### Payload Attributes
+
+
+
+### `BANK_LINKING_ACCOUNTS_UPDATING`
+
+Sent once the connect flow is completed and the accounts are in the process of aggregating. At this time, only basic account info is available. Also sent during subsequent daily/forced refreshes when the accounts are in the process of aggregating again.
+
+_Financial Account fields for this event type:_
+
+| Key                          | Type             | Description                                                                                                |
+| :--------------------------- | :--------------- | :--------------------------------------------------------------------------------------------------------- |
+| `financialAccounts`          | Array of objects |                                                                                                            |
+|     `id`                     | String           | Unique identifier for the financial account                                                                |
+|     `name`                   | String           | If present, the name of the account as provided by the institution.                                        |
+|     `truncatedAccountNumber` | String           | If present, the last 4 digits of the account number, sometimes referred to as the account mask.            |
+|     `newAccount`             | Boolean          | Indicates if the account was newly added or is an existing account getting updated (i.e. during a refresh) |
+
+```json
+{
+  "eventType": "BANK_LINKING_ACCOUNTS_UPDATING",
+  "eventId": "38oVQntsutXnfzn6fZ3mxW",
+  "timestamp": "2022-09-06T17:42:49.703620Z",
+  "accountId": "W9ju7atKP5Jaf5RPweGeis",
+  "profileId": "W9kBgKB7afMxYoYuy3rJuZ",
+  "version": "2022-08-29",
+  "payload": {
+    "customerId": "WGti3bpsethEWYJrm2icuo",
+    "externalCustomerId": "20220906-206",
+    "connectionId": "WGu7we7dVTCnVkjJrpzVNm",
+    "institutionId": "29KL1L2iYUV3zUCoSHhwvr",
+    "requestId": "1f97b51f3771328bc07187c8a2c1fe30",
+    "financialAccounts": [
+      {
+        "id": "WGti3dJFc6A9r1pYcBmE6e",
+        "name": "Plaid Checking",
+        "truncatedAccountNumber": "0000",
+        "newAccount": true
+      },
+      {
+        "id": "WGti3cCpeiAtWxL6pFQPTg",
+        "name": "Plaid Saving",
+        "truncatedAccountNumber": "1111",
+        "newAccount": true
+      }
+    ],
+    "serviceProviderDetails": {
+      "serviceProvider": "PLAID",
+      "serviceProviderConnectionId": "NXrZpLwd1eUQQqymvl9nSkkV8DpeLLUWoXdZx"
+    }
+  }
+}
+```
+
+### `BANK_LINKING_ACCOUNTS_UPDATED`
+
+Sent once aggregation has completed for the accounts belonging to the connection. Products are now available to be fetched for the accounts. This webhook should arrive shortly after the `BANK_LINKING_ACCOUNTS_UPDATING` webhook, but sometimes products may take a while to aggregate for certain institutions. Note that if no products have been updated, then the financialAccounts object in this webhook will be empty. See more about [aggregation](https://docs.meld.io/docs/managing-completed-connections#account-aggregations) here.
+
+_Financial Account fields for this event type:_
+
+| Key                 | Type             | Description                                                                                                                                                                                                                                                                                                                              |
+| :------------------ | :--------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `financialAccounts` | Array of objects |                                                                                                                                                                                                                                                                                                                                          |
+|     `id`            | String           | Unique identifier for the financial account                                                                                                                                                                                                                                                                                              |
+|     `products`      | Array of Strings | The products that were updated for the account. This list will never include `TRANSACTIONS` because their updates are handled separately within the transactions webhooks. Products are considered updated even if nothing changed, and it is solely meant to indicate that the updated products were fetched from the service provider. |
+
+```json
+{
+  "eventType": "BANK_LINKING_ACCOUNTS_UPDATED",
+  "eventId": "Ja2HXauns8LHPYR1NhEbrh",
+  "timestamp": "2022-09-06T17:42:51.853020Z",
+  "accountId": "W9ju7atKP5Jaf5RPweGeis",
+  "profileId": "W9kBgKB7afMxYoYuy3rJuZ",
+  "version": "2022-08-29",
+  "payload": {
+    "customerId": "WGti3bpsethEWYJrm2icuo",
+    "externalCustomerId": "20220906-206",
+    "connectionId": "WGu7we7dVTCnVkjJrpzVNm",
+    "institutionId": "29KL1L2iYUV3zUCoSHhwvr",
+    "requestId": "1f97b51f3771328bc07187c8a2c1fe30",
+    "successfullyAggregatedAt": "2023-08-22T19:48:55Z",
+    "financialAccounts": [
+      {
+        "id": "WGti3cCpeiAtWxL6pFQPTg",
+        "products": [
+          "BALANCES",
+          "IDENTIFIERS",
+          "OWNERS"
+        ]
+      },
+      {
+        "id": "WGti3dJFc6A9r1pYcBmE6e",
+        "products": [
+          "BALANCES",
+          "IDENTIFIERS",
+          "OWNERS"
+        ]
+      }
+    ],
+    "serviceProviderDetails": {
+      "serviceProvider": "PLAID",
+      "serviceProviderConnectionId": "NXrZpLwd1eUQQqymvl9nSkkV8DpeLLUWoXdZx"
+    }
+  }
+}
+```
+
+### `BANK_LINKING_ACCOUNTS_REMOVED`
+
+Sent when individual financial accounts belonging to a connection have been deleted. This can occur when the customer revokes access to individual accounts or they close a financial account with their bank altogether. This webhook will always be issued following the `BANK_LINKING_CONNECTION_DELETED` event, as a connection deletion implies all of its financial accounts are deleted as well.
+
+```json
+{
+  "eventType": "BANK_LINKING_ACCOUNTS_REMOVED",
+  "eventId": "GUVQ5N9tQpLFALKpRevt6C",
+  "timestamp": "2021-12-09T19:09:23.283931Z",
+  "accountId": "QfdzpX3te1cDaviihXA4D5dA6ghnT3",
+  "profileId": "W9kBgKB7afMxYoYuy3rJuZ",
+  "version": "2021-10-28",
+  "payload": {
+    "customerId": "WGuEzKYdKukkUFxmzVDUvm",
+    "externalCustomerId": "20221031-34",
+    "connectionId": "WGuEzMHgUFDzumu6zVRyw5",
+    "institutionId": "W9kgBBLULSJFSKTwCpb5Gf",
+    "financialAccounts": [
+      {
+        "id": "WGuEzL3AC3sF155f2ASWpu"
+      },
+      {
+        "id": "WGuEzHzJzEiDTBhCcniN4D"
+      },
+      {
+        "id": "WGuEzHoQA6UgG1Nq1qQ1Qy"
+      },
+      {
+        "id": "WGuEzHswGCZCn2bS1N9Mkh"
+      }
+    ],
+    "serviceProviderDetails": {
+      "serviceProvider": "FINICITY",
+      "serviceProviderConnectionId": "6026862732"
+    }
+  }
+}
+```
+
+# Transaction Webhooks
+
+### Payload Attributes
+
+
+
+### `BANK_LINKING_TRANSACTIONS_AGGREGATED`
+
+Captures net transactional effects for each financial account belonging to the connection. Will be sent after each time an aggregation occurs in which transactions are added or modified. See the [webhook flow](https://docs.meld.io/docs/managing-completed-connections#webhook-flow) for more details.
+
+```json
+{
+  "eventType": "BANK_LINKING_TRANSACTIONS_AGGREGATED",
+  "eventId": "FEfSjVLXjM81CkG9ejkWBvu3Kb6ND5",
+  "timestamp": "2022-01-31T22:05:04.068964Z",
+  "accountId": "QfdzpX3te1cDaviihXA4D5dA6ghnT3",
+  "version": "2022-03-09",
+  "payload": {
+    "customerId": "WGv8FTrTroky93FYwAJNXc",
+    "externalCustomerId": "testCustomer",
+    "connectionId": "WGumJ72d21SDCyma5Ax51k",
+    "requestId": "1f97b51f3771328bc07187c8a2c1fe30",
+    "successfullyAggregatedAt": "2023-08-22T19:48:55Z",
+    "isPartial": false,
+    "financialAccounts": [
+     	{
+        "financialAccountId": "WGv8FSGqrwvgVtqY5CARE9",
+        "oldestTransactionUpdatedSearchKey": "3ztRY2PPYjEyzuuAfttKi9omi7UbsLxTbPTDV8MDpPhg9trwrsLZkHCJtb7QPs7cq35DJWSGqnRPP8UxGDmy2o2DRZJnG826oCuePdcnkAaCFyUEqc2QLeteoqJ3xBKetdApYwoFtA39ZpMxyL77LPxZEyUsWa4NWpxAEMQUHV9pSqZcgG",
+        "numTransactionsAdded": 3,
+        "numInvestmentTransactionsAdded": 0,
+        "numTransactionsUpdated": 1,
+        "numInvestmentTransactionsUpdated": 0,
+        "transactionIdsRemoved": [],
+        "investmentTransactionIdsRemoved": []
+     	},
+     	{
+        "financialAccountId": "WGv8FSsWTrgAXBtS2cVPWR",
+        "oldestTransactionUpdatedSearchKey": "3ztRY2PPYjEyzuuAfttKi9omi7UbsLxTbPTDV8MDpPhg9trwrsLZkHCJtb7QPs7cq35DJWSGqnRPP8UxGDmy2o2DRZJnG826oCuePdcnkAaCFyUEqc2QLeteoqJ3xBKetdApYwoFtA39ZpMxyL77LPxZEyUsWa4NWpxAEMQUHV9pSqZcgG",
+        "numTransactionsAdded": 0,
+        "numInvestmentTransactionsAdded": 0,
+        "numTransactionsUpdated": 17,
+        "numInvestmentTransactionsUpdated": 0,
+        "transactionIdsRemoved": [],
+        "investmentTransactionIdsRemoved": []
+     	}
+    ],
+    "serviceProviderDetails": {
+      "environment": "sandbox",
+      "item_id": "zqyK7Abwv7cXJnr5Xk9xS31lMgqdXDuo3ZDxb",
+      "new_transactions": 8,
+      "serviceProvider": "PLAID",
+      "webhook_code": "INITIAL_UPDATE",
+      "webhook_type": "TRANSACTIONS"
+    }
+  }
+}
+```
+
+### `BANK_LINKING_HISTORICAL_TRANSACTIONS_AGGREGATED`
+
+Captures net historical transaction effects for each financial account belonging to the connection. It will be sent out at most once per connection after historical transactions (transactions older than 30 days) have been aggregated. By default, historical transaction aggregation is initiated after the connection is made. This behavior can be changed, see the [webhook flow](https://docs.meld.io/docs/managing-completed-connections#webhook-flow) for more details.
+
+```json
+{
+  "eventType": "BANK_LINKING_HISTORICAL_TRANSACTIONS_AGGREGATED",
+  "eventId": "FEfSjVLXjM81CkG9ejkWBvu3Kb6ND5",
+  "timestamp": "2022-01-31T22:05:04.068964Z",
+  "accountId": "QfdzpX3te1cDaviihXA4D5dA6ghnT3",
+  "version": "2022-03-09",
+  "payload": {
+    "customerId": "WGv8FTrTroky93FYwAJNXc",
+    "externalCustomerId": "testCustomer",
+    "connectionId": "WGumJ72d21SDCyma5Ax51k",
+    "requestId": "1f97b51f3771328bc07187c8a2c1fe30",
+    "successfullyAggregatedAt": "2023-08-22T19:48:55Z",
+    "isPartial": false,
+    "financialAccounts": [
+     	{
+        "financialAccountId": "WGv8FSGqrwvgVtqY5CARE9",
+        "oldestTransactionUpdatedSearchKey": "3ztRY2PPYjEyzuuAfttKi9omi7UbsLxTbPTDV8MDpPhg9trwrsLZkHCJtb7QPs7cq35DJWSGqnRPP8UxGDmy2o2DRZJnG826oCuePdcnkAaCFyUEqc2QLeteoqJ3xBKetdApYwoFtA39ZpMxyL77LPxZEyUsWa4NWpxAEMQUHV9pSqZcgG",
+        "numTransactionsAdded": 84,
+        "numInvestmentTransactionsAdded": 0,
+        "numTransactionsUpdated": 1,
+        "numInvestmentTransactionsUpdated": 0,
+        "transactionIdsRemoved": [],
+        "investmentTransactionIdsRemoved": [],
+        "historicalAggregationSucceeded": false,
+        "historicalAggregationError": {
+           "error": {
+              "message": "Member's institution does not support extended transaction history.",
+              "status": "bad_request",
+              "type": "bad_request_error"
+            },
+            "serviceProvider": "MX"
+         }
+     	},
+     	{
+        "financialAccountId": "WGv8FSsWTrgAXBtS2cVPWR",
+        "oldestTransactionUpdatedSearchKey": "3ztRY2PPYjEyzuuAfttKi9omi7UbsLxTbPTDV8MDpPhg9trwrsLZkHCJtb7QPs7cq35DJWSGqnRPP8UxGDmy2o2DRZJnG826oCuePdcnkAaCFyUEqc2QLeteoqJ3xBKetdApYwoFtA39ZpMxyL77LPxZEyUsWa4NWpxAEMQUHV9pSqZcgG",
+        "numTransactionsAdded": 150,
+        "numInvestmentTransactionsAdded": 0,
+        "numTransactionsUpdated": 1,
+        "numInvestmentTransactionsUpdated": 0,
+        "transactionIdsRemoved": [],
+        "investmentTransactionIdsRemoved": [],
+        "historicalAggregationSucceeded": false,
+        "historicalAggregationError": {
+           "error": {
+              "message": "Member's institution does not support extended transaction history.",
+              "status": "bad_request",
+              "type": "bad_request_error"
+            },
+            "serviceProvider": "MX"
+         }
+     	}
+    ],
+    "serviceProviderDetails": {
+      "serviceProvider": "FINICITY",
+      "serviceProviderConnectionId": "6026862732"
+    }
+  }
+}
+```

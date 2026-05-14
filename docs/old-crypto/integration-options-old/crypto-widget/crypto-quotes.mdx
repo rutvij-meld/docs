@@ -1,0 +1,28 @@
+---
+title: "Crypto Quotes"
+---
+
+## Overview
+
+Meld's crypto quote endpoint can be used to show your customers quotes across all service providers your API key is linked to.
+
+You can specify which providers you want to return a quote for or return quotes for all providers you have access to. The [API reference](https://docs.meld.io/reference/crypto-quote-get) has additional details about the required parameters and response.
+
+## How to Get a Crypto Quote
+
+
+## Supported crypto currencies
+
+To receive a response from the API, one of the required parameters is the desired cryptocurrency. The list of supported cryptocurrencies can be found in the [supported assets section](https://docs.meld.io/docs/supported-crypto-currencies).
+
+## Displaying quotes
+
+When requesting a quote, the Meld API will only return back the quotes that have support for the specific quote request. For example, if the customer requests to purchase ETH with JPY vs SOL with USD, the list of service providers we return will be different, because each service provider supports a different set of countries and currencies.
+
+## Ranking Quotes
+
+There are various strategies for how to rank the quotes Meld returns to you when you display them to your users. One common strategy is to rank the quote purely based on the amount of crypto the user will receive, which, while very fair to the onramps, is not the most successful way. Meld offers several key pieces of data in the quote response which if used correctly can greatly increase conversion. You can read more about these under [Conversion Based Routing](https://docs.meld.io/docs/conversion-based-routing).
+
+## Payment Method Consistency
+
+When passing in a payment method to the quote endpoint, try to be as specific as possible for consistency. For example if you pass in `APPLE_PAY` as the payment method, all the quotes returned will be for `APPLE_PAY`. But if you pass in `MOBILE_WALLET` as the payment method, then you may get back some quotes for `APPLE_PAY`, some quotes for `GOOGLE_PAY`, and some quotes for `SAMSUNG_PAY`, as they are all subtypes of `MOBILE_WALLET`.

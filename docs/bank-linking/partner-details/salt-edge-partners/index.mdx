@@ -1,0 +1,38 @@
+---
+title: "Salt Edge Partners - Partner Details"
+---
+
+This page will cover supported countries, config settings, and Salt Edge Partners specific information.
+
+## Supported Countries
+
+Meld supports Salt Edge Partners institutions in Argentina (AR), Australia (AU), Austria (AT), Belarus (BY), Belgium (BE), Brazil (BR), Bulgaria (BG), Croatia (HR), Cyprus (CY), Czechia (CZ), Denmark (DK), Estonia (EE), Finland (FI), France (FR), Germany (DE), Greece (GR), Hungary (HU), Iceland (IS), Ireland (IE), Italy (IT), Latvia (LV), Liechtenstein (LI), Lithuania (LT), Luxembourg (LU). Malta (MT), Netherlands (NL), Norway (NO), Poland (PL), Portugal (PT), Romania (RO), Slovakia (SK), Slovenia (SI), Spain (ES), Sweden (SE), and the United Kingdom (UK).
+
+## Configuration Settings
+
+If you have your own [Salt Edge Partners](https://docs.saltedge.com/partners/v1/) account that you wish to integrate with Meld, you will need to provide the following credentials securely on the Meld Integrations Tab on the dashboard:
+
+* _App ID_
+* _Secret_
+* _Signature Key_
+
+![](https://files.readme.io/8d1d6a1-image.png)
+
+_Note_: If you have both a Salt Edge and Salt Edge Partners account, the keys may be different, so please verify you are entering the correct credentials.
+
+## Salt Edge Partners Webhooks
+
+Salt Edge Partners needs several webhook urls, which can be seen in the Meld dashboard:
+
+![](https://files.readme.io/472c5e9-image.png)
+
+All of the urls will start with `<base_url>/webhook/saltedgepartners/<accountId>/` but at the end will have a different event, such as `success`, `fail`, `destroy`, `notify`, `interactive`, or `service`. Here is how they would look in the Salt Edge Partners dashboard:
+
+![](https://files.readme.io/276f837-image.png)
+
+## Special considerations
+
+* Salt Edge Partners does not support forced refreshes, only daily automatic refreshes
+* Meld loads the last 90 days of transaction data by default for Salt Edge Partners connections (if transactions is a requested product)
+
+<br />

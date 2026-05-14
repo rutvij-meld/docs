@@ -1,0 +1,14 @@
+---
+title: "MX Transactions Mapping"
+---
+
+This data comes from MX's [/users/\{user\_guid} /accounts/\{account\_guid}/transactions](https://docs.mx.com/api-reference/platform-api/reference/list-transactions-by-account) endpoint and is returned from Meld's [/bank-linking/transactions](https://docs.meld.io/reference/bank-linking-transactions-search) endpoint.
+
+| Meld Field      | Description                                  | MX Response Field     |
+| :-------------- | :------------------------------------------- | :-------------------- |
+| amount          | The amount of the transaction                | amount                |
+| currency        | The currency used in the transaction         | currency\_code        |
+| description     | The transaction's description                | original\_description |
+| status          | The status of the transaction                | status                |
+| transactionDate | The date and time the transaction was made   | transacted\_at        |
+| postedDate      | The date and time the transaction was posted | posted\_at            |

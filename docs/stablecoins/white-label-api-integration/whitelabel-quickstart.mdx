@@ -1,0 +1,321 @@
+---
+title: "Quickstart"
+description: "This is the 30 minute quickstart guide for executing the white-label API flow for the first time."
+---
+
+# Integration Quickstart
+
+Go through this flow to understand the key endpoints and make a successful transaction.
+
+**Time Required:** 30 minutes  
+**Difficulty:** API knowledge required
+
+## Step 1: Get Your API Key
+
+Your API key is required for all Meld API calls.
+
+### Process:
+
+1. **Check your email** for the Meld dashboard invitation
+2. **Click the invitation link** and log in
+3. In the dashboard [https://dashboard.meld.io](https://dashboard.meld.io) , **navigate to Developer > API Keys**
+4. **Click "Reveal Key"**
+5. **Copy and save** your API key securely
+
+
+<Warning>
+**Important:** Always add `BASIC` before your API key in all requests
+
+**Example:** `BASIC W9kZTT7332okCEc1A9aqAq:3sYKoXQv6oHVHSts7G2agw9vTCXz`
+</Warning>
+
+
+***
+
+## Step 2: Set Up Webhooks
+
+Webhooks notify your server when transactions are created and updated. This step can be completed later.
+
+### Requirements:
+
+* **A publicly accessible URL** (localhost will not work)
+* For testing, consider using [ngrok](https://ngrok.com/), [webhook.site](https://webhook.site/) or similar services
+
+### Setup Process:
+
+1. Navigate to **Developer > Webhooks** in the dashboard
+2. Click **"Add Endpoint"**
+3. Enter your **webhook URL** (must start with http/https)
+4. Give your webhook a **descriptive name**
+5. Select **"Subscribe to all events"**
+6. Click **"Add endpoint"**
+
+
+<Note>
+### **Note:** You will receive notifications to this URL for all transaction creations and updates.
+</Note>
+
+
+***
+
+## Step 3: Test Your API Connection
+
+Verify your API key by requesting a price quote.
+
+### API Call Details:
+
+* **Endpoint:** [Get Crypto Quote](https://docs.meld.io/reference/crypto-quote-get)
+* **Method:** `GET`
+* **Authorization:** `BASIC [your-api-key]`
+
+### Request Body:
+
+```json
+{
+  "countryCode": "US",
+  "sourceCurrencyCode": "USD",
+  "destinationCurrencyCode": "BTC",
+  "paymentMethodType": "CREDIT_DEBIT_CARD",
+  "sourceAmount": 100
+}
+```
+
+### Testing Notes:
+
+* **Use the interactive docs** at the endpoint URL
+
+### Expected Response:
+
+✅ **200 status code** with quote details
+
+Here is an example of a single quote. You can expect multiple quotes, 1 per onramp, in the response.
+
+```json
+{
+    "quotes": [
+        {
+            "transactionType": "CRYPTO_PURCHASE",
+            "sourceAmount": 100.00,
+            "sourceAmountWithoutFees": 95.82,
+            "fiatAmountWithoutFees": 95.82,
+            "destinationAmountWithoutFees": null,
+            "sourceCurrencyCode": "USD",
+            "countryCode": "US",
+            "totalFee": 4.18,
+            "networkFee": 0.28,
+            "transactionFee": 2.9,
+            "partnerFee": 1,
+            "destinationAmount": 0.00105423,
+            "destinationCurrencyCode": "BTC",
+            "exchangeRate": 94856.0,
+            "paymentMethodType": "CREDIT_DEBIT_CARD",
+            "serviceProvider": "TOPPER",
+            "rampIntelligence": {
+              "rampScore": 21.66,
+              "lowKyc": false
+            }
+        }
+    ]
+}
+```
+
+***
+
+## Step 4: Create a Test Transaction
+
+Create a test transaction without using real money.
+
+### API Call Details:
+
+* **Endpoint:** [Create Crypto Widget Session](https://docs.meld.io/reference/crypto-session-widget-create)
+* **Method:** `POST`
+* **Authorization:** `BASIC [your-api-key]`
+
+### Request Body:
+
+```json
+{
+  "countryCode": "US",
+  "sourceCurrencyCode": "USD",
+  "destinationCurrencyCode": "BTC",
+  "paymentMethodType": "CREDIT_DEBIT_CARD",
+  "sourceAmount": 100,
+  "serviceProvider": "TRANSAK",
+  "walletAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+}
+```
+
+
+<Note>
+### **Note:** Replace `walletAddress` with your own or use the test address provided.
+</Note>
+
+
+### Expected Response:
+
+✅ **200 status code** with onramp url details
+
+```json
+{
+    "id": "WePjVaT4iBHPpqW49F419x",
+    "externalSessionId": "testSession",
+    "externalCustomerId": "testCustomer",
+    "customerId": "WePZCYZjAK97cJWokfH3Jc",
+    "widgetUrl": "https://meldcrypto.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtZWxkLmlvIiwiaWF0IjoxNzY1MjM2MjExLCJzdWIiOiJjcnlwdG8iLCJleHAiOjE3NjUyMzgwMTEsImFjY291bnRJZCI6IldRNVJ5aGRGekU0NXFqc29tZHpRMXUiLCJzZXNzaW9uSWQiOiJXZVBqVmFUNGlCSFBwcVc0OUY0MTlhIn0.TH6P9KVKN4GNu4CNsDAN9uicjMBashgA9QY7jiMiDEF",
+    "serviceProviderWidgetUrl": "https://topper.com?apiKey=1234&sessionId=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJvdHQiOiIxZDFjOTM1ODY0YTQ0NGM0YTJiMmQ5ODJkYjc0Njg1NCIsImlhdCI6MTc2NTIzNjIxMiwiZXhwIjoxNzY1MjM2NTEyfQ.6ZnmR5FAxzr9bG3n_I54L1EmHYljfhPJNeqp97WZPI7GUm9VCksbKv_rWK4KiB6YkAAJR6_C1Xsnn-fliUrABC",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtZWxkLmlvIiwiaWF0IjoxNzY1MjM2MjExLCJzdWIiOiJjcnlwdG8iLCJleHAiOjE3NjUyMzgwMTEsImFjY291bnRJZCI6IldRNVJ5aGRGekU0NXFqc29tZHpRMXUiLCJzZXNzaW9uSWQiOiJXZVBqVmFUNGlCSFBwcVc0OUY0MTlhIn0.TH6P9KVKN4GNu4CNsDAN9uicjMBashgA9QY7jiMiDEF"
+}
+```
+
+### Complete the Test Flow:
+
+1. **Copy the`widgetUrl`** from the API response
+2. **Open the URL** in your browser
+3. **For KYC testing:**
+   * **SSN:** Use any fake number
+   * **ID Upload:** Any image file works
+4. **For payment testing:**
+   * **Card Number:** `4111 1111 1111 1111`
+   * **Expiry:** Any future date
+   * **CVV:** Any 3 digits
+
+📚 **Full test data reference:** [Testing Overview - Transak](test)
+
+***
+
+## Step 5: Verify Your Transaction
+
+### Fetch Transaction Details after Receiving Webhooks
+
+1. **Check your webhook endpoint** for a webhook that the transaction has been created.
+
+### Expected Webhook Response
+
+```json
+{
+  "eventType": "TRANSACTION_CRYPTO_PENDING",
+  "eventId": "AAsuLXHXD3mS1cjNBuHHzv",
+  "timestamp": "2022-02-24T16:36:41.717262Z",
+  "accountId": "WQ5RyhdFzE45qjsomdzQ1u",
+  "profileId": "W9ka8vLE4ufBkSg3BEciZb",
+  "version": "2025-03-01",
+  "payload": {
+    "requestId": "f07f1accb7404aec9bd9a5d64975eed1",
+    "accountId": "W2aRZnYGPwhBWB94iFsZus",
+    "paymentTransactionId": "WePZCYJW7cdXR7SxUMp8mE",
+    "customerId": "WePZCYZjAK97cJWokfH3Jc",
+    "externalCustomerId": "testCustomer",
+    "externalSessionId": "testSession",
+    "paymentTransactionStatus": "PENDING",
+    "transactionType": "CRYPTO_PURCHASE",
+    "sessionId": "WePjVaT4iBHPpqW49F419x"
+  }
+}
+```
+
+2. **Extract the`paymentTransactionId`** from the webhook payload
+3. **Call GET** [/payments/transactions/\{transactionId}](https://docs.meld.io/reference/payments-transactions-get)
+
+### Expected Response:
+
+✅ **200 status code** with transaction details
+
+```json
+{
+    "transaction": {
+        "id": "WePZCYJW7cdXR7SxUMp8mE",
+        "parentPaymentTransactionId": null,
+        "accountId": "WQ5RyhdFzE45qjsomdzQ1u",
+        "isPassthrough": false,
+        "passthroughReference": null,
+        "isImported": false,
+        "customer": {
+            "id": "WePZCYZjAK97cJWokfH3Cc",
+            "accountId": "WQ5RyhdFzE45qjsomdzQ1u",
+            "externalId": "YC100"
+        },
+        "transactionType": "CRYPTO_PURCHASE",
+        "status": "SETTLED",
+        "sourceAmount": 100.00,
+        "sourceCurrencyCode": "USD",
+        "destinationAmount": 0.00105423,
+        "destinationCurrencyCode": "BTC",
+        "paymentMethodType": "CREDIT_DEBIT_CARD",
+        "serviceProvider": "TOPPER",
+        "serviceTransactionId": "1f0d470c-f5c2-6fc2-a54d-b6cdd6b6f014",
+        "orderId": null,
+        "description": null,
+        "externalReferenceId": "testSession",
+        "serviceProviderDetails": {
+            **raw details from the onramp**
+        },
+        "multiFactorAuthorizationStatus": null,
+        "createdAt": "2025-12-08T20:03:07.173223Z",
+        "updatedAt": "2025-12-08T20:08:08.877106Z",
+        "countryCode": "US",
+        "sessionId": "WePZCbr96gAUxgu7Auvm4q",
+        "externalSessionId": "testSession",
+        "paymentDetails": null,
+        "externalCustomerId": "testCustomer",
+        "fiatAmountInUsd": 100.00,
+        "sessionClientTags": null,
+        "serviceProviderTransactionUrl": null,
+        "serviceProviderCreatedAt": "2025-12-08T20:02:22Z",
+        "cryptoDetails": {
+            "sourceWalletAddress": null,
+            "destinationWalletAddress": "0xd72cc3468979360e31bc83b84f0887deccfd81d5",
+            "sessionWalletAddress": "0xd72cc3468979360e31bc83b84f0887deccfd81d5",
+            "totalFee": 4.18,
+            "networkFee": 0.28,
+            "transactionFee": 2.9,
+            "partnerFee": 1,
+            "totalFeeInUsd": 4.18,
+            "networkFeeInUsd": 0.28,
+            "transactionFeeInUsd": 2.9,
+            "partnerFeeInUsd": 1,
+            "blockchainTransactionId": "0x553d295955a978ed3e9fc1717b5bcb903c69577e49c8ad255abece945ffa9ba0",
+            "institution": null,
+            "chainId": "1"
+        }
+    }
+}
+```
+
+### Dashboard Verification:
+
+1. Navigate to the **Transactions tab**
+2. If your transaction isn't visible:
+   * Click the **Status dropdown**
+   * Select **"Select All"**
+   * Your transaction should appear
+
+✅ **White-Label API Integration Complete!** You can now build custom crypto experiences.
+
+➡️ **[Build Custom UI Guide](whitelabel-api-guide)** - Complete implementation guide
+
+## Next Steps
+
+If you're ready to begin your integration, check out the end to end integration guide for the [White Label Ramps flow](https://docs.meld.io/update/docs/white-label-api-integration).
+
+***
+
+## Troubleshooting
+
+### Common Issues and Solutions:
+
+#### 🚫 401 Unauthorized
+
+* Ensure `BASIC` is added before your API key
+* Check for extra spaces or incorrect formatting
+
+#### 🚫 Webhook Not Received
+
+* Verify URL is publicly accessible
+* Check firewall settings
+* Ensure webhook endpoint returns 200 status
+
+#### 🚫 Transaction Not Visible
+
+* Change status filter to "Select All" in dashboard
+* Wait 30 seconds and refresh
+* Check if using correct environment (sandbox vs production)

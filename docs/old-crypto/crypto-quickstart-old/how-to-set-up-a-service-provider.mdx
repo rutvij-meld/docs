@@ -1,0 +1,13 @@
+---
+title: "How to Set Up a Service Provider"
+---
+
+In order to set up a service provider (Onramp) on Meld, you need to complete the following steps. If Meld is setting up the service provider for you, you can ignore these steps.
+
+1. Have the credentials from the service provider. The exact credentials vary per provider but usually include some combination of API Key and API Secret, and sometimes a webhook secret or client id as well. Typically you can find these in the onramp's dashboard within a Developer section, or ask your account manager for them. Make sure you save these credentials within your password management system.
+2. Enter the credentials in the Meld dashboard in the Integrations section. Find the provider you would like to add credentials for, click Add, then enter your credentials and click "Add Integration".
+3. Set up webhooks from the provider to Meld. After you complete step 2, the page will refresh. Click the gear icon next to the name of the provider you just set up. There will be a webhook url that appears. Copy this webhook url and point webhooks from the provider to that url. For most providers you can do this from their dashboard, if you can't figure out how or if they don't have a dashboard then ask your account manager for help here. If you are forced to select which webhook events to sign up for, then sign up for all events, and if you have to pick a webhook version, pick the latest version. Note that webhook setup is not needed for Coinbase, Robinhood, and Paypal.
+
+That's it, you're finished setting up the service provider with Meld! Now you can use your Meld API key to fetch quotes, get widget urls, and more for that service provider.
+
+<br />

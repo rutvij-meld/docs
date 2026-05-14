@@ -1,0 +1,122 @@
+---
+title: "You KYC the User"
+description: "You integrate Sumsub to KYC the user"
+---
+
+In this flow, you will integrate Sumsub, and use them to KYC your user. Then you will pass Meld the KYC token of the user when asking for a widget url. A demo video of this flow is found at the bottom of this page.
+
+See this [page](https://docs.meld.io/docs/kyc-testing) for more information on how to test this flow in Meld's sandbox.
+
+**This flow works if you KYC the user via Sumsub and send them to the onramp Mercuryo.**
+
+To enable this flow, do the following:
+
+## Step 1: Sumsub Setup
+
+This requires you to integrate [Sumsub](https://docs.sumsub.com/reference/about-sumsub-api), and use them to KYC your user.
+
+**It is very important that you show the user a screen where they consent to having their KYC data shared with another party (aka the onramps), which is what is happening in this flow. While Sumsub stores the physical KYC data, they will share it with the onramp for the user to skip KYC in the onramp, and the user must consent to this data sharing.**
+
+[See Sumsub requirements for importing the applicant](https://docs.sumsub.com/docs/copy-applicant#how-to-enable-copy-applicant).
+
+You will need to pass the Sumsub KYC token, generated for client id **meld.io_75082**. This is done in the Sumsub dashboard, as shown below.
+
+![](https://files.readme.io/2f594cd4940eca8be7c5a7e543a85ff06f8fda33c2fda70abc9e801fdc695d8d-image.png)
+
+## Step 2: KYC the user via Sumsub
+
+In order for your user to not be asked for any additional KYC information by the onramp, you must collect, at minimum,
+
+* **First name**
+* **Last name**
+* **Date of birth**
+* **ID picture**
+* **Phone number**
+* **Email address**
+* **Address**
+* **Country**
+
+You will have to fetch the KYC token of the user from Sumsub.
+
+## Step 3: Create a Meld customer
+
+This step is required for the user to skip logging into the onramp, and is a one time setup per user. Call Meld's [create customer endpoint](https://docs.meld.io/reference/accounts-customers-create), and pass in the user's first name, last name, email address, phone number, and birthday. Your request will look like this:
+
+```json
+{
+  "name": {
+    "firstName": "First",
+    "lastName": "Last"
+  },
+  "email": "test@user.com",
+  "dateOfBirth": "01-30-1980",
+  "phone": "+1-111-222-3456",
+  "externalId": "testUser1"  // optional, for you to pass in your own reference id for the user
+}
+```
+
+The response body will look like this:
+
+```json
+{
+  "name": {
+    "firstName": "First",
+    "lastName": "Last"
+  },
+  "email": "test@user.com",
+  "dateOfBirth": "01-30-1980",
+  "phone": "+1-111-222-3456",
+  "externalId": "testUser1",
+  "id": "W912345678", // customerId to pass into /widget
+  "key": "N/A",
+  "accountId": "W932jkkjn2jnjn",
+  "addresses": {},
+  "serviceProviderCustomers": {},
+  "subAccountId": "N/A"
+}
+```
+
+The `id` in the response is now the Meld `customerId` of that user. You will need to pass this to Meld every time that user wants to make a transaction.
+
+## Step 4: Pass Meld the KYC token
+
+If you send the user to an onramp that supports Sumsub token sharing, then pass Meld the KYC token of the user when you call Meld's [/widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create). Your request will look like this:
+
+```json
+{
+  "sessionData": {
+    "countryCode": "US",
+    "destinationCurrencyCode": "BTC",
+    "serviceProvider": "MERCURYO",
+    "sourceAmount": "100",
+    "sourceCurrencyCode": "USD",
+    "walletAddress": "1EEo4ioA4spdJ2ZxiSQ1hWsp3Ve81ZRZ2F",
+    "kycInfo": {                      // optional field
+        "kycProvider": "SUMSUB",
+        "kycToken": "abcdefgh"        // the Sumsub KYC token for the user
+    },
+    "sessionType": "BUY",
+    "customerId": "W912345678"        // should be the same as the customer created above
+}
+```
+
+The response will look like this:
+
+```json
+{
+  "id": "WmYtVn52MCZkXQSdCFDU8N",
+  "externalSessionId": null,
+  "externalCustomerId": null,
+  "customerId": "WmYtVoa7bdzxJAT5ygt91s",
+  "widgetUrl": "https://meldcrypto.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ7.eyJpc3MiOiJtZWxkLmlvIiwiaWF0IjoxNzcxMjY3MDM4LCJzdWIiOiJjcnlwdG8iLCJleHAiOjE3NzEyNjg4MzgsImFjY291bnRJZCI6Ilc5a2c5aVAxc2JweVpwdFFEY0NNSnUiLCJzZXNzaW9uSWQiOiJXbVl0Vm41Mk1DWmtYUVNkQ0ZEVThOIn0.eqFYseggwUyv-F7WyO-LKEhwEqLiWVOmAV4lNjuth60",
+  "serviceProviderWidgetUrl": "https://exchange.mercuryo.io?widget_id=34c04adf-d04a-42de-a4aa-609a302b24tz&currency=BTC&fiat_currency=USD&fiat_amount=100&address=1EEo4ioA4spdJ2ZxiSQ1hWsp3Ve81ZRZ2F&type=buy&network=BITCOIN&merchant_transaction_id=WmYtVmRXgDnavemEzb3k6K&redirect_url=https%3A%2F%2Fmeldcrypto.com&country_code=US&email&payment_method=card&signature=zxcvbnmasdfghjkl",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtZWxkLmlvIiwiaWF0IjoxNzcxMjY3MDM4LCJzdWIiOiJjcnlwdG8iLCJleHAiOjE3NzEyNjg4MzgsImFjY291bnRJZCI6Ilc5a2c5aVAxc2JweVpwdFFEY0NNSnUiLCJzZXNzaW9uSWQiOiJXbVl0Vm41Mk1DWmtYUVNkQ0ZEVThOIn0.eqFYseggwUyv-F7WyO-LKEhwEqLiWVOmAV4lNjuth60"
+}
+```
+
+If you executed every step correctly, then when you open either the `widgetUrl` or `serviceProviderWidgetUrl`, then the user go straight to the Mercuryo payment screen, as seen in this demo video:
+
+
+And that's it! Congrats, you are now using Meld's Unified KYC product to enhance your users' experience!
+
+<br />

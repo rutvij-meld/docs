@@ -1,0 +1,66 @@
+---
+title: "ACH Testing Guide"
+---
+
+Testing ACH is a little different that testing cards, this page will discuss the test process.
+
+# Coinflow
+
+Coinflow's sandbox will accept any test credentials. 
+
+Customer test credentials:
+
+| First Name | Last Name  | Email Address                                                                                | Address                                                                                         |
+| :--------- | :--------- | :------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
+| Any string | Any string | Any string that passes basic email validation (so [abc@test.com](mailto:abc@test.com) works) | Any string, as long as line one, city, country, zip code, and region (aka state) are all filled |
+
+ACH test details:
+
+| Account Type                             | Account Number | Routing Number |
+| :--------------------------------------- | :------------- | :------------- |
+| CHECKING, SAVINGS, or BUSINESS\_CHECKING | Any integer    | Any integer    |
+
+<br />
+
+
+<Warning>
+Transaction Status Updates
+
+ACH transactions for Coinflow, if submitted successfully, will only ever have the status PENDING, in both sandbox and production. Coinflow does not return a SETTLED transaction status.
+</Warning>
+
+
+# Moov
+
+Moov's sandbox allows you to complete ACH transactions, and submitted transactions will move from PENDING to SETTLED in about half an hour. You will have to use the customerId Meld provides you for testing.
+
+To test payouts for moov, use the endpoints listed in the [Making ACH Payments](https://docs.meld.io/docs/making-ach-payments) section.
+
+| customerId   | Account Type | Account Number | Routing Number |
+| :----------- | :----------- | :------------- | :------------- |
+| Sent by Meld | CHECKING     | 0004321567002  | 091101455      |
+
+However, to make payins in Moov's sandbox, you will have to make the following call to [/payments/transactions](https://docs.meld.io/reference/payments-transactions-create).
+
+```json
+{
+    "customerId": "WXDeHGgNJ1t1nFnoVY43Bh",
+    "sourceAmount": "10.00",
+    "sourceCurrencyCode": "USD",
+    "paymentMethod" : {
+        "type" : "SERVICE_PROVIDER_TOKEN",
+        "details": {
+            "serviceProviderToken": "725890e3-3b34-4eef-be65-509830584123"
+        }
+    },
+    "serviceProvider": "MOOV"
+}
+```
+
+<br />
+
+| customerId   | serviceProviderToken |
+| :----------- | :------------------- |
+| Sent by Meld | Sent by Meld         |
+
+This is to get past Moov's account verification requirement in their sandbox.

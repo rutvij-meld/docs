@@ -1,0 +1,98 @@
+---
+title: "White Label Widget Experience"
+---
+
+# Example
+
+You can see Meld's white label widget experience being used [here](https://portfolio.metamask.io/buy/build-quote) by Metamask. Metamask asks the user what they would like to buy and how they would like to pay, then hits Meld's quote API for a list of quotes, then displays the quotes to the user, then once the user selects a quote Metamask calls Meld's API to launch that onramp's widget for the user to complete the purchase. Finally, Metamask hits Meld's API to get back transaction details.
+
+# Launching a Crypto Ramp Widget
+
+You can request a widget session, which launches the selected service provider for your customer to interact with. To do so, see the [create crypto widget](https://docs.meld.io/reference/crypto-session-widget-create) endpoint. We return a fully formatted URL for you to route your customer to.
+
+Before you launch a crypto widget, make sure you have [whitelisted](https://docs.meld.io/docs/whitelisting) Meld's urls and IP addresses.
+
+# Setup
+
+## Buying Crypto
+
+Pictured below is a sample widget flow for purchasing crypto:
+
+![](https://files.readme.io/1d76064-image.png)
+
+
+
+
+The typical purchase widget flow contains a quote screen, which allows the user to see and edit their quote, followed by a screen where the user can enter their payment information or verify their wallet address, followed by a payment submission screen, as shown above. After payment is complete, the cryptocurrency will be sent by the service provider to the user, and this completes the flow.
+
+## Selling Crypto
+
+Pictured below is a sample widget flow for selling crypto:
+
+![](https://files.readme.io/671f078-image.png)
+
+
+
+
+The typical sell flow contains a quote screen, which allows the user to see and edit their quote, followed by a screen to connect their bank account or enter their card information, followed by a screen showing where to send the cryptocurrency to, as shown above. After the service provider receives the cryptocurrency, they inform the user that the bank transfer has been initiated, and this completes the flow.
+
+If you subscribe to webhooks you will get alerts whenever any transaction status changes for all service providers. You may also poll our transaction status endpoint.
+
+Information on how to test the crypto wizard can be found in the [crypto testing guide](https://docs.meld.io/docs/crypto-testing-guide).
+
+## Locking fields
+
+Some service providers support locking the cryptocurrency and wallet address fields within their widgets. To do this, simply pass in the lockFields param to the [widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create) with the values of `destinationCurrencyCode`/`sourceCurrencyCode` (depending on buy vs sell flow), `walletAddress`, or both. Here are the service providers that support locking those fields in their widgets:
+
+|                  | <div style={{ textAlign: "center" }}>Locking cryptocurrency<br /></div>    | <div style={{ textAlign: "center" }}>Locking wallet address<br /></div>     |
+| :--------------- | :------------------------------------------------------------------ | :------------------------------------------------------------------- |
+| **Banxa**        | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **BTC Direct**   | <div style={{ textAlign: "center" }}> Supported </div>                   | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Onramp Money** | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Always locked when passed in </div> |
+| **Ramp.Network** | <div style={{ textAlign: "center" }}> Supported </div>                   | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Simplex**      | <div style={{ textAlign: "center" }}> Supported </div>                   | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Transak**      | <div style={{ textAlign: "center" }}> Supported </div>                   | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Sardine**      | <div style={{ textAlign: "center" }}> Always locked </div>               | <div style={{ textAlign: "center" }}> Always locked </div>                |
+| **TransFi**      | <div style={{ textAlign: "center" }}> Always locked when passed in</div> | <div style={{ textAlign: "center" }}> Always locked when passed in</div>  |
+| **Unlimit**      | <div style={{ textAlign: "center" }}> Supported </div>                   | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Paybis**       | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Fonbnk**       | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Koywe**        | <div style={{ textAlign: "center" }}>Always locked when passed in</div>  | <div style={{ textAlign: "center" }}>Always locked when passed in</div>   |
+| **Robinhood**    | <div style={{ textAlign: "center" }}> Always locked when passed in</div> | <div style={{ textAlign: "center" }}> Always locked when passed in</div>  |
+| **Coinbase**     | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Blockchain**   | <div style={{ textAlign: "center" }}> Always locked when passed in</div> | <div style={{ textAlign: "center" }}> Always locked when passed in</div>  |
+| **Topper**       | <div style={{ textAlign: "center" }}> Supported </div>                   | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Guardarian**   | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Supported </div>                    |
+| **Alchemypay**   | <div style={{ textAlign: "center" }}> Always locked when passed in</div> | <div style={{ textAlign: "center" }}> Always locked when passed in</div>  |
+| **Yellowcard**   | <div style={{ textAlign: "center" }}> Always locked when passed in</div> | <div style={{ textAlign: "center" }}> Always locked when passed in</div>  |
+| **Meso**         | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Mesh**         | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Bilira**       | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **SkrillCrypto** | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Robinhood**    | <div style={{ textAlign: "center" }}> Always locked when passed in</div> | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Coinbase**     | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+| **Binance**      | <div style={{ textAlign: "center" }}> Not supported </div>               | <div style={{ textAlign: "center" }}> Not supported </div>                |
+
+Here's a sample buy request with both the cryptoCurrency and walletAddress fields locked:
+
+```json
+{
+    "sessionData": {
+        "walletAddress": "2N3oefVeg6stiTb5Kh3ozCSkaqmx91FDbsm",
+        "countryCode": "US",
+        "sourceCurrencyCode": "USD",
+        "sourceAmount": "70",
+        "destinationCurrencyCode": "BTC",
+        "serviceProvider": "TRANSAK",
+        "lockFields": ["destinationCurrencyCode","walletAddress"]
+    },
+    "externalCustomerId": "test1",
+    "externalSessionId": "test1"
+}
+```
+
+# Embedding the Widget
+
+Meld supports embedding the crypto widget within an iframe. For information on the recommended iframe size, see [Embedding the Wizard](https://docs.meld.io/docs/crypto-wizard#embedding-the-wizard).
+
+<br />

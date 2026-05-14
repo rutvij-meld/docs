@@ -1,0 +1,92 @@
+---
+title: "Quickstart"
+description: "This is the 5 minute quickstart guide for executing the Meld checkout flow for the first time."
+---
+
+The Meld Checkout flow comes with a Meld url that you can directly embed in your app or redirect to from your app. This way, you don't have to build any sort of UI for your users to be able to buy, sell, or transfer digital assets.
+
+# Meld Checkout Integration Quick Start
+
+**Time Required:** 5 minutes  
+**Difficulty:** No coding required
+
+## Step 1: Get Your Meld Checkout URL
+
+The Meld Dashboard provides a complete, ready-to-use Meld Checkout URL.
+
+### Process:
+
+1. **Check your email** for the Meld dashboard invitation
+2. **Click the invitation link** and log in
+3. In the dashboard, **navigate to Developer tab**
+4. **Find "Meld Checkout URL"** - this is your complete URL
+   1. Note that you will need Meld to enable this key for you. If you don't see it in the Meld dashboard, please reach out to your Meld account manager to request this being added.
+5. **Copy and save** your Meld Checkout URL securely
+
+
+<Note>
+### **Note:** You get a complete URL from the dashboard, not just a key. This URL is ready to use immediately!
+</Note>
+
+
+## Step 2: Use Your Meld Checkout URL
+
+### Your Dashboard URL (Ready to Use):
+
+```
+[Copy the complete URL from your Meld Dashboard Developer tab]
+```
+
+### Add Optional Parameters for Customization:
+
+**See [URL Parameters Guide](url-parameters) for all available parameters and options.**  
+**See [Customization Guide](customization) for all available styling options.**
+
+```
+meldcrypto.com/?publicKey=your_meld_checkout_key&sourceAmount=100&destinationCurrencyCode=BTC&countryCode=US
+```
+
+### Integration Examples:
+
+**HTML Link:**
+
+```html
+<a href="meldcrypto.com/?publicKey=your_meld_checkout_key" target="_blank">
+  Buy Crypto
+</a>
+```
+
+**JavaScript Redirect:**
+
+```javascript
+function buyCrypto() {
+  window.location.href = 'meldcrypto.com/?publicKey=your_meld_checkout_key';
+}
+```
+
+## Step 3: Test Your Integration
+
+### Sandbox Testing:
+
+1. **Use your Meld Checkout URL** (get from Developer tab in sandbox environment)
+2. **Open the URL** in your browser
+3. **Complete test transaction** using [test credentials](test)
+4. **Verify in dashboard** - check Transactions tab
+
+## Step 4: Go Live
+
+### Production Setup:
+
+1. **Use your Meld Checkout URL** (get from Developer tab in production environment)
+2. **Test with small real transaction**
+3. **Start directing users** to the Meld Checkout widget!
+
+✅ **Meld Checkout Integration Complete!** Users can now buy digital assets directly through your application.
+
+➡️ **[Meld Checkout Customization Guide](https://docs.meld.io/docs/meld-checkout-customization)** - Styling and advanced options
+
+## Next Steps
+
+If you're ready to customize and complete your integration, check out the end to end integration guide for the [Meld Checkout Ramps flow](https://docs.meld.io/docs/meld-checkout-guide).
+
+<br />

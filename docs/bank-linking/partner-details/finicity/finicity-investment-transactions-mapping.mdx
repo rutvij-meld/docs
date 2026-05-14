@@ -1,0 +1,159 @@
+---
+title: "Finicity Investment Transactions Mapping"
+---
+
+This data comes from Finicity's [/investments/transactions/get](https://api-reference.finicity.com/#/rest/models/structures/transactions) endpoint and is returned from Meld's [/bank-linking/investments/transactions](https://docs.meld.io/reference/bank-linking-investment-transactions-search) endpoint.
+
+<Table align={["left","left","left"]}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: "left" }}>
+        Meld Field
+      </th>
+      <th style={{ textAlign: "left" }}>
+        Description
+      </th>
+      <th style={{ textAlign: "left" }}>
+        Finicty Response Field
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        symbol
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The symbol of the security
+      </td>
+      <td style={{ textAlign: "left" }}>
+        symbol
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        quantity
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The number of shares of the security
+      </td>
+      <td style={{ textAlign: "left" }}>
+        unitQuantity
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        costBasis
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The purchase price of the holding, per share
+      </td>
+      <td style={{ textAlign: "left" }}>
+        costBasis
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        cashBalance
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The cash balance of the account after the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        **Not Available**
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        accountId
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The Id of the financial account
+      </td>
+      <td style={{ textAlign: "left" }}>
+        accountId
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        amount
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The total currency involved in the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        amount
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        currency
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The ISO currency code that was used to purchase the holding
+      </td>
+      <td style={{ textAlign: "left" }}>
+        currencySymbol
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        description
+      </td>
+      <td style={{ textAlign: "left" }}>
+        A description of the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        description
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        status
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The status of the transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        status  
+        <br />  - If returns `Active`, Meld will populate the value as `POSTED`<br />  - If returns `Pending`,  Meld will populate the value as `PENDING`<br />  - If returns `Shadow`, Meld will populate the value as `PENDING`  
+        **Note:**\
+        Some institutions continue to modify or delete investment transactions long after they are first posted to the institution’s data feed. This practice can cause Finicity transactions to appear as duplicates, or to continue to appear in the Finicity data after they have disappeared from the institution’s current website.  
+        Finicity has added the ability to identify transactions that were found in an earlier aggregation of an account, but are not found in the institution’s current data source. These `SHADOW` transactions are identified in the `transaction record`.
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        transactionDate
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The date the transaction was initiated
+      </td>
+      <td style={{ textAlign: "left" }}>
+        transactionDate
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        postedDate
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The date the transaction was finalized
+      </td>
+      <td style={{ textAlign: "left" }}>
+        postedDate
+      </td>
+    </tr>
+    <tr>
+      <td style={{ textAlign: "left" }}>
+        type
+      </td>
+      <td style={{ textAlign: "left" }}>
+        The type of investment transaction
+      </td>
+      <td style={{ textAlign: "left" }}>
+        investmentTransactionType
+      </td>
+    </tr>
+  </tbody>
+</Table>

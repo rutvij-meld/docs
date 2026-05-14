@@ -1,0 +1,67 @@
+---
+title: "Balances"
+---
+
+<Note>
+API Reference
+
+[Search financial accounts](https://docs.meld.io/reference/bank-linking-accounts-search)\
+[Get a specific financial account](https://docs.meld.io/reference/bank-linking-accounts-get)\
+[Refresh customer accounts](https://docs.meld.io/reference/bank-linking-connections-refresh)
+</Note>
+
+
+# Overview
+
+Account balance data helps you determine if an account has sufficient funds before using it as a funding source for a financial transaction.
+
+There are two types of balance data: Current balance and Available balance.
+
+<ul>
+<li><strong>Current balance -- </strong>The total amount of money in the account. But that does not mean it is all available to spend. Some of the funds included in the current balance may be from deposits your customer made or checks they wrote that have not cleared yet, in which case they are not available for your customer to use. </li> 
+<li><strong>Available balance -- </strong>The total amount of money in the account that is available for your customer to spend.</li> 
+</ul> 
+
+For fraud detection and insufficient funds (NSF) prevention use cases, available balance should be used to determine the fund sufficiency, as it represents the predicted balance net of any pending transactions, while the current balance does not take pending transactions into account.
+
+In some cases, a financial institution may not return available balance information. If that happens, you can calculate available balance by starting with the current balance, then using the [transactions endpoint](https://docs.meld.io/reference/bank-linking-transactions-search) to detect any pending transactions and adjusting the balance accordingly.
+
+# Balance data
+
+When calling the [financial accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint, you will be able to access the `currency`, `currentAmount`, and `availableAmount` for that account. Also see [here](https://docs.meld.io/docs/managing-completed-connections#get-balances-owners-and-identifiers-data) for an example.
+
+# Sample Response
+
+```json
+{
+    "id": "W9ja25UmrZF25xbG22wdd",
+    "accountId": "W9kbkRme9VT2iz6qdsaww2",
+    "customerId": "W9ja24edcTHBks8h2e2dww",
+    "institutionId": "Ntj3AwgdridJc2rasdssdd",
+    "institutionName": "Chase",
+    "status": "ACTIVE",
+    "type": "DEPOSITORY",
+    "subtype": "CHECKING",
+    "name": "Checking",
+    "truncatedAccountNumber": "1234",
+    "identifiers": {
+        // data
+    },
+    "balances": {
+        "currency": "USD",
+        "currentAmount": 3578.41,
+        "availableAmount": 3578.41,
+        "updatedAt": "2022-03-08T23:19:23Z"
+    },
+    "owners": [
+        // data 
+    ],
+    "serviceProviderDetails": [
+        // data
+    ]
+}
+```
+
+# Account balance updates
+
+Account balance data is constantly updated with new transactions made and previous transactions being processed. Utilize our webhooks to receive updates on the data. For details on how to set up webhooks, reference [Webhook & Notification](https://docs.meld.io/docs/webhook-quickstart).

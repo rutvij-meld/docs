@@ -1,0 +1,67 @@
+---
+title: "Routing"
+---
+
+# Introduction
+
+In the case where the service provider is not explicitly stated in the request, Meld uses intelligent routing to route the user to the best provider for their needs. This allows you to optimize conversion across the board. Routing only works if you have 2 of more providers of a single domain configured, and all of the routing rules shown below can be set up via the Meld Dashboard. If a service provider is explicitly stated in the request, then routing is not used.
+
+## How to Use
+
+To use routing for bank linking, simply [create a connection](https://docs.meld.io/docs/creating-connections) as you normally would, and once the user selects their institution in the [Meld Connect Widget](https://docs.meld.io/docs/launch-the-widget), the user will automatically be routed to the correct provider based on your routing rules.
+
+To use routing for payments, make a [payment transaction](https://docs.meld.io/reference/payments-transactions-create) but do not pass in a service provider in your request. The user will automatically be routed to the correct provider based on your routing rules.
+
+# General Routing Rules
+
+If you have multiple providers of a domain (such as Bank Linking) configured, a Default Routing Rule is automatically created in the order in which the providers were added to the Meld Dashboard. The order of the providers can be changed at any time in the dashboard.
+
+![](https://files.readme.io/5e3a3de-image.png)
+
+If the default rule is the only rule established, then the above rule would be used as follows:
+
+1. The user selects an institution, and if Plaid supports it, the user is routed to Plaid for their connection.
+2. If Plaid does not support the institution, if Yodlee does support it, the user is routed to Yodlee for their connection.
+3. If both Plaid and Yodlee do not support the institution, if Finicity supports the institution, then the user is routed to Finicity for their connection.
+4. If Plaid, Yodlee, and Finicity don't support the institution, then the user cannot connect to their bank unless another integration that does support the institution (for example, MX) is added to the account.
+
+Besides the default routing rule, each domain offers its own set of custom rules that can be created and ordered. These custom rules will all take precedence over the default routing rule.
+
+## Rule Ordering
+
+You can set up multiple custom rules and order them, and this will determine the order in which each rule will be used. For example, if you have a rule to route a user trying to connect to Chase Bank to Plaid, and another rule to route a user trying to connect to Chase Bank to Finicity, then whichever rule is higher priority will be activated first, and the other ignored. If none of the custom rules are fulfilled (for example the user wants to connect to Wells Fargo and there are no custom rules related to Wells Fargo), then the default routing rule will be used to determine which provider the user will be routed to. This is for all domains.
+
+# Bank Linking Routing
+
+Bank Linking Routing can be used to route to user to the best provider to complete their connection. Aside from the default routing rule, you can set up custom rules with conditions on where to route the user. Currently, you can select an institution or a list of institutions and route users trying to connect to them to a particular provider. For example, you can set it up so that users trying to connect to Chase or Bank of America go through Plaid, whereas users trying to go to Wells Fargo or US Bank go through Finicity. 
+
+You can also select a product or list of products to route. For example, any requests for Investment Holdings or Investment Transactions may go to Plaid. Be careful to not route based on products to a provider that doesn't support that product, for example since Salt Edge doesn't support Investment Holdings, don't route Investment Holdings to Salt Edge. You can find which products each provider supports [here](https://docs.meld.io/docs/creating-connections).
+
+![](https://files.readme.io/f5fafd4-image.png)
+
+Disclaimer: Routing may sometimes not work for real institutions in Meld's sandbox. This is due to service providers' sandbox behavior.
+
+## Routing Retry
+
+In the case where Meld tries to route to a service provider for a particular institution and the service provider throws an error, Meld will automatically route the user to the next provider that supports the products and regions in the request. Also, if a user is unable to log into their institution or chooses not to with a particular service provider, they have the option within the widget to either try the same institution with a different provider or select a different institution.
+
+![](https://files.readme.io/5baf1eb-image.png)
+
+## Smart Routing
+
+Meld collects data from providers on the current status of each of their institutions as well as individual products that the institutions return. If you select the Smart Routing option in the dashboard, Meld will avoid routing you to providers for institutions known to be not working for that provider. For example, if a user selects Chase as their institution, if Meld knows from Plaid that their Chase integration is currently offline, then Meld will route the user to a different provider besides Plaid. Use this routing rule to reduce the chances of the user being led to an integration that is currently offline or being repaired.
+
+![](https://files.readme.io/3981d54-image.png)
+
+# Payments Routing
+
+Payments routing can be used to route the user to the best payment service provider to complete their transaction. There are 3 conditions that can be used for routing:
+
+1. Country: Route the user based on the country of their billing address.
+   1. Note: Since passing in a country is not required, if you do not provide a country in your transaction request any country based routing rules will be skipped.
+2. Payment Method: Route the user based on their intended payment method (ex. visa, apple pay, gift card, etc.)
+3. Amount: Route the user based on their transaction amount for a specific currency.
+
+![](https://files.readme.io/0f2877c-image.png)
+
+Once again, if none of the custom rules are fulfilled, the default routing rule will be used to route the user to the best provider.

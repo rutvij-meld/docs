@@ -1,0 +1,211 @@
+---
+title: "Reference"
+---
+
+This page contains information that is useful to reference once you have started integrating Meld. If you have not started the integration process, you should skip this page.
+
+# Meld Environments
+
+Meld offers both production and sandbox environments. The below table contains the URL for each environment:
+
+| Environment | API Base URL                                     |
+| :---------- | :----------------------------------------------- |
+| Sandbox     | [https://api-sb.meld.io](https://api-sb.meld.io) |
+| Production  | [https://api.meld.io](https://api.meld.io)       |
+
+To obtain your API key for either Production or Sandbox environments, work with your Meld contact. Your API Key is a secret, treat it as such. Do not share it or send it through a front end call.
+
+# Authentication
+
+Meld uses API keys to authenticate requests. These keys carry many privileges such as authorizing payments and accessing financial accounts data. It is important to keep them private and secure during both storage and transmission.
+
+Authentication is handled via HTTP headers, and the `Authorization` header.
+
+```curl
+curl --location --request \
+ GET 'https://api.meld.io/<ENDPOINT>' \
+  --header 'Authorization: BASIC {{Your API Key}}'
+```
+
+
+<Warning>
+"BASIC" Authorization
+
+When submitting your API key for authentication, you must specify "BASIC " before the key value pair.
+</Warning>
+
+
+To help keep your API keys secure, follow these best practices:
+
+* Do not embed API keys directly in code, because it can be accidentally exposed to the public. Instead of embedding your API keys in your applications, store them in environment variables or in files outside of your application's source tree.
+
+* Do not store your API keys in files inside your application's source tree. If you must store API keys in files, keep the files outside your application's source tree to ensure your keys do not end up in your source code control system, especially if you use a public source code management system such as GitHub.
+
+* Delete unneeded API keys to minimize exposure to attacks.
+
+* Review your code before publicly releasing it. Ensure that your code does not contain API keys or any other private information before you make your code publicly available.
+
+# API Status Codes
+
+The following table lists the status code you will receive from our APIs.
+
+<Table align={["left","left"]}>
+  <thead>
+    <tr>
+      <th>
+        Status code
+      </th>
+
+      <th>
+        Description
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        200
+      </td>
+
+      <td>
+        Successful, with response data as defined by the `Content-Type` header
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        201
+      </td>
+
+      <td>
+        Successful, with response data as defined by the `Content-Type` header
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        400
+      </td>
+
+      <td>
+        Bad Request
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        401
+      </td>
+
+      <td>
+        Unauthorized
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        403
+      </td>
+
+      <td>
+        Forbidden
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        404
+      </td>
+
+      <td>
+        No Resource Found
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        422
+      </td>
+
+      <td>
+        Input Validation Failed
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        425
+      </td>
+
+      <td>
+        Failure. TOO_EARLY
+
+        You might see this error when the same idempotent key is used twice and the first transaction is still being processed.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        429
+      </td>
+
+      <td>
+        Too Many Requests
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        500
+      </td>
+
+      <td>
+        Unexpected Issue
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+<br />
+
+# API Error Schema
+
+All errors are returned in the form of JSON and contain the following data:
+
+| Key         | Description                                                                                                           |
+| :---------- | :-------------------------------------------------------------------------------------------------------------------- |
+| `code`      | A categorization of the error                                                                                         |
+| `message`   | A developer-friendly representation of the error code. This may change over time and is not safe for programmatic use |
+| `errors`    | A user-friendly representation of the error code. This may change over time and is not safe for programmatic use.     |
+| `requestId` | The request Id                                                                                                        |
+| `timestamp` | The date and time when the request was made                                                                           |
+
+Below is a sample error response:
+
+```json
+{
+    "code": "BAD_REQUEST",
+    "message": "Bad request",
+    "errors": [
+        "[amount] Must be a decimal value greater than zero"
+    ],
+    "requestId": "eb6aaa76bd7103cf6c5b090610c31913",
+    "timestamp": "2022-01-19T20:32:30.784928Z"
+}
+```
+
+# Security
+
+1. CORS -- Meld does not need to whitelist any of our customer's URL or IPs for them to call our public Production & Sandbox APIs. You can use whichever URL you desire, as we authenticate via your Meld API Key.
+
+2. For security reasons, Meld recommends using your backend server to make the calls to Meld's API. If you make these calls from your frontend instead, it may not work and you may get back a CORS error. This is because making calls to Meld APIs require that you passed in an Authentication header with the API Key we issued you. It is insecure to keep this API Key hardcoded in your mobile app or web app.
+
+3. All our customers need to treat the Meld API Key they've been issued like any other "password". It is an extremely sensitive credential that needs to be protected at all cost. The security measures you need to ensure are:  
+   a) strict controls to the backend server (as it has access to your Meld API Key),  
+   b) a way to authenticate your FE/app to your backend server  
+   c) reject/ignore all other calls to your backend server
+
+# Dates
+
+All Meld dates / timestamps returned via Meld's API are in UTC time.

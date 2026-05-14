@@ -1,0 +1,47 @@
+---
+title: "Onramp.Money"
+---
+
+[Onramp.Money](https://onramp.money/) is an onramp / offramp that specifically targets India as its market. As a result, it supports local payment methods such as UPI and IPMS that have high conversion in India.
+
+# Sandbox Testing
+
+In sandbox, for the crypto onramp flow, Onramp.Money only supports USDT_POLYGONTEST. Additionally, to get past the phone number screen, you can use the phone number +91 8660031402 and the passcode 112233. Lastly, your appId must be set to 2, as it's the official test appId.
+
+# Configs
+
+If you have your own Onramp.Money account that you wish to use with Meld, Meld will need your API Key, API Secret, and App Id.
+
+![](https://files.readme.io/e738f08-image.png)
+
+The AppId is essentially a unique identifier for your account that is supplied by Onramp.Money. Meld passes your appId onto Onramp.Money in the url so that Onramp.Money knows whose account is making the call.
+
+# Features
+
+Here are the products currently supported for Onramp.Money: 
+
+|              | <div style={{ textAlign: "center" }}>On-Ramp Support<br /> (Buy Crypto)</div> | <div style={{ textAlign: "center" }}>Off-Ramp Support<br /> (Sell Crypto)</div> | <div style={{ textAlign: "center" }}>NFT Checkout<br /> (Buy NFTs)</div> |
+| :----------- | :--------------------------------------------------------------------- | :----------------------------------------------------------------------- | :---------------------------------------------------------------- |
+| Onramp.Money | <div style={{ textAlign: "center" }}> X </div>                              |                                                                          | <div style={{ textAlign: "center" }}> X </div>                         |
+
+Onramp.Money does not support [locking](https://docs.meld.io/docs/crypto-widget-object#locking-fields) the cryptocurrency or the wallet address field within their widget. Their fiat currency field is locked within their widget because they only support Indian Rupees, aka INR.
+
+# Supported Countries and Currencies
+
+Here is a list of supported countries and currencies:
+
+Insert doc here that specifically has the list of supported countries, fiat currencies, and cryptocurrencies for Onramp.Money
+
+For the latest information, hit Meld's [Service Provider Properties endpoint](https://docs.meld.io/reference/service-providers-properties-search) with the query param ?serviceProviders=ONRAMPMONEY.
+
+# Examples
+
+Here is a sample screenshot of their crypto widget:
+
+![](https://files.readme.io/a4cc024-image.png)
+
+And here is a sample screenshot of their NFT checkout:
+
+![](https://files.readme.io/96e999e-image.png)
+
+<div></div>

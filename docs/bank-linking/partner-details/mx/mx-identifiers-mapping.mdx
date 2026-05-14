@@ -1,0 +1,21 @@
+---
+title: "MX Identifiers Mapping"
+---
+
+This data comes from MX's [/users/`{user_guid}`/members/`{member_guid}`/account_numbers](https://docs.mx.com/api#verification_mx_widgets_list_account_numbers_by_account) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+| Meld Field           | Description                                                                                          | MX Response Field  |
+| :------------------- | :--------------------------------------------------------------------------------------------------- | :----------------- |
+| ach                  | ACH data object                                                                                      |                    |
+|    accountNumber     | The account number                                                                                   | account_number     |
+|    routingNumber     | The account routing number. Reference [Routing number](https://en.wikipedia.org/wiki/Routing_number) | routing_number     |
+| eft                  | EFT data object                                                                                      |                    |
+|    accountNumber     | The account number                                                                                   | account_number     |
+|    institutionNumber | The account institution number                                                                       | institution_number |
+|    branchNumber      | The institution branch number                                                                        | transit_number     |
+| international        | International data object                                                                            |                    |
+|    iban              | The International Bank Account Number (IBAN) for the financial account                               | _None_             |
+|    bic               | The Bank Identifier Code (BIC) for the financial account                                             | _None_             |
+| bacs                 | The BACS data object                                                                                 |                    |
+|    accountNumber     | BACS account number                                                                                  | _None_             |
+|    sortCode          | BACS sort code                                                                                       | _None_             |
