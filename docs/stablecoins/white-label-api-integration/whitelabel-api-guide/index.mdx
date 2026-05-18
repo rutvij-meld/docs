@@ -5,7 +5,18 @@ description: "This is the full end to end integration guide for integrating the 
 
 # Build Your Own UI with Meld APIs
 
-This comprehensive guide walks you through building a custom cryptocurrency interface using Meld's White-Label API Integration. Perfect for developers who want complete control over the user experience while leveraging Meld's crypto infrastructure.
+This guide is for developers building a custom cryptocurrency interface on top of Meld's White-Label API. You'll learn the exact sequence of API calls — from detecting the user's country to launching the provider widget and tracking the transaction — needed to ship a production-ready buy/sell/transfer flow with your own UI.
+
+## Before you begin
+
+* ✅ **API key** from the Meld dashboard (see [White-Label Quickstart](/docs/stablecoins/white-label-api-integration/whitelabel-quickstart) Step 1)
+* ✅ **Webhook endpoint** configured (recommended; you can also poll the API)
+* ✅ **Basic understanding** of REST APIs and JSON
+* ✅ **Sandbox environment** — base URL `https://api-sb.meld.io`
+
+<Note>
+Sandbox and production credentials, base URLs, and widget URLs are separate. Develop against sandbox until your flow is ready, then switch credentials to go live.
+</Note>
 
 
 <Warning>
@@ -76,17 +87,6 @@ This comprehensive guide walks you through building a custom cryptocurrency inte
 │ • Launch    │    │ • Webhooks  │    │ • Compliance│    │ • Tracking  │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
 ```
-
-## Prerequisites
-
-Before starting, ensure you have:
-
-* ✅ **API key** from the Meld dashboard
-* ✅ **Webhook endpoint** (recommended)
-* ✅ **Basic understanding** of REST APIs
-* ✅ **Development environment** set up
-
-***
 
 ## Step 1: Get User Location
 
@@ -458,7 +458,7 @@ function rankQuotesByMeldScore(quotes) {
 <Note>
 ### **Best Practice:** Always display the highest `rampScore` quote first to maximize transaction success rates and user satisfaction.
 
-  📊 **Learn More:** See [Ramp Intelligence](https://docs.meld.io/docs/ramp-intelligence) for advanced ranking strategies.
+  📊 **Learn More:** See [Ramp Intelligence](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide/ramp-intelligence) for advanced ranking strategies.
 </Note>
 
 
@@ -588,7 +588,7 @@ Monitor transaction progress and update your UI as the user completes the flow.
 </Note>
 
 
-You will receive webhooks from Meld every time a transaction is created or updated. To learn more about the various Meld webhook events as well as see examples, click [here](https://docs.meld.io/docs/webhook-events).
+You will receive webhooks from Meld every time a transaction is created or updated. To learn more about the various Meld webhook events and see payload examples, see [Webhook events](/docs/stablecoins/for-all-products/webhook-events).
 
 ### Webhook Integration:
 
@@ -649,7 +649,7 @@ function getStatusMessage(status) {
 
 
 <Note>
-### **Status Reference:** See [Transaction Statuses](transaction-statuses) for complete status definitions.
+### **Status Reference:** See [Transaction Statuses](/docs/stablecoins/for-all-products/transaction-statuses) for complete status definitions.
 </Note>
 
 
@@ -759,25 +759,24 @@ async function handleAPIError(error, endpoint) {
 
 ## Next Steps
 
-### Testing Your Implementation:
+### Testing your implementation
 
-* **[Testing Credentials](test)** - Comprehensive testing strategies
+* **[Sandbox testing credentials](/docs/stablecoins/sandbox-guide/test)** — test cards, wallets, and KYC triggers
 
-### Advanced Features:
+### Advanced features
 
-* **[Webhook Events](webhook-events)** - Real-time updates
-* **[Dashboard Data](dashboard-data)** - Track performance
-* **[Ramp Intelligence](https://docs.meld.io/docs/ramp-intelligence)** - Improve success rates
+* **[Webhook events](/docs/stablecoins/for-all-products/webhook-events)** — real-time updates
+* **[Dashboard data](/docs/stablecoins/additional-information/dashboard-data)** — track performance
+* **[Ramp Intelligence](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide/ramp-intelligence)** — improve success rates
 
-### Production Deployment:
+### Production deployment
 
-* **[Network Partner Setup](service-provider-setup)** - Configure additional onramps
+* **[Service-provider setup](/docs/stablecoins/for-all-products/service-provider-setup)** — configure additional onramps
 
 ***
 
-## Support & Resources
+## Support & resources
 
-* **[Complete API Reference](https://docs.meld.io/reference/crypto-quote-get)** - All endpoints documented
-* **[FAQ](faq)** - Common questions answered
+* **[FAQ](/docs/stablecoins/faq)** — common questions answered
 
 _This guide provides everything needed to build a production-ready crypto interface. Most teams complete their custom UI integration within 1-2 weeks using this approach._

@@ -3,6 +3,15 @@ title: "Full Integration Guide"
 description: "This is the full end to end integration guide for integrating the virtual account flow."
 ---
 
+This is the end-to-end Virtual Account integration guide for developers. It walks through the complete API sequence — customer creation, KYC, quoting, order creation, and webhook tracking — that you'll need to build a production-grade onramp or offramp.
+
+## Before you begin
+
+* You have completed the [Virtual Account Quickstart](/docs/stablecoins/virtual-account-integration/virtual-account-quickstart) end to end at least once in sandbox
+* You have a Meld API key with virtual-account access (sandbox first, production for go-live)
+* You have a webhook endpoint configured in **Developer → Webhooks** in the dashboard
+* If you are KYCing end users, you have at least one virtual-account provider (Noah, Due, or Brale) enabled on your account
+
 # Notes
 
 * This flow is supported for both businesses and individuals. Businesses will have to KYB with Meld, which is manual. Users will have to KYC via Meld with the onramp, which can be done via API, and is described below.
@@ -30,7 +39,7 @@ This is the end-to-end guide for executing virtual account transactions (onramp 
 
 ## 1. Create a Customer
 
-API Endpoint: [POST /accounts/customers](https://docs.meld.io/reference/accounts-customers-create)
+API Endpoint: `POST /accounts/customers`
 
 **Request:**
 
@@ -71,7 +80,9 @@ API Endpoint: [POST /accounts/customers](https://docs.meld.io/reference/accounts
 
 Save the returned `id` — you will pass it as `customerId` on every subsequent call.
 
-> **Note:** If you plan on using `DUENETWORK` later for executing transactions, then you must also specify the customer's address. This can be added to a customer by calling the `POST /accounts/customers/{customerId}/addresses` endpoint [here](https://docs.meld.io/reference/accounts-customers-addresses-create).
+<Note>
+If you plan on using `DUENETWORK` later for executing transactions, you must also specify the customer's address by calling `POST /accounts/customers/{customerId}/addresses`.
+</Note>
 >
 > **Note:** Order and transaction requests also accept optional `subaccountCustomerId` and `externalSubaccountCustomerId` fields. Use these to tag which sub-account or business grouping a transaction belongs to for reporting and filtering purposes.
 
@@ -81,16 +92,16 @@ Save the returned `id` — you will pass it as `customerId` on every subsequent 
 
 If you are transacting as a business, you will KYB with Meld. If your end users are transacting, each will have to KYC once with each onramp they use.
 
-KYC will happen via Sumsub. If you have already KYC your users with Sumsub, you can pass in the KYC token, as described [here](https://docs.meld.io/update/docs/you-kyc-the-user). If instead you prefer Meld to KYC the user, that process is described in detail [here](https://docs.meld.io/update/docs/meld-kyces-the-user).
+KYC happens via Sumsub. If you have already KYCed your users with Sumsub, you can pass in the KYC token — see [You KYC the user](/docs/stablecoins/unified-kyc/you-kyc-the-user). If you'd prefer Meld to KYC the user, that process is described in [Meld KYCes the user](/docs/stablecoins/unified-kyc/meld-kyces-the-user).
 
-To test KYC in the sandbox, follow the steps [here](https://docs.meld.io/update/docs/kyc-testing).
+To test KYC in the sandbox, follow the steps in [KYC testing](/docs/stablecoins/sandbox-guide/kyc-testing).
 
 **Initiate KYC:**
 
-API Endpoints:
+API endpoints:
 
-* [POST /accounts/customers/:customerId/kyc/initiate](https://docs.meld.io/reference/accounts-customers-kyc-initiate)
-* [PATCH /accounts/customers/:customerId/kyc/initiate](https://docs.meld.io/reference/accounts-customers-kyc-update)
+* `POST /accounts/customers/{customerId}/kyc/initiate`
+* `PATCH /accounts/customers/{customerId}/kyc/initiate`
 
 **Request:**
 
@@ -101,9 +112,9 @@ API Endpoints:
 }
 ```
 
-Alternatively, if you already have a user who has passed [KYC on your Sumsub account](https://docs.meld.io/docs/you-kyc-the-user), you can import it into Meld by sharing the Sumsub applicant token (TOKEN_IMPORT mode).
+Alternatively, if you already have a user who has passed [KYC on your Sumsub account](/docs/stablecoins/unified-kyc/you-kyc-the-user), you can import it into Meld by sharing the Sumsub applicant token (`TOKEN_IMPORT` mode).
 
-To import the KYC of the user, call the [initiate KYC endpoint](https://docs.meld.io/reference/accounts-customers-kyc-initiate). The customerId will be in the path, and your request body will look like this:
+To import the KYC of the user, call `POST /accounts/customers/{customerId}/kyc/initiate`. The `customerId` is in the path, and your request body looks like this:
 
 ```json
 {
@@ -147,13 +158,13 @@ Direct the user to the `url` to complete verification. If you are not passing in
 
 **Poll for KYC Status:**
 
-API Endpoint: [GET /accounts/customers/:customerId](https://docs.meld.io/reference/accounts-customers-create)
+API Endpoint: `GET /accounts/customers/{customerId}`
 
 Check `serviceProviderCustomers[].kyc.status`. Values: `PENDING`, `APPROVED`, `REJECTED`, `EXPIRED`, `UNKNOWN`.
 
 Wait for the kyc.status to be `APPROVED` before proceeding. The customer must be KYC-approved before any transactions can be created.
 
-In both KYC initiation modes (**HOSTED_URL** and **TOKEN_IMPORT**), you can optionally specify Virtual Account providers you want to share the user's KYC with after Sumsub approves submission in the **kycShareProviders** field. Alternatively, you can add share providers later by calling the [Update KYC API](https://docs.meld.io/reference/accounts-customers-kyc-initiate).
+In both KYC initiation modes (**HOSTED_URL** and **TOKEN_IMPORT**), you can optionally specify Virtual Account providers you want to share the user's KYC with after Sumsub approves submission, via the `kycShareProviders` field. Alternatively, you can add share providers later by calling `PATCH /accounts/customers/{customerId}/kyc/initiate`.
 
 ```json
 {
@@ -180,7 +191,7 @@ After Sumsub verifies the user's submission, the KYC token will be automatically
 **Supported share providers and their requirements**
 
 * Noah
-* Due Network. Requires customer country to be specified, see [Add an address to a customer](https://docs.meld.io/reference/accounts-customers-addresses-create)
+* Due Network. Requires customer country to be specified — call `POST /accounts/customers/{customerId}/addresses` to add an address.
 
 **Expected Webhook Response**
 
@@ -203,7 +214,7 @@ After Sumsub verifies the user's submission, the KYC token will be automatically
 }
 ```
 
-After receiving a webhook event, you can call [ Search Customer API](https://docs.meld.io/reference/accounts-customers-search) for more details. For example, when the Virtual Account provider requires additional KYC on their platform, you will receive a webhook event with **kycRecipient.status=PENDING** status. Then, when calling [ Search Customer API](https://docs.meld.io/reference/accounts-customers-search), you will receive the following response
+After receiving a webhook event, you can call `GET /accounts/customers` for more details. For example, when the Virtual Account provider requires additional KYC on their platform, you will receive a webhook event with `kycRecipient.status=PENDING`. Then, when calling `GET /accounts/customers`, you will receive the following response:
 
 ```json
 {
@@ -232,7 +243,7 @@ After receiving a webhook event, you can call [ Search Customer API](https://doc
 }
 ```
 
-You will need to direct your user to `HostedURL` for them to pass additional KYC on the Virtual Account provider platform. After users complete additional KYC and the Virtual Account provider verifies that, you will receive another **CUSTOMER_KYC_STATUS_CHANGE** with **kycRecipient.status=APPROVED** status, and this will also be reflected in [Search Customer API](https://docs.meld.io/reference/accounts-customers-search) response.
+You will need to direct your user to `HostedURL` so they can pass additional KYC on the Virtual Account provider's platform. After users complete additional KYC and the Virtual Account provider verifies it, you will receive another `CUSTOMER_KYC_STATUS_CHANGE` event with `kycRecipient.status=APPROVED`. The new status will also be reflected in `GET /accounts/customers` responses.
 
 **Errors:**
 
@@ -250,13 +261,13 @@ In the Meld dashboard (**Developer > Webhooks**), add your endpoint URL and subs
 * `TRANSACTION_CRYPTO_FAILED`
 * `CUSTOMER_KYC_STATUS_CHANGE`
 
-You can find all the webhook events [here](https://docs.meld.io/docs/webhook-events). Verify webhook signatures per the [Webhooks Authentication](https://docs.meld.io/docs/webhooks-authentication) docs.
+You can find all webhook events in [Webhook events](/docs/stablecoins/for-all-products/webhook-events). Verify webhook signatures per [Webhook authentication](/docs/stablecoins/for-all-products/webhooks-authentication).
 
 ***
 
 ## 4. Get a Quote
 
-API Endpoint: [POST /payments/virtual-account/quote](https://docs.meld.io/reference/crypto-virtual-account-quote-get)
+API Endpoint: `POST /payments/virtual-account/crypto/quote`
 
 Note that the provider Brale doesn't support quotes. All Brale transactions are 1:1, aka for $100 you will receive 100 USDC.
 
@@ -315,7 +326,7 @@ Present quotes to the user. Capture the selected `serviceProvider` for the next 
 
 ### Buy (onramp) — fiat to crypto
 
-API Endpoint: [POST /payments/virtual-account/onramp-order](https://docs.meld.io/reference/payments-virtual-account-ramp-onramp-order-create)
+API Endpoint: `POST /payments/virtual-account/ramp/onramp/order`
 
 Use the `customerId` from Step 1. The `serviceProvider` comes from the quote the user selected.
 
@@ -351,7 +362,7 @@ The user sends fiat to the returned bank details from their banking app. The pro
 
 ### Sell (offramp) — crypto to fiat
 
-API Endpoint: [POST /payments/virtual-account/offramp-order](https://docs.meld.io/reference/payments-virtual-account-ramp-offramp-order-create)
+API Endpoint: `POST /payments/virtual-account/ramp/offramp/order`
 
 **Request:**
 
@@ -419,7 +430,7 @@ The user sends crypto to `walletAddress` from their wallet. The provider pays ou
 
 Meld sends webhooks as the transaction progresses. Correlate to your order using `virtualAccountRampOrderId` in the payload (matches the `orderId` from the order response).
 
-Find more information on the various webhook event types [here](https://docs.meld.io/docs/webhook-events).
+Find more information on the various webhook event types in [Webhook events](/docs/stablecoins/for-all-products/webhook-events).
 
 ### Sample webhook payload (buy)
 
@@ -445,13 +456,13 @@ Find more information on the various webhook event types [here](https://docs.mel
 
 For sell transactions, `transactionType` is `CRYPTO_SELL`.
 
-The `paymentTransactionStatus` field will display the current status of the transaction. Find the list of transaction statuses and their meanings [here](https://docs.meld.io/docs/transaction-statuses).
+The `paymentTransactionStatus` field shows the current status of the transaction. Find the list of transaction statuses and their meanings in [Transaction statuses](/docs/stablecoins/for-all-products/transaction-statuses).
 
 ### Fetch the full transaction
 
 Extract `paymentTransactionId` from the webhook and call:
 
-API Endpoint: [GET /payments/transactions/:paymentTransactionId](https://docs.meld.io/reference/payments-transactions-get)
+API Endpoint: `GET /payments/transactions/{paymentTransactionId}`
 
 **Sample response:**
 
@@ -491,29 +502,30 @@ The `orderId` on the transaction matches `virtualAccountRampOrderId` in the webh
 
 ## Testing
 
-Provider sandboxes often cannot complete full settlement — you may only reach virtual bank account creation. See [Virtual Account Flow Testing Credentials](https://docs.meld.io/docs/copy-of-virtual-account-flow-testing-credentials) for provider-specific sandbox values (Noah, Due, Brale).
+<Note>
+Provider sandboxes often cannot complete full settlement — you may only reach virtual bank account creation. See [Virtual account flow testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials) for provider-specific sandbox values (Noah, Due, Brale).
+</Note>
 
-## Next Steps
+## Next steps
 
-### Testing Your Implementation:
+### Testing your implementation
 
-* **[Testing Credentials](https://docs.meld.io/docs/virtual-account-flow-testing-credentials)** - Comprehensive testing strategies
+* **[Virtual account testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials)** — provider-specific sandbox values
 
-### Advanced Features:
+### Advanced features
 
-* **[Webhook Events](webhook-events)** - Real-time updates
-* **[Dashboard Data](dashboard-data)** - Track performance
+* **[Webhook events](/docs/stablecoins/for-all-products/webhook-events)** — real-time updates
+* **[Dashboard data](/docs/stablecoins/additional-information/dashboard-data)** — track performance
 
-### Production Deployment:
+### Production deployment
 
-* **[Network Partner Setup](service-provider-setup)** - Configure additional onramps
+* **[Service-provider setup](/docs/stablecoins/for-all-products/service-provider-setup)** — configure additional onramps
 
 ***
 
-## Support & Resources
+## Support & resources
 
-* **[Complete API Reference](https://docs.meld.io/reference/crypto-virtual-account-quote-get)** - All endpoints documented
-* **[Postman Collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** - Test APIs directly
-* **[FAQ](faq)** - Common questions answered
+* **[Postman collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** — test APIs directly
+* **[FAQ](/docs/stablecoins/faq)** — common questions answered
 
 <br />

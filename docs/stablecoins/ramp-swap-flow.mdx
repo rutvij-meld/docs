@@ -2,13 +2,13 @@
 title: "Ramp & Swap Flow"
 ---
 
-There are many tokens that are difficult to find on most onramps. Examples include **USDH** and **SBC**, among others. To enable users to purchase or sell these assets using fiat currency, **Meld supports a Ramp & Swap flow**, which facilitates both onramping and offramping.
+This page is for developers and product teams who want to support buying or selling tokens that most onramps don't list directly (such as **USDH** or **SBC**). Meld's **Ramp & Swap flow** combines a fiat onramp/offramp with an automatic swap so users can transact in these long-tail tokens.
 
 This feature allows users to convert fiat into a supported intermediary asset through a fiat onramp and then automatically swap that asset into the desired token (or perform the reverse flow for offramping).
 
-To enable the **Ramp & Swap** flow, please contact the Meld team to activate this functionality for your account. From an integration standpoint, the implementation is identical to the existing [White Label flow](https://docs.meld.io/docs/white-label-api-integration), requiring no additional technical changes.
+To enable the **Ramp & Swap** flow, contact the Meld team to activate this functionality for your account. From an integration standpoint, the implementation is identical to the existing [White-Label flow](/docs/stablecoins/white-label-api-integration), requiring no additional technical changes.
 
-Meld also plans to make this feature available through the [Meld Checkout flow](https://docs.meld.io/docs/meld-checkout-integration) in a future release.
+Meld also plans to make this feature available through the [Meld Checkout flow](/docs/stablecoins/meld-checkout-integration) in a future release.
 
 In the example flows below, assume a user wishes to **purchase USDH using USD** or **sell USDH for USD**.
 
@@ -68,13 +68,13 @@ Below are the transaction statuses that may occur during the lifecycle of an off
 * **KYC Requirements**
   * The user must complete KYC with the onramp provider, but **will not KYC with the swap provider**, nor will they interact with any swap provider UI.
 * **Failure handling**
-  * In the unlikely event that the onramp transaction succeeds but the swap fails (after multiple retries), the user will receive USDC instead of the intended token. To ensure the funds can be safely delivered, you must pass the user’s USDC-compatible wallet address via the refundWalletAddress field when calling the /[widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create).
+  * In the unlikely event that the onramp transaction succeeds but the swap fails (after multiple retries), the user will receive USDC instead of the intended token. To ensure the funds can be safely delivered, pass the user's USDC-compatible wallet address via the `refundWalletAddress` field when calling `POST /crypto/session/widget`.
 * **Coverage**
   * Currently this flow is only supported for USDH. Reach out to Meld if you are interested in this flow for another token.
 
 ## Sandbox Testing
 
-You can test this flow using in sandbox mode, with the test credentials provided [here](https://docs.meld.io/docs/test). Providers who support the intermediate token in their sandbox are Unlimit, Kryptonim, Mercuryo, Topper, Transak, and Banxa.
+You can test this flow in sandbox mode with the [provider test credentials](/docs/stablecoins/sandbox-guide/test). Providers that support the intermediate token in their sandbox are Unlimit, Kryptonim, Mercuryo, Topper, Transak, and Banxa.
 
 Please note that in the sandbox environment, only testnet assets are transferred. As a result, the swap portion of the flow is not executed. While you can complete the onramp portion of the transaction, the transaction status will only progress to `PENDING`.
 

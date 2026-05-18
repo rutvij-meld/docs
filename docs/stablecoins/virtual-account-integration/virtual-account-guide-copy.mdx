@@ -3,7 +3,7 @@ title: "Full Integration Guide - Old"
 description: "This is the full end to end integration guide for integrating the virtual account flow."
 ---
 
-You can view API request and response examples for each of the key endpoints in the [Quickstart](https://docs.meld.io/docs/virtual-account-quickstart). This section goes over the end to end flow and includes details not found in the Quickstart.
+You can view API request and response examples for each of the key endpoints in the [Quickstart](/docs/stablecoins/virtual-account-integration/virtual-account-quickstart). This section covers the end-to-end flow and includes details not found in the Quickstart.
 
 
 <Warning>
@@ -108,13 +108,13 @@ Webhooks notify your server when transactions are created and updated. This step
 
 ## 3. Create Meld subAccount for the business
 
-Call Meld's [Create SubAccount API](https://docs.meld.io/reference/accounts-sub-accounts-create) with the onramp's id for the business to create a meld subAccount for that business. You will receive the onramp's id for the user manually from Meld.
+Call `POST /accounts/sub-accounts` with the onramp's id for the business to create a Meld subaccount for that business. You will receive the onramp's id for the user manually from Meld.
 
 This only needs to be done 1 time per business per provider. If you it more than once, the Meld API will return an error indicating that the subAccount has already been created with Meld.
 
 ## 4. Fetch Quotes
 
-Call Meld's [Quote API](https://docs.meld.io/reference/crypto-virtual-account-quote-get) to get real-time quotes from multiple onramp/offramp providers:
+Call `POST /payments/virtual-account/crypto/quote` to get real-time quotes from multiple onramp/offramp providers:
 
 * Send user preferences to Meld quote API
 * Receive quotes from available service providers
@@ -132,13 +132,13 @@ Call Meld's [Quote API](https://docs.meld.io/reference/crypto-virtual-account-qu
 
 For the buy flow:
 
-* Call Meld's [Create Buy Order API](https://docs.meld.io/reference/payments-virtual-account-ramp-onramp-order-create) with the business' wallet address and subAccountId to receive the virtual bank account details for the user.
+* Call `POST /payments/virtual-account/ramp/onramp/order` with the business' wallet address and `subAccountId` to receive the virtual bank account details for the user.
 * Have the business send money to the virtual bank account from their banking app.
 * When the onramp receives the payment, they will send crypto to the business' wallet.
 
 For the sell flow:
 
-* Call Meld's [Create Sell Order API](https://docs.meld.io/reference/payments-virtual-account-ramp-offramp-order-create) with the business' wallet address, bank account information, and subAccountId to receive the wallet address for the user to send crypto to.
+* Call `POST /payments/virtual-account/ramp/offramp/order` with the business' wallet address, bank account information, and `subAccountId` to receive the wallet address for the user to send crypto to.
 * Have the business send crypto from their wallet to the wallet address returned in the previous step.
 * When the onramp receives the crypto, they will send payment to the business' bank account.
 
@@ -147,10 +147,10 @@ For the sell flow:
 Process webhooks and display transaction information to the business:
 
 * Set up webhook endpoints to receive transaction status updates
-* Fetch detailed transaction data from Meld's [Transactions API](https://docs.meld.io/reference/payments-transactions-get) when webhooks arrive
+* Fetch detailed transaction data with `GET /payments/transactions/{transactionId}` when webhooks arrive
 * Display transaction progress, completion status, and details in your UI
 
-You will receive webhooks from Meld every time a transaction is created or updated. To learn more about the various Meld webhook events as well as see examples, click [here](https://docs.meld.io/docs/webhook-events).
+You will receive webhooks from Meld every time a transaction is created or updated. For the full list of webhook events and payload examples, see [Webhook events](/docs/stablecoins/for-all-products/webhook-events).
 
 ### Expected Webhook Response
 
@@ -220,7 +220,7 @@ async function fetchTransactionDetails(transactionId) {
 In the webhook, the `virtualAccountRampOrderId` value will match the `orderId` in the response of the previous step, allowing you to tie an order to it's corresponding webhook(s) and transaction.
 
 1. **Extract the`paymentTransactionId`** from the webhook payload
-2. **Call GET** [/payments/transactions/\{transactionId}](https://docs.meld.io/reference/payments-transactions-get)
+2. **Call** `GET /payments/transactions/{transactionId}`
 
 ### Transaction Status Display:
 
@@ -283,7 +283,7 @@ async function handleAPIError(error, endpoint) {
 
 ### Testing Your Implementation:
 
-* **[Testing Credentials](https://docs.meld.io/docs/virtual-account-flow-testing-credentials)** - Comprehensive testing strategies
+* **[Virtual account testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials)** — provider-specific sandbox values
 
 ### Advanced Features:
 
@@ -298,7 +298,7 @@ async function handleAPIError(error, endpoint) {
 
 ## Support & Resources
 
-* **[Complete API Reference](https://docs.meld.io/reference/crypto-virtual-account-quote-get)** - All endpoints documented
+* **[Postman collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** — test APIs directly
 * **[Postman Collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** - Test APIs directly
 * **[FAQ](faq)** - Common questions answered
 

@@ -3,7 +3,9 @@ title: "Unified KYC"
 description: "This page shows you how to use Meld's Unified KYC product so that a user only has to KYC once"
 ---
 
-Meld is unifying KYC, so that a user only has to KYC once and then can use multiple onramps without having to KYC again.
+This section is for developers who want to KYC their users once and reuse that verification across multiple onramps. Meld's Unified KYC lets a user complete KYC a single time and then transact through any supported onramp without re-verifying — improving conversion and reducing friction.
+
+When KYC is unified, the user goes straight from your wallet to the onramp's payment screen, skipping both onramp login and the onramp's own KYC.
 
 In this flow, the user can go straight from your wallet to the payment screen of the onramp, skipping both logging into the onramp as well as KYC.
 
@@ -11,8 +13,8 @@ In this flow, the user can go straight from your wallet to the payment screen of
 
 There are 2 ways this flow can work:
 
-1. You initiate KYC of the user. Here, you would have to integrate a KYC Provider, and make the requisite API calls to receive/launch their KYC link, track the KYC status of the user, and pass in the KYC token of the user to Meld. See more about this flow [here](https://docs.meld.io/docs/you-kyc-the-user).
-2. Meld initiates KYC of the user. In this flow, you would call Meld's API to get back a KYC link and simply launch that from your UI. See more about this flow [here](https://docs.meld.io/docs/meld-kyces-the-user).
+1. **You KYC the user.** You integrate a KYC provider yourself, run the user through their KYC link, track status, then pass the KYC token to Meld. See [You KYC the user](/docs/stablecoins/unified-kyc/you-kyc-the-user).
+2. **Meld KYCes the user.** You call Meld's API to get back a KYC link and launch it from your UI; Meld handles the rest. See [Meld KYCes the user](/docs/stablecoins/unified-kyc/meld-kyces-the-user).
 
 Meld strongly recommends flow #2 as it easier for you to integrate, keeps you out of the flow of sensitive data, and allows you to scale easily when Meld supports more KYC providers.
 

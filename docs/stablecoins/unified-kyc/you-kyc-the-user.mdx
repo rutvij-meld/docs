@@ -3,9 +3,18 @@ title: "You KYC the User"
 description: "You integrate Sumsub to KYC the user"
 ---
 
-In this flow, you will integrate Sumsub, and use them to KYC your user. Then you will pass Meld the KYC token of the user when asking for a widget url. A demo video of this flow is found at the bottom of this page.
+This guide is for developers who already KYC their users with Sumsub and want to reuse that verification with Meld onramps. You'll pass the user's Sumsub KYC token to Meld when creating a widget session, so the user can skip KYC on the onramp.
 
-See this [page](https://docs.meld.io/docs/kyc-testing) for more information on how to test this flow in Meld's sandbox.
+## Before you begin
+
+* You have a Sumsub account and have integrated their KYC flow
+* You have requested Meld enable Sumsub token sharing for your account
+* You can obtain the Sumsub KYC token for each user
+* The onramp you plan to route to supports Sumsub token sharing (currently Mercuryo)
+
+<Note>
+For sandbox testing details, see [KYC testing](/docs/stablecoins/sandbox-guide/kyc-testing).
+</Note>
 
 **This flow works if you KYC the user via Sumsub and send them to the onramp Mercuryo.**
 
@@ -40,7 +49,7 @@ You will have to fetch the KYC token of the user from Sumsub.
 
 ## Step 3: Create a Meld customer
 
-This step is required for the user to skip logging into the onramp, and is a one time setup per user. Call Meld's [create customer endpoint](https://docs.meld.io/reference/accounts-customers-create), and pass in the user's first name, last name, email address, phone number, and birthday. Your request will look like this:
+This step is required for the user to skip logging into the onramp, and is a one-time setup per user. Call `POST /accounts/customers` and pass in the user's first name, last name, email address, phone number, and birthday. Your request will look like this:
 
 ```json
 {
@@ -80,7 +89,7 @@ The `id` in the response is now the Meld `customerId` of that user. You will nee
 
 ## Step 4: Pass Meld the KYC token
 
-If you send the user to an onramp that supports Sumsub token sharing, then pass Meld the KYC token of the user when you call Meld's [/widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create). Your request will look like this:
+If you send the user to an onramp that supports Sumsub token sharing, pass Meld the KYC token of the user when you call `POST /crypto/session/widget`. Your request will look like this:
 
 ```json
 {

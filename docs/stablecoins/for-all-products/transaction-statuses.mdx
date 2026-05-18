@@ -5,7 +5,11 @@ description: "This section goes over the various statuses Meld transactions can 
 
 # Transaction Statuses
 
-Understanding transaction statuses helps you track payment progress and handle different scenarios in your integration. Transactions move through various states from initiation to completion or failure.
+This page is for developers wiring up webhook handlers and dashboard logic across any of Meld's crypto products. It lists every status a Meld transaction can have, what each one means, and which are temporary vs final. Statuses are identical across White-Label API, Meld Checkout, and Virtual Account.
+
+<Tip>
+Use TERMINAL statuses to decide when to stop polling, release funds, or surface a final UI state to the user. Use TEMPORARY statuses to display progress.
+</Tip>
 
 ## Common Transaction Flow
 

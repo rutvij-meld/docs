@@ -13,10 +13,21 @@ For terminology, note that onramping, buying crypto, and payin mean the same thi
 
 # Integration Quickstart
 
-Go through this flow to understand the key endpoints and make a successful transaction.
+This quickstart is for developers integrating Meld's Virtual Account product for the first time. You'll learn the API sequence — subaccount → quote → order → poll → webhook — needed to run an onramp or offramp end-to-end.
 
-**Time Required:** 30 minutes  
+**Time required:** 30 minutes
 **Difficulty:** API knowledge required
+
+## Before you begin
+
+* A Meld dashboard invitation (sandbox to start)
+* You have KYB/KYCed with at least one virtual-account provider (Noah, Due, or Brale) and received your provider account/customer ID
+* Ability to make authenticated REST calls (curl, Postman, or your language of choice)
+* A test wallet address for the destination token (onramp) or test bank account (offramp)
+
+<Note>
+**Sandbox limitation:** You can create orders in sandbox to see the API shape, but you cannot send real money or settle transactions. Step 5 (sending funds) and the resulting `SETTLED` status will only occur in production.
+</Note>
 
 ## Step 1: Get Your API Key
 
@@ -46,8 +57,7 @@ In order to complete this step, you must've already KYBed / KYCed with the onram
 
 ### API Call Details:
 
-* **Endpoint:** [Create SubAccount](https://docs.meld.io/reference/accounts-sub-accounts-create)
-* **Method:** `POST`
+* **Endpoint:** `POST /accounts/sub-accounts`
 * **Authorization:** `BASIC [your-api-key]`
 
 ### Request Body:
@@ -88,14 +98,12 @@ Verify your API key by requesting a price quote.
 
 ### API Call Details:
 
-* **Endpoint:** [Get Crypto Quote](https://docs.meld.io/reference/crypto-virtual-account-quote-get)
-* **Method:** `GET`
+* **Endpoint:** `POST /payments/virtual-account/crypto/quote`
 * **Authorization:** `BASIC [your-api-key]`
 
-### Testing Options:
+### Testing options
 
-* **Use the interactive docs** at the [endpoint URL](https://docs.meld.io/reference/crypto-virtual-account-quote-get)
-* **Use Meld's Postman collection:** [https://www.postman.com/meldeng/workspace/meld-io-public-api-collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)
+* **Use Meld's Postman collection:** [meld-io-public-api-collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)
 
 ### Buy Flow Example (aka Payin)
 
@@ -209,8 +217,7 @@ Note that in sandbox, you will not be able to complete a transaction, even a tes
 
 #### API Call Details:
 
-* **Endpoint:** [Create Buy Order](https://docs.meld.io/reference/payments-virtual-account-ramp-onramp-order-create)
-* **Method:** `POST`
+* **Endpoint:** `POST /payments/virtual-account/ramp/onramp/order`
 * **Authorization:** `BASIC [your-api-key]`
 
 #### Request Body:
@@ -257,8 +264,7 @@ This is as far as you can get in sandbox. You cannot send money to the virtual a
 
 #### API Call Details:
 
-* **Endpoint:** [Create Sell Order](https://docs.meld.io/reference/payments-virtual-account-ramp-offramp-order-create)
-* **Method:** `POST`
+* **Endpoint:** `POST /payments/virtual-account/ramp/offramp/order`
 * **Authorization:** `BASIC [your-api-key]`
 
 #### Request Body:
@@ -328,7 +334,7 @@ For offramp, go to your wallet and initiate a transfer of the token amount to th
 
 ### Fetch Transaction Details
 
-Call the [search transactions endpoint](https://docs.meld.io/reference/payments-transactions-search) using the `orderId` from the previous step to view your transaction details.
+Call `GET /payments/transactions` (filtering by the `orderId` from the previous step) to view your transaction details.
 
 ### Buy Flow Example (aka Payin)
 
@@ -472,13 +478,13 @@ Call the [search transactions endpoint](https://docs.meld.io/reference/payments-
    * Select **"Select All"**
    * Your transaction should appear
 
-✅ **White-Label API Integration Complete!** You can now build custom crypto experiences.
+✅ **Virtual Account integration complete.** You can now build a custom virtual-account flow.
 
-➡️ **[Build Custom UI Guide](https://docs.meld.io/docs/virtual-account-guide)** - Complete implementation guide
+➡️ **[Build Custom UI Guide](/docs/stablecoins/virtual-account-integration/virtual-account-guide)** — complete implementation guide
 
-## Next Steps
+## Next steps
 
-If you're ready to begin your integration, check out the end to end integration guide for the [Virtual Account flow](https://docs.meld.io/docs/virtual-account-guide).
+If you're ready to begin your integration, see the end-to-end [Virtual Account Guide](/docs/stablecoins/virtual-account-integration/virtual-account-guide).
 
 ***
 

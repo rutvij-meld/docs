@@ -3,12 +3,21 @@ title: "Quickstart"
 description: "This is the 5 minute quickstart guide for executing the Meld checkout flow for the first time."
 ---
 
-The Meld Checkout flow comes with a Meld url that you can directly embed in your app or redirect to from your app. This way, you don't have to build any sort of UI for your users to be able to buy, sell, or transfer digital assets.
+This quickstart is for product teams and developers who want to launch Meld Checkout for the first time. You will get the hosted Meld Checkout URL from the dashboard and embed or redirect to it from your app so users can buy or sell crypto without any UI work on your side.
 
 # Meld Checkout Integration Quick Start
 
-**Time Required:** 5 minutes  
+**Time required:** 5 minutes
 **Difficulty:** No coding required
+
+## Before you begin
+
+* Access to the Meld dashboard (sandbox and production are separate)
+* A page in your app where you can render a link or trigger a redirect
+
+<Note>
+**Sandbox vs production:** Each environment has its own Meld Checkout URL. Sandbox URLs only work with test data; production URLs handle real money. Always finish testing in sandbox first.
+</Note>
 
 ## Step 1: Get Your Meld Checkout URL
 
@@ -39,8 +48,8 @@ The Meld Dashboard provides a complete, ready-to-use Meld Checkout URL.
 
 ### Add Optional Parameters for Customization:
 
-**See [URL Parameters Guide](url-parameters) for all available parameters and options.**  
-**See [Customization Guide](customization) for all available styling options.**
+**See the [URL parameters guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/url-parameters) for all available parameters and options.**
+**See the [Customization guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/meld-checkout-customization) for all available styling options.**
 
 ```
 meldcrypto.com/?publicKey=your_meld_checkout_key&sourceAmount=100&destinationCurrencyCode=BTC&countryCode=US
@@ -70,7 +79,7 @@ function buyCrypto() {
 
 1. **Use your Meld Checkout URL** (get from Developer tab in sandbox environment)
 2. **Open the URL** in your browser
-3. **Complete test transaction** using [test credentials](test)
+3. **Complete the test transaction** using [sandbox test credentials](/docs/stablecoins/sandbox-guide/test)
 4. **Verify in dashboard** - check Transactions tab
 
 ## Step 4: Go Live
@@ -83,10 +92,10 @@ function buyCrypto() {
 
 ✅ **Meld Checkout Integration Complete!** Users can now buy digital assets directly through your application.
 
-➡️ **[Meld Checkout Customization Guide](https://docs.meld.io/docs/meld-checkout-customization)** - Styling and advanced options
+➡️ **[Meld Checkout Customization Guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/meld-checkout-customization)** — styling and advanced options
 
-## Next Steps
+## Next steps
 
-If you're ready to customize and complete your integration, check out the end to end integration guide for the [Meld Checkout Ramps flow](https://docs.meld.io/docs/meld-checkout-guide).
+If you're ready to customize and complete your integration, see the end-to-end [Meld Checkout Guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide).
 
 <br />

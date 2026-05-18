@@ -23,7 +23,7 @@ To create a local filter, click on 'Data' > 'Filter views' > 'Create new tempora
 
 [Supported Payment Methods for Offramps](#supported-payment-methods-for-offramps)
 
-This [service provider properties](https://docs.meld.io/reference/service-providers-properties-payment-method-search) endpoint can also be used to obtain this information.
+The `GET /service-providers/properties/payment-methods` endpoint can also be used to obtain this information.
 
 
 <Note>
@@ -33,12 +33,12 @@ The type is a broad and general description of the payment method. The subtype i
 
 If you request a paymentMethodType in your quote request, you will get back either that `paymentMethodType` or the `paymentMethodSubType`that the specific service provider returns as the default for that type. 
 
-Meld accepts both Type and Subtype as valid strings within the paymentMethodType parameter in the [crypto quote](https://docs.meld.io/reference/crypto-quote-get) and [crypto widget](https://docs.meld.io/reference/crypto-session-widget-create) endpoints.
+Meld accepts both Type and Subtype as valid strings within the `paymentMethodType` parameter on the `POST /payments/crypto/quote` and `POST /crypto/session/widget` endpoints.
 </Note>
 
 
 
-*Note: The[payment methods](https://docs.meld.io/reference/service-providers-properties-payment-method-search) endpoint can be used to get a list of countries a payment method supports.*
+*Note: The `GET /service-providers/properties/payment-methods` endpoint can be used to get a list of countries a payment method supports.*
 
 ## Supported Payment Methods for Offramps
 

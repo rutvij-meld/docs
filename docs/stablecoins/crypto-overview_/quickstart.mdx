@@ -2,179 +2,172 @@
 title: "Quick Start"
 ---
 
-# Meld Integration Quick Start Guide
+This quick start gets developers integrating Meld crypto for the first time from zero to a working test transaction in under 30 minutes. Pick the Widget path for a no-code launch, or the White-Label API path if you plan to build your own UI.
 
-## 🚀 Choose Your Path
+<Note>
+**Sandbox base URL:** `https://api-sb.meld.io` — production credentials and URLs are separate. All examples below assume sandbox.
+</Note>
 
-### Widget Integration - 5 Minutes
+## 🚀 Choose your path
+
+### Widget Integration — 5 minutes
 
 **Perfect for:** Fast launch, minimal development effort
 
 * **What you get:** Ready-made UI, instant crypto functionality
-* **What you do:** Get Public Key URL → Use directly → Redirect users
+* **What you do:** Get public-key URL → use directly → redirect users
 * **Development required:** None
 
 ➡️ **[Jump to Widget Quick Start](#widget-integration-quick-start)**
 
-### White-Label API - 30 Minutes
+### White-Label API — 30 minutes
 
 **Perfect for:** Custom UI, complete design control
 
 * **What you get:** API endpoints for quotes, transactions, webhooks
-* **What you do:** Build custom UI → API integration → Launch provider widgets
+* **What you do:** Build custom UI → API integration → launch provider widgets
 * **Development required:** API integration, custom UI
 
 ➡️ **[Jump to White-Label Quick Start](#white-label-api-quick-start)**
 
 ***
 
-***
-
 # Widget Integration Quick Start
 
-**Time Required:** 5 minutes  
+**Time required:** 5 minutes
 **Difficulty:** No coding required
 
-## Step 1: Get Your Public Key URL
+## Before you begin
+
+* A Meld dashboard invitation (check your email; if missing contact your account manager)
+* Access to the Meld dashboard's **Developer** tab
+
+## Step 1: Get your public-key URL
 
 The Meld Dashboard provides a complete, ready-to-use Widget URL.
 
-### Process:
-
-1. **Check your email** for the Meld dashboard invitation
-2. **Click the invitation link** and log in
-3. In the dashboard, **navigate to Developer tab**
-4. **Find "Public Crypto Widget Key"** - this is your complete URL
-5. **Copy and save** your Public Key URL securely
-
+1. Check your email for the Meld dashboard invitation
+2. Click the invitation link and log in
+3. In the dashboard, navigate to the **Developer** tab
+4. Find **Public Crypto Widget Key** — this is your complete URL
+5. Copy and save your Public Key URL securely
 
 <Note>
-### **Note:** You get a complete URL from the dashboard, not just a key. This URL is ready to use immediately!
+You get a complete URL from the dashboard, not just a key. This URL is ready to use immediately.
 </Note>
 
+## Step 2: Use your Widget URL
 
-## Step 2: Use Your Widget URL
-
-### Your Dashboard URL (Ready to Use):
-
-```
-[Copy the complete URL from your Meld Dashboard Developer tab]
-```
-
-### Add Optional Parameters for Customization:
-
-**See [URL Parameters Guide](url-parameters) for all available parameters and options.**  
-**See [Customization Guide](customization) for all available styling options.**
+Append optional query parameters to pre-fill or lock fields:
 
 ```
-meldcrypto.com/?publicKey=your_public_key&sourceAmount=100&destinationCurrencyCode=BTC&countryCode=US
+https://meldcrypto.com/?publicKey=your_public_key&sourceAmount=100&destinationCurrencyCode=BTC&countryCode=US
 ```
 
-### Integration Examples:
+See the [URL Parameters Guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/url-parameters) for all available parameters and the [Customization Guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/meld-checkout-customization) for styling options.
 
-**HTML Link:**
+### Integration examples
+
+**HTML link:**
 
 ```html
-<a href="meldcrypto.com/?publicKey=your_public_key" target="_blank">
+<a href="https://meldcrypto.com/?publicKey=your_public_key" target="_blank">
   Buy Crypto
 </a>
 ```
 
-**JavaScript Redirect:**
+**JavaScript redirect:**
 
 ```javascript
 function buyCrypto() {
-  window.location.href = 'meldcrypto.com/?publicKey=your_public_key';
+  window.location.href = 'https://meldcrypto.com/?publicKey=your_public_key';
 }
 ```
 
-## Step 3: Test Your Integration
+## Step 3: Test your integration
 
-### Sandbox Testing:
+1. Use your sandbox Widget URL (from the Developer tab in the sandbox environment)
+2. Open the URL in your browser
+3. Complete a test transaction using the [test credentials](/docs/stablecoins/sandbox-guide/test)
+4. Verify the result in the dashboard — check the **Transactions** tab
 
-1. **Use your Meld Widget URL** (get from Developer tab in sandbox environment)
-2. **Open the URL** in your browser
-3. **Complete test transaction** using [test credentials](test)
-4. **Verify in dashboard** - check Transactions tab
+<Tip>
+If your transaction does not appear, open the **Status** dropdown on the Transactions tab and select **Select All** to include in-progress statuses.
+</Tip>
 
-## Step 4: Go Live
+## Step 4: Go live
 
-### Production Setup:
+1. Use your production Widget URL (from the Developer tab in the production environment)
+2. Test with a small real transaction
+3. Start directing users to your widget
 
-1. **Use your Meld Widget URL** (get from Developer tab in production environment)
-2. **Test with small real transaction**
-3. **Start directing users** to our widget!
+✅ Widget integration complete. Users can now buy crypto directly through your application.
 
-✅ **Widget Integration Complete!** Users can now buy crypto directly through your application.
-
-➡️ **[Widget Customization Guide](customization)** - Styling and advanced options
+➡️ **[Meld Checkout Customization Guide](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/meld-checkout-customization)** — styling and advanced options
 
 ***
 
 # White-Label API Quick Start
 
-**Time Required:** 30 minutes  
+**Time required:** ~30 minutes
 **Difficulty:** API knowledge required
 
-## Step 1: Get Your API Key
+## Before you begin
+
+* A Meld dashboard invitation (check your email)
+* Access to the **Developer → API Keys** section of the dashboard
+* A publicly reachable URL if you want to receive webhooks (optional; you can also poll the API)
+
+## Step 1: Get your API key
 
 Your API key is required for all Meld API calls.
 
-### Process:
-
-1. **Check your email** for the Meld dashboard invitation
-2. **Click the invitation link** and log in
-3. In the dashboard, **navigate to Developer > API Keys**
-4. **Click "Reveal Key"**
-5. **Copy and save** your API key securely
-
+1. Check your email for the Meld dashboard invitation
+2. Click the invitation link and log in
+3. In the dashboard, navigate to **Developer → API Keys**
+4. Click **Reveal Key**
+5. Copy and save your API key securely
 
 <Warning>
-**Important:** Always add `BASIC` before your API key in all requests
+Always prefix your API key with `BASIC ` in the `Authorization` header.
 
-**Example:** `BASIC W9kZTT7332okCEc1A9aqAq:3sYKoXQv6oHVHSts7G2agw9vTCXz`
+Example: `Authorization: BASIC W9kZTT7332okCEc1A9aqAq:3sYKoXQv6oHVHSts7G2agw9vTCXz`
 </Warning>
 
-
 ***
 
-## Step 2: Set Up Webhooks (Optional)
+## Step 2: Set up webhooks (optional)
 
-Webhooks notify your server when transactions are created and updated. This step can be completed later.
+Webhooks notify your server when transactions are created and updated. You can complete this step later and poll the API instead.
 
-### Requirements:
+### Requirements
 
-* **A publicly accessible URL** (localhost will not work)
-* For testing, consider using [ngrok](https://ngrok.com/), [webhook.site](https://webhook.site/) or similar services
+* A publicly accessible URL (localhost will not work)
+* For testing, consider [ngrok](https://ngrok.com/), [webhook.site](https://webhook.site/) or similar services
 
-### Setup Process:
+### Setup
 
-1. Navigate to **Developer > Webhooks** in the dashboard
-2. Click **"Add Endpoint"**
-3. Enter your **webhook URL** (must start with http/https)
-4. Give your webhook a **descriptive name**
-5. Select **"Subscribe to all events"**
-6. Click **"Add endpoint"**
-
+1. Navigate to **Developer → Webhooks** in the dashboard
+2. Click **Add Endpoint**
+3. Enter your webhook URL (must start with `http` or `https`)
+4. Give your webhook a descriptive name
+5. Select **Subscribe to all events**
+6. Click **Add endpoint**
 
 <Note>
-### **Note:** You will receive notifications to this URL for all transaction creations and updates.
+You will receive notifications to this URL for all transaction creations and updates.
 </Note>
-
 
 ***
 
-## Step 3: Test Your API Connection
+## Step 3: Test your API connection
 
 Verify your API key by requesting a price quote.
 
-### API Call Details:
-
-* **Endpoint:** [Get Crypto Quote](https://docs.meld.io/reference/crypto-quote-get)
-* **Method:** `GET`
+* **Endpoint:** `POST /payments/crypto/quote`
 * **Authorization:** `BASIC [your-api-key]`
 
-### Request Body:
+### Request
 
 ```json
 {
@@ -186,28 +179,43 @@ Verify your API key by requesting a price quote.
 }
 ```
 
-### Testing Options:
+### Example response
 
-* **Use the interactive docs** at the endpoint URL
-* **Use Meld's Postman collection:** [[https://www.postman.com/meldeng/workspace/meld-io-public-api-collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)
+```json
+{
+  "quotes": [
+    {
+      "serviceProvider": "TRANSAK",
+      "sourceAmount": 100,
+      "sourceCurrencyCode": "USD",
+      "destinationAmount": 0.00163,
+      "destinationCurrencyCode": "BTC",
+      "exchangeRate": 61349.69,
+      "totalFee": 3.45
+    }
+  ]
+}
+```
 
-### Expected Result:
+### Testing options
 
-✅ **200 status code** with quote details
+* Use Meld's [Postman collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)
+* Use the interactive docs in your dashboard
+
+### Expected result
+
+✅ `200 OK` with quote details. If you receive `401 Unauthorized`, recheck the `BASIC ` prefix and your key.
 
 ***
 
-## Step 4: Create a Test Transaction
+## Step 4: Create a test transaction
 
 Create a test transaction without using real money.
 
-### API Call Details:
-
-* **Endpoint:** [Create Crypto Widget Session](https://docs.meld.io/reference/crypto-session-widget-create)
-* **Method:** `POST`
+* **Endpoint:** `POST /crypto/session/widget`
 * **Authorization:** `BASIC [your-api-key]`
 
-### Request Body:
+### Request
 
 ```json
 {
@@ -221,72 +229,74 @@ Create a test transaction without using real money.
 }
 ```
 
+### Example response
+
+```json
+{
+  "id": "ses_01HEXAMPLEID",
+  "widgetUrl": "https://global-stg.transak.com/?apiKey=...&sessionId=...",
+  "token": "eyJhbGciOi..."
+}
+```
 
 <Note>
-### **Note:** Replace `walletAddress` with your own or use the test address provided.
+Replace `walletAddress` with your own test wallet or use the example above.
 </Note>
 
+### Complete the test flow
 
-### Complete the Test Flow:
+1. Copy the `widgetUrl` from the API response
+2. Open the URL in your browser
+3. For KYC testing, use any fake SSN and any image for the ID upload
+4. For payment testing, use card `4111 1111 1111 1111`, any future expiry, and any 3-digit CVV
 
-1. **Copy the`widgetUrl`** from the API response
-2. **Open the URL** in your browser
-3. **For KYC testing:**
-   * **SSN:** Use any fake number
-   * **ID Upload:** Any image file works
-4. **For payment testing:**
-   * **Card Number:** `4111 1111 1111 1111`
-   * **Expiry:** Any future date
-   * **CVV:** Any 3 digits
-
-📚 **Full test data reference:** [Testing Overview - Transak](test)
+📚 **Full test data reference:** [Sandbox testing credentials](/docs/stablecoins/sandbox-guide/test)
 
 ***
 
-## Step 5: Verify Your Transaction
+## Step 5: Verify your transaction
 
-### Option A - Using Webhooks:
+### Option A — Using webhooks
 
-1. **Check your webhook endpoint** for the transaction notification
-2. **Extract the`transactionId`** from the webhook payload
-3. **Call GET** [/payments/transactions/\{transactionId}](https://docs.meld.io/reference/payments-transactions-get-1)
+1. Check your webhook endpoint for the transaction notification
+2. Extract the `transactionId` from the webhook payload
+3. Call `GET /payments/transactions/{transactionId}` to retrieve the full record
 
-### Option B - Without Webhooks:
+### Option B — Without webhooks
 
-1. **Call GET** [/payments/transactions](https://docs.meld.io/reference/payments-transactions-search-1)
-2. This returns **all your recent transactions**
+1. Call `GET /payments/transactions` to return your recent transactions
+2. Locate your `transactionId` and read its current `status`
 
-### Dashboard Verification:
+### Dashboard verification
 
-1. Navigate to the **Transactions tab**
-2. If your transaction isn't visible:
-   * Click the **Status dropdown**
-   * Select **"Select All"**
-   * Your transaction should appear
+1. Navigate to the **Transactions** tab
+2. If your transaction isn't visible, click the **Status** dropdown and select **Select All**
 
-✅ **White-Label API Integration Complete!** You can now build custom crypto experiences.
+✅ White-Label API integration complete. You can now build custom crypto experiences.
 
-➡️ **[Build Custom UI Guide](whitelabel-api-guide)** - Complete implementation guide
+➡️ **[Build Custom UI Guide](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide)** — complete implementation guide
 
 ***
 
 ## Troubleshooting
 
-### Common Issues and Solutions:
+### 🚫 401 Unauthorized
 
-#### 🚫 401 Unauthorized
-
-* Ensure `BASIC` is added before your API key
+* Ensure `BASIC ` is prefixed before your API key
 * Check for extra spaces or incorrect formatting
 
-#### 🚫 Webhook Not Received
+### 🚫 Webhook not received
 
 * Verify URL is publicly accessible
 * Check firewall settings
-* Ensure webhook endpoint returns 200 status
+* Ensure the webhook endpoint returns a `2xx` status code
 
-#### 🚫 Transaction Not Visible
+### 🚫 Transaction not visible
 
-* Change status filter to "Select All" in dashboard
+* Change the status filter to **Select All** in the dashboard
 * Wait 30 seconds and refresh
-* Check if using correct environment (sandbox vs production)
+* Confirm you are looking at the correct environment (sandbox vs production)
+
+<Tip>
+For a full list of transaction states and what each one means, see [Transaction Statuses](/docs/stablecoins/for-all-products/transaction-statuses).
+</Tip>

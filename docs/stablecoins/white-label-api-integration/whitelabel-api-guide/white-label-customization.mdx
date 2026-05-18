@@ -4,7 +4,9 @@ title: "Customization"
 
 # Locking fields
 
-Some service providers support locking the token and wallet address fields within their widgets. To do this, simply pass in the lockFields param to the [widget endpoint](https://docs.meld.io/reference/crypto-session-widget-create) with the values of `destinationCurrencyCode`/`sourceCurrencyCode` (depending on buy vs sell flow), `walletAddress`, or both. Here are the service providers that support locking those fields in their widgets:
+This page is for developers who want their users to land in the onramp's widget with specific fields pre-filled and non-editable. Some service providers support locking the token and wallet address fields within their widgets. To do this, pass the `lockFields` parameter to the `POST /crypto/session/widget` endpoint with one or both of `destinationCurrencyCode`/`sourceCurrencyCode` (depending on buy vs sell flow) and `walletAddress`.
+
+The table below shows which service providers support locking which fields.
 
 <Table align={["left","left","left"]}>
   <thead>

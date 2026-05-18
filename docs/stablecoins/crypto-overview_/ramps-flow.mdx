@@ -2,43 +2,42 @@
 title: "Ramps Flow"
 ---
 
-The ramps flow lets you enable your users to buy, sell, or transfer crypto. The actual transaction is completed within the onramp's UI, where the user will have to KYC and enter their payment information.
+The ramps flow lets your users buy, sell, or transfer crypto. The actual transaction is completed within the onramp's UI, where the user will have to complete KYC and enter payment information. This page helps developers and product teams pick between the two main ways to integrate that flow.
 
-# Choose Your Integration Method
+## Choose your integration method
 
-The first thing to do is select which of the 2 Meld integration options is best for you. Ultimately the choice boils down to if you want to use Meld's UI or create your own UI for the user setting up the transaction. Choose the approach that best fits your needs.
+The first decision is whether you want to use Meld's UI or build your own UI to collect what the user wants to do. Choose the approach that best fits your needs.
 
 ***
 
-## 🚀 Widget Integration (aka Meld UI)
+## 🚀 Widget Integration (Meld UI)
 
 **Perfect for:** Quick launch, minimal development effort
 
-### How It Works:
+### How it works
 
-1. Get your **Meld Widget URL** from the Meld Dashboard (Developer tab)
-   1. It will look something like [https://meldcrypto.com/?publicKey=yourPublicKey](https://meldcrypto.com/?publicKey=yourPublicKey)
-2. **Redirect users or embed via iframe** using your Meld Widget URL
-3. User starts the transaction in Meld's interface
+1. Get your **Meld Widget URL** from the Meld Dashboard (Developer tab) — looks like `https://meldcrypto.com/?publicKey=yourPublicKey`
+2. Redirect users or embed via iframe using your Meld Widget URL
+3. The user starts the transaction in Meld's interface
 4. Meld redirects the user to the onramp's UI, where they complete the transaction
-5. Done! ✅
+5. Done ✅
 
-### Key Benefits:
+### Key benefits
 
-* ✅ **Fastest setup** - launch in minutes, not weeks
-* ✅ **No development required** - just use the URL
-* ✅ **Simple integration** - no API knowledge needed
-* ✅ **Built-in compliance** - KYC/AML handled for you
-* ✅ **Mobile optimized** - works perfectly on all devices
+* ✅ **Fastest setup** — launch in minutes, not weeks
+* ✅ **No development required** — just use the URL
+* ✅ **Simple integration** — no API knowledge needed
+* ✅ **Built-in compliance** — KYC/AML handled for you
+* ✅ **Mobile optimized** — works on all devices
 
-### Limitations:
+### Limitations
 
-* ❌ **Limited customization** - uses Meld's UI/branding
+* ❌ **Limited customization** — uses Meld's UI/branding
 * ❌ **Less control** over user experience
-* ❌ **Standard flow** - can't modify steps
-* ❌ **Transfer not available** - only buy and sell supported
+* ❌ **Standard flow** — can't modify steps
+* ❌ **Transfer not available** — only buy and sell are supported
 
-### Widget URLs:
+### Widget URLs
 
 **Sandbox:**
 
@@ -52,93 +51,95 @@ https://meldcrypto.com/?publicKey=YOUR_SANDBOX_PUBLIC_KEY
 https://meldcrypto.com/?publicKey=YOUR_PRODUCTION_PUBLIC_KEY
 ```
 
-Get your complete Widget URL from the **Meld Dashboard → Developer tab**.
+<Note>
+Get your complete Widget URL from the **Meld Dashboard → Developer** tab. Sandbox and production each have their own key.
+</Note>
 
-### When to Choose Widget Integration:
+### When to choose Widget Integration
 
-* ⭐ You want to launch crypto features **quickly**
-* ⭐ You have **limited development resources**
-* ⭐ You're **testing the market** before full integration
-* ⭐ You're okay with **Meld's standard UI/UX**
+* ⭐ You want to launch crypto features quickly
+* ⭐ You have limited development resources
+* ⭐ You're testing the market before full integration
+* ⭐ You're okay with Meld's standard UI/UX
 
-**Example:** QuickSwap uses Widget Integration - they redirect users directly to Meld's widget for fast crypto purchases with zero development overhead. To see an example of this, go to [meldcrypto.com](https://meldcrypto.com).
+**Example:** QuickSwap uses Widget Integration — they redirect users directly to Meld's widget for fast crypto purchases with zero development overhead. To see an example, go to [meldcrypto.com](https://meldcrypto.com).
 
-➡️ **[Get Started with Widget Integration](widget-integration)**
+➡️ **[Get started with Meld Checkout](/docs/stablecoins/meld-checkout-integration)**
 
 ***
 
-## 🎨 White-Label API Integration (aka your UI)
+## 🎨 White-Label API Integration (your UI)
 
 **Perfect for:** Custom design, complete flexibility over user experience
 
-### How It Works:
+### How it works
 
-1. **Build your own UI** with complete design control
-2. **Use Meld APIs** to fetch supported assets (countries, fiat currencies, tokens, payment methods)
-3. **Use Meld's API** to fetch quotes
-4. **Collect user information** in your custom interface
-5. **Get an onramp URL** with your collected data
-6. **Launch an onramp widget** for the user to complete the transaction
-7. **Track transactions** via webhooks or API calls
+1. Build your own UI with complete design control
+2. Use Meld APIs to fetch supported assets (countries, fiat currencies, tokens, payment methods)
+3. Use Meld's API to fetch quotes
+4. Collect user information in your custom interface
+5. Get an onramp URL with your collected data
+6. Launch an onramp widget for the user to complete the transaction
+7. Track transactions via webhooks or API polling
 
-### Key Benefits:
+### Key benefits
 
-* ✅ **Complete design flexibility** - build any UX you want
-* ✅ **Full branding control** - looks 100% like your app
-* ✅ **Custom user flows** - optimize for your specific users
-* ✅ **Advanced features** - analytics, A/B testing, custom logic
-* ✅ **All transaction types** - buy, sell, transfer (transfer only available in White-Label API)
+* ✅ **Complete design flexibility** — build any UX you want
+* ✅ **Full branding control** — looks 100% like your app
+* ✅ **Custom user flows** — optimize for your specific users
+* ✅ **Advanced features** — analytics, A/B testing, custom logic
+* ✅ **All transaction types** — buy, sell, transfer (transfer is only available in White-Label API)
 
-### Requirements:
+### Requirements
 
-* ⚠️ **More development work** - 2-4 weeks typical implementation
-* ⚠️ **API integration knowledge** - REST APIs, webhooks, error handling
-* ⚠️ **Custom UI development** - build your own interface
+* ⚠️ **More development work** — 2–4 weeks typical implementation
+* ⚠️ **API integration knowledge** — REST APIs, webhooks, error handling
+* ⚠️ **Custom UI development** — build your own interface
 
-### When to Choose White-Label API:
+### When to choose White-Label API
 
-* ⭐ You want **complete control** over user experience
-* ⭐ **Custom branding** is critical for your product
-* ⭐ You need **flexible user flows** and advanced features
-* ⭐ You have **development resources** for API integration
-* ⭐ You want to **optimize conversion** with custom UX
+* ⭐ You want complete control over user experience
+* ⭐ Custom branding is critical for your product
+* ⭐ You need flexible user flows and advanced features
+* ⭐ You have development resources for API integration
+* ⭐ You want to optimize conversion with custom UX
 
-**Example:** MetaMask uses White-Label API - they built a completely custom interface that matches their brand, with Meld APIs powering the backend crypto functionality. See it at [MetaMask Portfolio](https://portfolio.metamask.io/buy).
+**Example:** MetaMask uses White-Label API — they built a completely custom interface that matches their brand, with Meld APIs powering the backend crypto functionality. See it at [MetaMask Portfolio](https://portfolio.metamask.io/buy).
 
-➡️ **[Get Started with White-Label API](white-label-api-integration)**
+➡️ **[Get started with White-Label API](/docs/stablecoins/white-label-api-integration)**
 
 ***
 
-## 🔄 Comparison Table
+## 🔄 Comparison table
 
 | Feature                  | Widget Integration | White-Label API       |
 | ------------------------ | ------------------ | --------------------- |
-| **Setup Time**           | Minutes            | 2-4 weeks             |
-| **Development Required** | None               | Significant           |
-| **UI Customization**     | ❌ Limited          | ✅ Complete            |
-| **Branding Control**     | ❌ Meld's branding  | ✅ Your branding       |
-| **User Flow Control**    | ❌ Standard flow    | ✅ Custom flows        |
-| **Transaction Types**    | ✅ Buy, Sell        | ✅ Buy, Sell, Transfer |
-| **Mobile Support**       | ✅ Built-in         | ✅ Your implementation |
-| **Analytics/Tracking**   | ❌ Basic            | ✅ Full control        |
-| **A/B Testing**          | ❌ Not available    | ✅ Your implementation |
+| **Setup time**           | Minutes            | 2–4 weeks             |
+| **Development required** | None               | Significant           |
+| **UI customization**     | ❌ Limited          | ✅ Complete            |
+| **Branding control**     | ❌ Meld's branding  | ✅ Your branding       |
+| **User flow control**    | ❌ Standard flow    | ✅ Custom flows        |
+| **Transaction types**    | ✅ Buy, Sell        | ✅ Buy, Sell, Transfer |
+| **Mobile support**       | ✅ Built-in         | ✅ Your implementation |
+| **Analytics/tracking**   | ❌ Basic            | ✅ Full control        |
+| **A/B testing**          | ❌ Not available    | ✅ Your implementation |
 
 ***
 
-## 🚀 Ready to Get Started?
+## 🚀 Ready to get started?
 
-### I Choose Widget Integration:
+### Widget Integration
 
-1. **[Setup Guide](https://docs.meld.io/docs/widget-get-started#/)** - Get your Meld Widget URL and start redirecting users
-2. **[URL Parameters](url-parameters)** - Customize widget behavior
-3. **[Testing Overview](test)** - Validate your integration
+1. **[Quickstart](/docs/stablecoins/crypto-overview_/quickstart)** — get your Meld Widget URL and start redirecting users
+2. **[URL parameters](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/url-parameters)** — customize widget behavior
+3. **[Sandbox testing](/docs/stablecoins/sandbox-guide)** — validate your integration
 
-### I Choose White-Label API:
+### White-Label API
 
-1. **[White label API Overview](https://docs.meld.io/docs/white-label-get-started#/)** - Understand the architecture
-2. **[Build Custom UI](whitelabel-api-guide)** - Step-by-step implementation
-3. **[API Reference](https://docs.meld.io/reference/crypto-quote-get)** - Complete endpoint documentation
+1. **[Overview](/docs/stablecoins/white-label-api-integration)** — understand the architecture
+2. **[Build custom UI](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide)** — step-by-step implementation
+3. **[Sandbox testing](/docs/stablecoins/sandbox-guide)** — validate your integration
 
 ***
 
-_Remember: There are exactly **two integration options**. Choose the one that matches your development resources and customization needs. You can always start with Widget Integration for speed, then upgrade to White-Label API later for more control._
+_Remember: there are exactly **two integration options**. Choose the one that matches your development resources and customization needs. You can always start with Widget Integration for speed, then upgrade to White-Label API later for more control._

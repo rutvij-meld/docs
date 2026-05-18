@@ -3,11 +3,17 @@ title: "Full Integration Guide"
 description: "This is the full end to end integration guide for integrating the Meld Checkout flow."
 ---
 
-Integrating the Meld Checkout widget is incredible easy, in fact, if you've completed the Quickstart, you've already done almost all the work! This section has additional information on embedding and customization.
+This guide is for developers who have already completed the [Meld Checkout Quickstart](/docs/stablecoins/meld-checkout-integration/meld-checkout-quickstart) and want to take their integration to production. It covers embedding, URL customization, mobile handling, and go-live checks.
 
-## Step 1: Get Users to the Meld Checkout widget
+## Before you begin
 
-Now that you have your Meld Checkout widget url (see Step 1 [here](https://docs.meld.io/docs/meld-checkout-quickstart) if not), here are some code examples of how you can embed the url in your application or redirect users to the user.
+* You have a Meld Checkout URL from the dashboard's **Developer** tab
+* You have access to both sandbox and production dashboards
+* You know where in your app users should land before and after the checkout
+
+## Step 1: Get users to the Meld Checkout widget
+
+Now that you have your Meld Checkout widget URL (see [Quickstart Step 1](/docs/stablecoins/meld-checkout-integration/meld-checkout-quickstart) if not), here are code examples for embedding the URL in your application or redirecting users to it.
 
 ## Redirection Examples
 
@@ -88,7 +94,7 @@ window.location.href = customizedUrl;
 * **walletAddress** - Pre-fill destination wallet if known
 * **countryCode** - Override auto-detected country (rarely needed)
 
-➡️ **[Complete Parameter Reference](url-parameters)**
+➡️ **[Complete parameter reference](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/url-parameters)**
 
 ## Step 3: Testing Your Integration
 
@@ -104,7 +110,7 @@ const sandboxUrl = 'meldcrypto.com/?publicKey=your_public_key';
 ### Test Workflow:
 
 1. **Redirect to sandbox widget** with your parameters
-2. **Complete test transaction** using [testing credentials](test)
+2. **Complete the test transaction** using the [sandbox testing credentials](/docs/stablecoins/sandbox-guide/test)
 3. **Verify webhook reception** (if implemented)
 4. **Test all user flows** (buy/sell as applicable)
 
@@ -200,16 +206,16 @@ iframe.onerror = () => {
 
 ## Next Steps
 
-### Optimize Your Integration:
+### Optimize your integration
 
-* **[URL Parameters](url-parameters)** - Complete parameter reference
-* **[Customization](https://docs.meld.io/docs/meld-checkout-customization)** - Styling and advanced options
+* **[URL parameters](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/url-parameters)** — complete parameter reference
+* **[Customization](/docs/stablecoins/meld-checkout-integration/meld-checkout-guide/meld-checkout-customization)** — styling and advanced options
 
-### Monitor and Improve:
+### Monitor and improve
 
-* **[Webhook Events](webhook-events)** - Real-time notifications
-* **[Transaction Statuses](transaction-statuses)** - Understanding transaction states
-* **[Dashboard Data](dashboard-data)** - Analytics and reporting
+* **[Webhook events](/docs/stablecoins/for-all-products/webhook-events)** — real-time notifications
+* **[Transaction statuses](/docs/stablecoins/for-all-products/transaction-statuses)** — understanding transaction states
+* **[Dashboard data](/docs/stablecoins/additional-information/dashboard-data)** — analytics and reporting
 
 ***
 

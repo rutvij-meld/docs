@@ -4,7 +4,7 @@ title: "Webhook Events"
 
 # Webhook Events
 
-Webhooks provide real-time notifications when transaction statuses change. Instead of polling for updates, Meld sends HTTP POST requests to your configured endpoint whenever events occur. You should use the webhooks as triggers to call the Meld [transactions endpoint](https://docs.meld.io/reference/payments-transactions-get-1) to fetch the latest details on the transaction.
+This page is for developers building webhook handlers for Meld crypto transactions. It documents every event type, the payload schema, and how to map events back to your transaction in your system. Webhooks provide real-time notifications when transaction statuses change. Instead of polling for updates, Meld sends HTTP POST requests to your configured endpoint whenever events occur. Use webhooks as triggers to call `GET /payments/transactions/{transactionId}` to fetch the latest details on the transaction.
 
 ## Benefits
 
@@ -158,7 +158,7 @@ Triggered when transaction fails or encounters an error.
 
 ### `CUSTOMER_KYC_STATUS_CHANGE`
 
-This is sent when you have Meld KYC a user and the user's KYC status is updated. Read more about this [here](https://docs.meld.io/docs/meld-kyces-the-user).
+This is sent when you have Meld KYC a user and the user's KYC status is updated. Read more in [Meld KYCes the user](/docs/stablecoins/unified-kyc/meld-kyces-the-user).
 
 ```json
 {

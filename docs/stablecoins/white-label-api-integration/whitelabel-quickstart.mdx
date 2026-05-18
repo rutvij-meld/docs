@@ -5,10 +5,20 @@ description: "This is the 30 minute quickstart guide for executing the white-lab
 
 # Integration Quickstart
 
-Go through this flow to understand the key endpoints and make a successful transaction.
+This quickstart is for developers integrating Meld's White-Label API for the first time. You'll go from zero credentials to a successfully completed sandbox transaction in about 30 minutes.
 
-**Time Required:** 30 minutes  
+**Time required:** 30 minutes
 **Difficulty:** API knowledge required
+
+## Before you begin
+
+* A Meld dashboard invitation (check your email)
+* Ability to make authenticated REST calls (curl, Postman, or your language of choice)
+* A publicly reachable webhook URL (optional; you can poll the API instead)
+
+<Note>
+**Sandbox base URL:** `https://api-sb.meld.io`. Production credentials and URLs are separate — sandbox credentials will not work in production and vice versa.
+</Note>
 
 ## Step 1: Get Your API Key
 
@@ -64,8 +74,7 @@ Verify your API key by requesting a price quote.
 
 ### API Call Details:
 
-* **Endpoint:** [Get Crypto Quote](https://docs.meld.io/reference/crypto-quote-get)
-* **Method:** `GET`
+* **Endpoint:** `POST /payments/crypto/quote`
 * **Authorization:** `BASIC [your-api-key]`
 
 ### Request Body:
@@ -127,8 +136,7 @@ Create a test transaction without using real money.
 
 ### API Call Details:
 
-* **Endpoint:** [Create Crypto Widget Session](https://docs.meld.io/reference/crypto-session-widget-create)
-* **Method:** `POST`
+* **Endpoint:** `POST /crypto/session/widget`
 * **Authorization:** `BASIC [your-api-key]`
 
 ### Request Body:
@@ -179,7 +187,7 @@ Create a test transaction without using real money.
    * **Expiry:** Any future date
    * **CVV:** Any 3 digits
 
-📚 **Full test data reference:** [Testing Overview - Transak](test)
+📚 **Full test data reference:** [Sandbox testing credentials](/docs/stablecoins/sandbox-guide/test)
 
 ***
 
@@ -214,7 +222,7 @@ Create a test transaction without using real money.
 ```
 
 2. **Extract the`paymentTransactionId`** from the webhook payload
-3. **Call GET** [/payments/transactions/\{transactionId}](https://docs.meld.io/reference/payments-transactions-get)
+3. **Call** `GET /payments/transactions/{transactionId}`
 
 ### Expected Response:
 
@@ -291,11 +299,11 @@ Create a test transaction without using real money.
 
 ✅ **White-Label API Integration Complete!** You can now build custom crypto experiences.
 
-➡️ **[Build Custom UI Guide](whitelabel-api-guide)** - Complete implementation guide
+➡️ **[Build Custom UI Guide](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide)** — complete implementation guide
 
-## Next Steps
+## Next steps
 
-If you're ready to begin your integration, check out the end to end integration guide for the [White Label Ramps flow](https://docs.meld.io/update/docs/white-label-api-integration).
+If you're ready to begin your integration, follow the end-to-end [White-Label API Guide](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide).
 
 ***
 

@@ -155,7 +155,9 @@ URL to redirect users after transaction completion. Supports deep links for mobi
 
 Lock any parameter to prevent user editing by passing the parameter with the word "Locked" after it. Locking a field will make it so that the user cannot edit the values passed into those fields.
 
-> **Important:** Field locking only applies to the Meld Checkout interface. However, if you lock the sourceCurrencyCode/destinationCurrencyCode or walletAddress field in the Meld Checkout widget, then that field will also be locked in the partner's widget for the providers that support it. Read more about this [here](https://docs.meld.io/docs/white-label-cutomization#locking-fields).
+<Warning>
+Field locking only applies to the Meld Checkout interface. However, if you lock the `sourceCurrencyCode`/`destinationCurrencyCode` or `walletAddress` field in the Meld Checkout widget, that field will also be locked in the partner's widget for the providers that support it. See [White-Label customization → Locking fields](/docs/stablecoins/white-label-api-integration/whitelabel-api-guide/white-label-customization) for the list of providers.
+</Warning>
 
 ### Lockable Parameters:
 
