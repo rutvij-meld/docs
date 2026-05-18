@@ -2,14 +2,44 @@
 title: "Importing Connections"
 ---
 
-If you have existing connections with a service provider and want to bring them over to Meld, you can. Importing a connection does not involve the user, and there is no reauthentication required.
+If you already have connections with a service provider — for example, because you previously integrated directly with Plaid or Akoya — you can bring them into Meld. Importing a connection does not involve the customer; there is no widget flow and no re-authentication required. This page is for developers migrating from a direct provider integration to Meld.
 
-**Currently, importing connections is supported for Plaid and Akoya.**
+## Before you begin
 
-To import a connection to Meld, use the [import connections endpoint](https://docs.meld.io/reference/bank-linking-connections-import). Use the externalCustomerId field to tie each connection you import to an id of your choice, to keep track of the connections. Importing a connection will do the following:
+<Info>
+- You have provider-level credentials (Plaid `access_token`, Akoya equivalent) for each connection you want to import
+- The corresponding service provider is enabled on your Meld account
+- You have decided what `externalCustomerId` to associate with each imported connection
+</Info>
 
-1. Add a connection and all its financial accounts to Meld.
-2. Tie each connection to an externalCustomerId, if provided.
-3. Tell the provider to send webhoks for that connection to Meld from now on, instead of sending them to you.
-4. Refresh the connection at the time of import.
-5. Send you webhooks for each connection based on the refresh, which are similar to the webhooks you would see for a new connection.
+<Note>
+**Importing is currently supported for Plaid and Akoya only.** For other providers, the customer must complete the standard widget flow.
+</Note>
+
+## How to import a connection
+
+Call the [import connections endpoint](/api-reference/bank-linking). Use the `externalCustomerId` field to tie each imported connection to an id of your choice for tracking.
+
+Importing a connection does the following:
+
+1. Adds the connection and all its financial accounts to Meld.
+2. Ties the connection to your `externalCustomerId`, if provided.
+3. Tells the underlying provider to send webhooks for that connection to Meld going forward (instead of to your servers).
+4. Refreshes the connection at the time of import.
+5. Sends you the standard aggregation webhooks (`BANK_LINKING_ACCOUNTS_UPDATING`, `BANK_LINKING_ACCOUNTS_UPDATED`, `BANK_LINKING_TRANSACTIONS_AGGREGATED`) just like a fresh connection.
+
+<Warning>
+Once a connection is imported, the provider will stop sending webhooks to your old endpoint. Make sure your Meld webhook profile is configured before importing in production.
+</Warning>
+
+<Note>
+For the full request and response schema, refer to the [Bank Linking API reference](/api-reference/bank-linking).
+</Note>
+
+## Common errors
+
+| Symptom                                              | Likely cause                                                                  | Developer action                                                                                                                                  |
+| :--------------------------------------------------- | :---------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `400 Bad Request` — provider not supported           | Importing only works for Plaid and Akoya                                      | Use the standard widget flow for other providers.                                                                                                  |
+| `401` or `403` from the underlying provider          | Provider-level credentials supplied are invalid or expired                    | Verify the `access_token` is valid for the environment; re-issue if needed.                                                                       |
+| Import succeeds but no webhooks arrive               | Meld webhook profile not configured for bank-linking events                   | Configure the webhook profile per [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart).               |

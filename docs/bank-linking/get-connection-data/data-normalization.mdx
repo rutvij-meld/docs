@@ -2,40 +2,42 @@
 title: "Data Normalization"
 ---
 
-Meld normalizes the data you receive from service providers. While you can always see the raw service provider response both in the serviceProviderDetails object of each endpoint when getting data as well as from the Activity Log, Meld does several things to normalize the data you receive.
+Each service provider returns financial data with slightly different conventions — signage, status names, and category labels. Meld normalizes these into a single consistent shape so your code does not need provider-specific branches. This page is for developers consuming Meld's APIs who want to understand the normalized values and the rules behind them. Raw provider responses are still available in the `serviceProviderDetails` field on every endpoint and in the Activity Log.
 
-# Balance Signage
+## Balance signage
 
-Balance signage should generally positive for all account types. This includes loan, mortgage, and credit accounts, where positive balances indicate the amount of money a user owes.
+Balance signage is generally **positive** for all account types — including loan, mortgage, and credit accounts, where a positive balance indicates the amount the customer owes.
 
-# Transaction Signage
+## Transaction signage
 
-Service providers use different signage for deposite vs withdrawals. Meld standardizes the signage to the following:
+Service providers use different signage for deposits vs. withdrawals. Meld standardizes to:
 
-* **Positive** -- Positive signage means that money has moved out of the account. Transactions with positive signage include withdrawal and debit.
+* **Positive** — money has moved **out** of the account. Includes withdrawals and debits.
+* **Negative** — money has moved **into** the account. Includes deposits.
 
-* **Negative** -- Negative signage means that money has moved into of the account. Transactions with negative signage include deposits.
+## Investment types
 
-# Investment Types
+For both investment holdings and investment transactions, Meld normalizes the investment `type` in the response.
 
-For both investments and investment holdings, Meld normalizes the investment `type` in the response.
+* **Investment holdings:** `STOCK`, `MUTUALFUND`, `CASH`, `OTHER`, `REALESTATE`, `ETF`, `DERIVATIVE`, `DIGITALASSET`.
+* **Investment transactions:** `SELL`, `BUY`, `CANCEL`, `CASH`, `OTHER`, `TRANSFER`.
 
-* For investment holdings, the Meld types are `STOCK`, `MUTUALFUND`, `CASH`, `OTHER`, `REALESTATE`, `ETF`, `DERIVATIVE`, and `DIGITALASSET`.
+## Transaction status
 
-* For investment transactions, the Meld types are `SELL`, `BUY`, `CANCEL`, `CASH`, `OTHER`, and `TRANSFER`.
+Transactions have one of the following statuses:
 
-# Transaction Status
+* **Pending** — All transactions start as `PENDING`. A pending transaction has been approved but not yet fully processed.
+* **Posted** — `PENDING` transactions move to `POSTED` within a few days, typically one to five business days, with a rare two-week maximum.
+* **Expired** — On rare occasions, `PENDING` transactions are cancelled and stop appearing in provider responses. When this occurs, Meld marks them `EXPIRED`.
 
-Transactions will have one of the following statuses:
+<Tip>
+When updating transaction data, fetch the last 14 days to capture status and amount changes. After two weeks, transactions almost never change.
+</Tip>
 
-* **Pending** -- All transactions start as `PENDING`. A pending transaction is a payment, deposit, or purchase that has been approved but not yet fully processed.
+## Transaction categories
 
-* **Posted** -- `PENDING` transactions will move to `POSTED` within a few days. The typical time period for a transaction to move from pending to posted is one to five business days, with generally a two week maximum on rare occasion.
+While providers group transactions into their own categories, Meld also normalizes transaction categories across providers.
 
-* **Expired** -- On rare occasions, `PENDING` transactions get cancelled and therefore stop showing up in the service provider responses. When this occurs, the transaction becomes `EXPIRED`.
-
-As a result, when updating account transaction data, a period of two weeks (fourteen days) is recommended in order to capture transaction changes. After two weeks, it is extremely rare for any information about a transaction to change.
-
-# Transaction Categories
-
-While providers themselves group transactions into their own categories, Meld also normalizes transaction categories between providers. Here is the list of provider category mappings to Meld categories:
+<Note>
+For the complete provider-to-Meld category mapping, refer to the [account transactions reference](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-transactions) and the [Bank Linking API reference](/api-reference/bank-linking).
+</Note>

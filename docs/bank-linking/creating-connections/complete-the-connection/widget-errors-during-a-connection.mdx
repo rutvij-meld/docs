@@ -2,13 +2,53 @@
 title: "Widget Errors During a Connection"
 ---
 
-A user may run into errors in the widget itself while trying to make a connection. An example would be trying to make a connection with a certain product that you don't have enabled with the service provider account, or having made too many test connections, or something else. These errors can be seen in the Activity Log, using the a request like the following: 
+A customer may encounter errors inside the Meld Connect Widget while trying to make a connection. Examples include requesting a product you do not have enabled with the service provider, hitting test connection limits, or transient service provider failures. This page is for developers debugging failed connections — it explains how to query widget errors and what each error subtype means.
 
-```
+## Before you begin
+
+<Info>
+- You have a Meld API key for the environment in question (sandbox or production)
+- You know either the `connectionId` of the failed attempt, or a date range you want to inspect
+- You are comfortable querying the Meld Activity Log
+</Info>
+
+## How to query widget errors
+
+Widget errors are recorded in the Activity Log. Query them by filtering on the action `INSTITUTION_CONNECTION_WIDGET_ERROR`:
+
+```bash
 curl --location 'https://api-sb.meld.io/activity-log?start=2024-05-08T00:00:00.000Z&end=2024-05-10T00:00:00.000Z&connectionId=W9343jnjn3jn3&actions=INSTITUTION_CONNECTION_WIDGET_ERROR' \
 --header 'Meld-Version: 2022-11-10' \
 --header 'Content-Type: application/json' \
---header 'Authorization: BASIC ***Redacted API Key***' \
+--header 'Authorization: BASIC ***Redacted API Key***'
 ```
 
-There are 3 event types (think of them as subtypes) of widget initialization errors, and they are `SERVICE_PROVIDER_INITIALIZATION_FAILURE` , `SERVICE_PROVIDER_FAILURE`, `INTERNAL_FAILURE`. You can further filter by one or more of these in the Activity Log using the `eventTypes` query param.
+<Note>
+For the full Activity Log schema and supported query parameters, refer to the [API reference](/api-reference).
+</Note>
+
+## Widget error subtypes
+
+There are three event types (subtypes) of widget errors. Filter by one or more using the `eventTypes` query parameter on the Activity Log endpoint.
+
+| Event type                                | What it means                                                                                                                                                  | Recommended developer action                                                                                                                                       |
+| :---------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SERVICE_PROVIDER_INITIALIZATION_FAILURE` | The widget could not initialize with the underlying service provider. Common causes: the requested product is not enabled on your provider account, missing provider credentials, or invalid configuration in the dashboard. | Check that the products you requested in `/connect/start` are enabled with the provider for your account. Verify provider credentials in the Meld dashboard. If the issue persists, contact Meld support with the connection id. |
+| `SERVICE_PROVIDER_FAILURE`                | The service provider returned an error during the customer's session. Common causes: institution outage, provider rate limit, expired provider session, or customer-side issues such as repeated invalid credentials. | Inspect the `serviceProviderDetails` in the activity log entry. If the institution is unhealthy, advise the customer to retry later or use a different provider via routing. If you see repeated provider rate-limit errors, throttle test traffic. |
+| `INTERNAL_FAILURE`                        | An unexpected error inside Meld occurred during the widget flow.                                                                                              | Retry the connection. If the error persists, contact Meld support with the `connectionId` and the timestamp.                                                       |
+
+## Common scenarios and fixes
+
+| Symptom                                                                                | Likely cause                                                                                              | Developer action                                                                                                                                                                |
+| :------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Widget fails immediately on launch                                                     | The connect token expired (older than 3 hours) or was malformed                                           | Generate a fresh token via `/connect/start` and relaunch                                                                                                                        |
+| Picker is empty or has very few institutions                                           | Too many required products or an overly restrictive region filter                                         | Reduce the `products` array, move non-essential products to `optionalProducts`, or remove `regions`                                                                              |
+| "Error creating user" when selecting an institution                                    | You re-enabled a service provider with the same `customerId` / `externalCustomerId` used before disabling | Use new `customerId` / `externalCustomerId` values when reconnecting via a re-enabled provider                                                                                  |
+| Customer sees "Institution unavailable" or a routing retry screen                      | Provider's integration with that institution is degraded                                                  | Encourage the customer to use Routing Retry to try another provider; consider enabling Smart Routing in the dashboard                                                            |
+| Connection completes but no webhooks fire                                              | Webhook profile not configured or filtered too narrowly                                                   | Verify your webhook profile per [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart) and confirm event types include bank linking events |
+
+<Note>
+**Sandbox vs. production**
+
+Widget errors are logged identically in sandbox (`api-sb.meld.io`) and production (`api.meld.io`). Sandbox traffic may produce additional `SERVICE_PROVIDER_FAILURE` entries that mirror the test behavior of each provider's sandbox; these are expected and do not indicate a real outage.
+</Note>

@@ -2,7 +2,9 @@
 title: "Step 4: Complete the Connection"
 ---
 
-The final step of the connection flow is for the user to complete the connection. Once they have chosen their institution, they will be taken to that institution's login page. Here's an example:
+The final step of the connection flow is for the customer to authenticate with their bank. After they pick an institution, the widget hands off to that institution's login screen (or to the service provider's OAuth flow). This page covers what your customer sees, how to handle failure cases, and what events to expect when the connection succeeds.
+
+Once they have chosen their institution, they will be taken to that institution's login page. Here's an example:
 
 ![](https://files.readme.io/6010dd5-image.png)
 
@@ -12,13 +14,13 @@ For security reasons, many institutions will open their login screens in a new p
 
 Once the user enters their username and password, if they have multi factor authentication set up with their bank, they may have to enter a pin or passcode. After this, provider will complete the connection to the institution, and once the user sees a success screen they can close the widget.
 
-Once you have successfully complete a connection, you can now view the user's financial data. See [Get Connection Data](https://docs.meld.io/docs/get-connection-data) for more information.
+Once you have successfully completed a connection, you can now view the user's financial data. See [Get Connection Data](/docs/bank-linking/get-connection-data) for more information.
 
-# Next Steps
+## Next steps
 
-To see what to do next, including what webhooks to expect once a connection completes, see [Get Connection Data](https://docs.meld.io/docs/get-connection-data).
+To see what to do next, including which webhooks to expect once a connection completes, see [Get Connection Data](/docs/bank-linking/get-connection-data).
 
-# Connection Issues
+## Connection issues
 
 There are several reasons why a connection might fail. The most prevalent reason is that the user entered the incorrect credentials, in which case they will be asked to reenter their credentials.
 
@@ -30,4 +32,8 @@ Sometimes, a service provider may temporarily have an issue connecting to a part
 
 ![](https://files.readme.io/da7e798-image.png)
 
-In this case, the user should go back and select a different institution, or route to the same institution through a different provider. For more information on the latter option, see [Bank Linking Routing](https://docs.meld.io/docs/routing-overview#bank-linking-routing).
+In this case, the user should go back and select a different institution, or route to the same institution through a different provider. For more information on the latter option, see [Bank Linking Routing](/docs/bank-linking/creating-connections/select-an-institution/routing-overview).
+
+<Tip>
+For a deep dive into widget errors, including how to query them from the Activity Log, see [Widget Errors During a Connection](/docs/bank-linking/creating-connections/complete-the-connection/widget-errors-during-a-connection).
+</Tip>

@@ -2,6 +2,37 @@
 title: "Deleting Connections"
 ---
 
-If you do not want a connection to be active anymore, you can delete it using Meld's [delete connections endpoint](https://docs.meld.io/reference/bank-linking-connections-delete). Once you delete a connection, it will be deleted on both Meld and the Service Provider's ends, and you will no longer receive any updates (through webhooks) regarding it, as well as no longer be charged for it. You can only delete a connection, not the link to any individual financial accounts associated with the connection.
+When a customer no longer needs a connection — they revoked access, switched banks, or the connection is a duplicate — you can delete it. This page is for developers cleaning up connections so they no longer receive webhooks or incur billing.
 
-# How to Delete a Connection
+## Before you begin
+
+<Info>
+- You have the `connectionId` you want to delete
+- You understand deletion is **permanent** — a deleted connection cannot be recovered
+- For [duplicate connections](/docs/bank-linking/get-connection-data/duplicate-connections), remember to delete all duplicates if you want to fully sever the underlying provider link
+</Info>
+
+## How to delete a connection
+
+Call the [delete connections endpoint](/api-reference/bank-linking) with the `connectionId`. Once you delete a connection:
+
+- It is deleted on **both** Meld and the underlying service provider.
+- You will no longer receive any updates (webhooks) for it.
+- You will no longer be billed for it.
+- A `BANK_LINKING_CONNECTION_DELETED` [webhook](/docs/bank-linking/webhook-events-bank-linking) is sent to confirm.
+
+<Warning>
+You can only delete a **connection**, not individual financial accounts under a connection. To stop tracking a subset of a customer's accounts, the customer must reconnect and choose which accounts to share.
+</Warning>
+
+<Note>
+For the full request and response schema, refer to the [Bank Linking API reference](/api-reference/bank-linking).
+</Note>
+
+## Common errors
+
+| HTTP status     | Likely cause                          | Developer action                                                                                              |
+| :-------------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------ |
+| `404 Not Found` | Invalid `connectionId`                | Verify the id and the environment (sandbox vs production).                                                    |
+| `409 Conflict`  | Connection is already `DELETED`       | No action needed — confirm with a `GET` on the connection.                                                    |
+| `5xx`           | Transient provider or Meld issue       | Retry with backoff. The Meld side may succeed even if the provider call retries; the webhook is the source of truth. |

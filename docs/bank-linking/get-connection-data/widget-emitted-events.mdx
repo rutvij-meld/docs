@@ -2,7 +2,7 @@
 title: "Widget Emitted Events and Errors"
 ---
 
-The bank picker widget emits Meld several events, including errors, that you should listen for in order to trigger certain actions on your end, for example closing the widget. These events can be viewed in the Console tab of your browser. While these events technically can be viewed by your user, their main purpose is to be used by Meld for debugging as well as for you to know when a connection has started and completed.
+The Meld Connect Widget emits messages to the host page throughout the connection lifecycle. This page is for front-end developers wiring up event listeners — for example, to close the widget when the connection completes or to surface errors to the customer. Events are visible in the browser console; Meld also uses them internally for debugging.
 
 **The bank picker will emit both Meld and service provider events. The Meld events normalize the service provider events (aka are consistent across providers) and therefore you should ONLY listen to the meld events, not the service provider events. The Meld events will have*domain: "meld-connect"* in them to distinguish them.**
 
@@ -121,6 +121,6 @@ We recommend also capturing the following events to close the iframe when an err
 </Note>
 
 
-Once you have received the connect\_complete event, then congratulations, the widget flow is complete! After [setting up a webhook configuration with Meld](https://docs.meld.io/docs/webhook-quickstart#steps-to-receive-webhooks-from-meld), you can then expect the [BANK\_LINKING\_CONNECTION\_COMPLETED](https://docs.meld.io/docs/webhook-events-bank-linking#bank_linking_connection_completed) webhook to notify of official connection completion, followed by the other aggregation-related webhooks that relay when account/transaction data is ready to be fetched from the Meld API. 
+Once you have received the `connect_complete` event, the widget flow is complete. After [setting up a webhook configuration with Meld](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart), you will receive the [BANK_LINKING_CONNECTION_COMPLETED](/docs/bank-linking/webhook-events-bank-linking) webhook notifying you of official connection completion, followed by the other aggregation-related webhooks that signal when account and transaction data is ready to be fetched from the Meld API.
 
-See [Retrieving Connection Data](https://docs.meld.io/docs/retrieving-connection-data) for next steps and more detail regarding loading account & transaction data.
+See [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data) for next steps and more detail on loading account and transaction data.

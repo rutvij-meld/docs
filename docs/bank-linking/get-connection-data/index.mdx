@@ -2,23 +2,41 @@
 title: "Get Connection Data"
 ---
 
-Once you complete a connection, you can get your connection data. This involves knowing when a connection has been completed (using widget events and webhooks), retrieving connection data, and understanding connection statuses.
+After a customer completes the Meld Connect Widget flow, you can begin fetching their financial data — balances, owners, identifiers, transactions, and investments. This section is for developers building backend integrations that listen for connection completion, wait for data to be available, and call Meld's APIs to retrieve it.
 
-1. Review the [widget emitted events](https://docs.meld.io/docs/widget-emitted-events). This will let you know when a connection has been successfully completed, or if there was an error during the connection process.
-2. Understand [when your data is available](https://docs.meld.io/docs/when-is-your-data-available). You should understand the webhook flow and which webhooks indicate that data is available.
-3. Once your data is available, [retrieve your connection data](https://docs.meld.io/docs/retrieving-connection-data). This can involve retrieving data for balances, owners, identifiers, transactions, and investments.
-4. Review the various [connection statuses and errors](https://docs.meld.io/docs/connection-statuses-and-errors). As connections move out of ACTIVE, learn what can be done to refresh, repair, or delete them in the next section. 
+## Before you begin
 
-The data you get back about a connection is normalized by Meld across providers. For more details see [here](https://docs.meld.io/docs/data-normalization).
+<Info>
+- A connection has been created through [Creating Connections](/docs/bank-linking/creating-connections)
+- A webhook profile is configured so you receive lifecycle events — see [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart)
+- Your backend has access to the customer's `connectionId` or `customerId`
+</Info>
 
-# Informing the User of the Status
+## Steps
 
-There will likely be a delay between your user completing their connection and you receiving webhooks that the data is ready to be fetched. This can be anywhere from a few seconds for balance / identifier / owner data to several minutes depending on the institution or if the accounts connected have a very large number of historical transactions. During that time, Meld recommends showing something in your UI to indicate to the user that the connection was successful and that their data is being fetched, so that they don't get confused and attempt another connection.
+1. Review the [widget emitted events](/docs/bank-linking/get-connection-data/widget-emitted-events). These tell you when a connection has been successfully completed or if there was an error during the flow.
+2. Understand [when your data is available](/docs/bank-linking/get-connection-data/when-is-your-data-available). Different products are aggregated on different timelines, and webhooks indicate when each is ready.
+3. Once your data is available, [retrieve your connection data](/docs/bank-linking/get-connection-data/retrieving-connection-data). This covers balances, owners, identifiers, transactions, and investments.
+4. Review the [connection statuses and errors](/docs/bank-linking/get-connection-data/connection-statuses-and-errors). As connections move out of `ACTIVE`, learn how to refresh, repair, or delete them in the next section.
 
-# Get Balances, Owners, and Identifiers Data
+The data Meld returns is normalized across providers — see [Data Normalization](/docs/bank-linking/get-connection-data/data-normalization) for details on signage, categories, and investment types.
 
+## Informing the user of the status
 
-# Get Transactions Data
+<Tip>
+There will likely be a delay between your user completing the widget flow and you receiving webhooks indicating data is ready. This can be a few seconds for balance, identifier, and owner data, or several minutes for transactions on accounts with large histories. Show a loading state in your UI during this time so users don't think the connection failed and try again.
+</Tip>
 
+## Endpoint quick reference
 
-# Get Investments Data
+| Data                      | Endpoint                                                  | Reference                                                                                                       |
+| :------------------------ | :-------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------- |
+| Balances / Owners / IDs   | `GET /bank-linking/financial-accounts`                    | [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data)                 |
+| Transactions              | `GET /bank-linking/transactions`                          | [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data)                 |
+| Investment Holdings       | `GET /bank-linking/investment-holdings`                   | [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data)                 |
+| Investment Transactions   | `GET /bank-linking/investment-transactions`               | [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data)                 |
+| Connections metadata      | `GET /bank-linking/connections`                           | [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data)                 |
+
+<Note>
+Refer to the [Bank Linking API reference](/api-reference/bank-linking) for the complete request and response schema for each endpoint.
+</Note>

@@ -8,9 +8,9 @@ In the case where the service provider is not explicitly stated in the request, 
 
 ## How to Use
 
-To use routing for bank linking, simply [create a connection](https://docs.meld.io/docs/creating-connections) as you normally would, and once the user selects their institution in the [Meld Connect Widget](https://docs.meld.io/docs/launch-the-widget), the user will automatically be routed to the correct provider based on your routing rules.
+To use routing for bank linking, [create a connection](/docs/bank-linking/creating-connections) as you normally would, and once the user selects their institution in the [Meld Connect Widget](/docs/bank-linking/creating-connections/launch-the-widget), the user will automatically be routed to the correct provider based on your routing rules.
 
-To use routing for payments, make a [payment transaction](https://docs.meld.io/reference/payments-transactions-create) but do not pass in a service provider in your request. The user will automatically be routed to the correct provider based on your routing rules.
+To use routing for payments, make a payment transaction but do not pass in a service provider in your request. The user will automatically be routed to the correct provider based on your routing rules. See the [Payments API reference](/api-reference) for the transaction endpoint.
 
 # General Routing Rules
 
@@ -35,7 +35,7 @@ You can set up multiple custom rules and order them, and this will determine the
 
 Bank Linking Routing can be used to route to user to the best provider to complete their connection. Aside from the default routing rule, you can set up custom rules with conditions on where to route the user. Currently, you can select an institution or a list of institutions and route users trying to connect to them to a particular provider. For example, you can set it up so that users trying to connect to Chase or Bank of America go through Plaid, whereas users trying to go to Wells Fargo or US Bank go through Finicity. 
 
-You can also select a product or list of products to route. For example, any requests for Investment Holdings or Investment Transactions may go to Plaid. Be careful to not route based on products to a provider that doesn't support that product, for example since Salt Edge doesn't support Investment Holdings, don't route Investment Holdings to Salt Edge. You can find which products each provider supports [here](https://docs.meld.io/docs/creating-connections).
+You can also select a product or list of products to route. For example, any requests for Investment Holdings or Investment Transactions may go to Plaid. Be careful to not route based on products to a provider that doesn't support that product, for example since Salt Edge doesn't support Investment Holdings, don't route Investment Holdings to Salt Edge. You can find which products each provider supports on the [Supported Bank Linking Products](/docs/bank-linking/creating-connections/create-a-connect-token/supported-bank-linking-products) page.
 
 ![](https://files.readme.io/f5fafd4-image.png)
 

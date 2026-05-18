@@ -2,52 +2,56 @@
 title: "Step 2: Launch the Widget"
 ---
 
-# Meld Connect Widget
+The Meld Connect Widget is the embedded UI your customer uses to pick a financial institution and authenticate with their bank. This page is for developers who already have a connect token and need to render the widget on web, mobile web, or in a native mobile app. Once your customer completes the flow, you can call Meld's APIs to retrieve their financial data.
+
+## Before you begin
+
+<Info>
+- You have a valid `connectToken` from [Step 1: Create a Connect Token](/docs/bank-linking/creating-connections/create-a-connect-token) (tokens expire after 3 hours)
+- You have decided how to render the widget: web iframe, mobile WebView, or new tab
+- Your front-end is set up to listen for `window.message` events (or the platform equivalent) so it can react to widget events
+</Info>
 
 ## Overview
 
-The Meld Connect Widget is where your customer will select a financial institution to connect with. Once your customer has connected their bank account, you can then use our other endpoints (described later) to pull information from their accounts.
-
 The Meld Connect Widget contains two components:
 
-* **Front-end component** -- Use to select the financial institution. 
+* **Front-end component** — used by the customer to select the financial institution.
+* **Back-end component** — used by your server to access the customer's financial data via the Meld API.
 
-* **Back-end component** -- Use to access the customer’s financial data.
+<Tip>
+Meld recommends launching the widget inside an iframe for optimal UI, and closing it when the `connect_complete` event is emitted. You can also load the URL in a new tab or webview but certain UI elements will not look as polished. How you display the widget does not affect the customer's ability to connect.
+</Tip>
 
-**Meld highly recommends launching the widget inside an iframe for optimal UI**, and then close it when the connect\_complete event is emitted. You can just load the url as a new tab or in a webview but certain UI elements will not look as good. Still, how you choose to display the widget shouldn't affect a user's ability to connect to their bank.
+## Launch the Meld Connect Widget
 
-## Launch Meld Connect Widget
-
-Before you launch the Meld Connect Widget, make sure you have the connect token from the [previous step](https://docs.meld.io/docs/create-a-connect-token).\
-Use the connect token to build the URL and show our widget to your customers. Below is a sample code:
+Use the connect token to build the URL and render the widget. Below is sample code:
 
 ```html
 <iframe src="https://institution-connect-sb.meld.io/?connectToken={{connectToken string}}" width="360" height="640" style="border: none;" />
 ```
 
-The optimal size to load the iframe's in is H=630 x W=360 px.
+The optimal iframe size is H=630 x W=360 px.
 
-And below is the Meld Connect Widget your customers will see:
+Below is the Meld Connect Widget your customers will see:
 
 ![](https://files.readme.io/4a6005a-Screen_Shot_2021-12-01_at_10.43.29_AM.png)
 
-See [here](https://docs.meld.io/docs/widget-flow-examples) for examples of the widget flow.
-
+See [Widget Flow Examples](/docs/bank-linking/creating-connections/launch-the-widget/widget-flow-examples) for examples of the widget flow per provider.
 
 <Note>
-Launching in Test Mode
+**Launching in test mode**
 
-If you launch the widget url in your browser (no iframe), then at the end of making a connection you may see an endless loading spinner. This is only seen in this test mode, when you actually implement the widget, launch it in an iframe, and close it once the connection is done, there is no spinner.
+If you load the widget URL in your browser without an iframe, you may see an endless loading spinner at the end of making a connection. This is only seen in this test mode. When you actually implement the widget — launched in an iframe and closed once the connection completes — there is no spinner.
 </Note>
 
+## Listening for emitted events
 
-## Listening for Emitted Events
+The widget emits several events, including errors, that you can listen for to trigger actions in your application. See [Widget Emitted Events and Errors](/docs/bank-linking/get-connection-data/widget-emitted-events) for the full list and code samples per platform.
 
-The widget emits several events, including errors, that you can listen for and use to trigger actions on your end. See more information on [Widget Emitted Events and Errors](https://docs.meld.io/docs/widget-emitted-events).
+## Set up webhooks and notifications
 
-# Set up webhooks and notifications
-
-You can receive notifications via webhooks whenever there are changes in financial accounts and transactions data. For instructions on setting up your webhook profiles, reference the [Webhook Quickstart](https://docs.meld.io/docs/webhook-quickstart).
+You can receive webhooks whenever there are changes in financial account and transaction data. To configure your webhook profiles, see the [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart).
 
 Example events include:
 
@@ -58,7 +62,7 @@ Example events include:
 * `BANK_LINKING_ACCOUNTS_UPDATED`
 * `BANK_LINKING_ACCOUNTS_REMOVED`
 
-See the full list of bank-linking webhook event types in detail [here](https://docs.meld.io/docs/webhook-events-bank-linking).
+See the full list of bank-linking webhook event types in detail in [Webhook Events: Bank Linking](/docs/bank-linking/webhook-events-bank-linking).
 
 # Mobile Optimization
 
@@ -104,5 +108,5 @@ export const Modal = styled(ModalANTD)`
 <Note>
 Resources
 
-* [API Reference for Bank Linking Stack](https://docs.meld.io/reference/bank-linking-connect-create)
+* [API Reference for Bank Linking Stack](/api-reference/bank-linking)
 </Note>

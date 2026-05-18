@@ -2,25 +2,36 @@
 title: "Creating Connections"
 ---
 
-Creating institution connections makes up the core of Meld's bank linking service and enables accessing customer financial data. Each connection has its own set of [products](https://docs.meld.io/docs/supported-bank-linking-products) associated with it, and is established via an underlying [service provider](https://docs.meld.io/docs/creating-connections#supported-products). Here are the steps to make a connection:
+Creating institution connections is the core of Meld's Bank Linking service: it is how your application gains permissioned access to a customer's financial data. This guide is for developers integrating bank account linking into their product, and walks you through every step required to establish a working connection.
 
-1. [Create a connect token.](https://docs.meld.io/docs/create-a-connect-token) Remember to choose the [products](https://docs.meld.io/docs/create-a-connect-token#supported-products) for which you would like data.
-2. [Launch the widget.](https://docs.meld.io/docs/launch-the-widget)
-3. [The user will select an institution.](https://docs.meld.io/docs/select-an-institution)
-4. [The user will complete the connection.](https://docs.meld.io/docs/complete-the-connection)
+Each connection has its own set of [products](/docs/bank-linking/creating-connections/create-a-connect-token/supported-bank-linking-products) associated with it, and is established via an underlying [service provider](/docs/bank-linking/creating-connections/create-a-connect-token/supported-bank-linking-products).
 
-# How to Make a Connection
+## Before you begin
 
+<Info>
+Before creating your first connection, make sure you have:
 
-# Routing
+- A Meld account with at least one Bank Linking service provider enabled in the dashboard
+- A sandbox API key (treat it as a secret — never expose it in front-end code)
+- A webhook profile configured if you plan to react to connection lifecycle events
+- Reviewed the list of [supported products](/docs/bank-linking/creating-connections/create-a-connect-token/supported-bank-linking-products) so you know which to request
+</Info>
 
-Routing can be used to route to user to the best provider to complete their connection. More information on bank linking routing can be found [here](https://docs.meld.io/docs/routing-overview#bank-linking-routing).
+## Steps to make a connection
 
+1. [Create a connect token.](/docs/bank-linking/creating-connections/create-a-connect-token) Choose the [products](/docs/bank-linking/creating-connections/create-a-connect-token/supported-bank-linking-products) for which you would like data.
+2. [Launch the widget.](/docs/bank-linking/creating-connections/launch-the-widget)
+3. [The user selects an institution.](/docs/bank-linking/creating-connections/select-an-institution)
+4. [The user completes the connection.](/docs/bank-linking/creating-connections/complete-the-connection)
+
+## Routing
+
+Routing sends the user to the best available provider to complete their connection. More information on bank linking routing can be found in the [Routing overview](/docs/bank-linking/creating-connections/select-an-institution/routing-overview).
 
 <Note>
-Routing across Service Providers
+**Routing across service providers**
 
-Meld's Bank Linking stack allows you to route your customers to specific service providers based upon predefined defaults, a service provider waterfall based on institution coverage and availability, or specific financial institution based decisioning.
+Meld's Bank Linking stack lets you route customers to specific service providers based on predefined defaults, a service provider waterfall driven by institution coverage and availability, or institution-specific decisioning.
 
 Routing rules are defined within the Meld dashboard.
 </Note>

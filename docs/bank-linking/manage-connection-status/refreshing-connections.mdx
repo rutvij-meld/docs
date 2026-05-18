@@ -2,14 +2,43 @@
 title: "Refreshing Connections"
 ---
 
-Connections have 2 types of [refreshes](https://docs.meld.io/reference/bank-linking-connections-refresh), automatic and forced. You can refresh specific products, and the refresh will happen to all accounts under that connection. Both types of refreshes will result in webhooks being sent to you for the connection.
+A **refresh** pulls the latest balances and transactions for an existing, healthy connection from the underlying service provider. This page is for developers deciding when and how to refresh — and when **not** to (most of the time, background refresh has you covered).
 
-# Automatic Refreshes
+## Before you begin
 
-Service Providers typically refresh connection data (balances and transactions) once a day, and Meld will get the latest data from the provider at that time. When Meld detects a change in data for a connection, you will receive webhooks informing you of the same, so that you can hit Meld's endpoints and receive the latest data.
+<Info>
+- You have a `connectionId` for a connection that is **not** in `RECONNECT_REQUIRED`, `EXPIRED`, `DELETED`, or `IN_PROGRESS` (those statuses cannot be refreshed — see [Connection Errors and Reasons](/docs/bank-linking/get-connection-data/connection-statuses-and-errors/connection-errors-and-reasons))
+- You understand that forced refreshes can incur additional charges and may be rate-limited by the provider
+- You have webhooks configured so you can observe the resulting aggregation events
+</Info>
 
-# Forced Refreshes
+## Automatic refreshes
 
-At any time you can use Meld's [refresh endpoint](https://docs.meld.io/reference/bank-linking-connections-refresh) to get the latest data for all accounts belonging to a connection. That being said, the data is limited by how often the institutions update the data, which is often only several times a day. Forcing refreshes can incur additional costs. Also, providers may rate limit forced refreshes (for example MX only supports forced refreshing every 3 hours).
+Service providers typically refresh connection data (balances and transactions) once or a few times a day, and Meld pulls the latest data at that time. When Meld detects a change, you receive webhooks so you can fetch the latest data. **You do not need to schedule refreshes yourself for routine freshness.**
 
-# How to Refresh a Connection
+## Forced refreshes
+
+At any time you can call the [refresh endpoint](/api-reference/bank-linking) to force a live aggregation of all accounts on a connection. You can scope the refresh to specific products. Both forced and automatic refreshes produce webhooks.
+
+<Warning>
+Forced refreshes can incur additional charges and providers rate-limit them. For example, MX supports forced refresh only every 3 hours. Use forced refresh only when the customer just performed an action in your app that requires up-to-the-minute data.
+</Warning>
+
+## How to refresh a connection
+
+Call the refresh endpoint with the `connectionId` and (optionally) the list of products you want to refresh.
+
+<Note>
+For the full request and response schema, refer to the [Bank Linking API reference](/api-reference/bank-linking).
+</Note>
+
+After the call returns, listen for the standard aggregation webhooks — `BANK_LINKING_ACCOUNTS_UPDATED`, `BANK_LINKING_TRANSACTIONS_AGGREGATED` — to know when fresh data is available.
+
+## Common errors
+
+| HTTP status        | Likely cause                                                                              | Developer action                                                                                                                                                                |
+| :----------------- | :---------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `404 Not Found`    | Invalid `connectionId`                                                                    | Verify the id and the environment (sandbox vs production).                                                                                                                      |
+| `409 Conflict`     | Connection is in a status that cannot be refreshed (e.g. `RECONNECT_REQUIRED`, `EXPIRED`) | Check the status; if `RECONNECT_REQUIRED`, send the customer through the [repair flow](/docs/bank-linking/manage-connection-status/repairing-connections) instead.              |
+| `429 Too Many`     | Provider rate limit hit (e.g. MX 3-hour limit)                                            | Back off and retry after the provider window. Do not loop on this error.                                                                                                        |
+| `5xx`              | Transient Meld or provider issue                                                          | Retry with exponential backoff; if persistent, inspect the next `BANK_LINKING_CONNECTION_STATUS_CHANGE` webhook to see if the connection moved to `DEGRADED` or `UNDETERMINED`. |

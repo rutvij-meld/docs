@@ -2,36 +2,45 @@
 title: "Retrieving Connection Data"
 ---
 
-Once your customer has successfully completed a connection, you can access their financial information.
+Once your customer has successfully completed a connection and Meld has signaled that data is ready (see [When Is Your Data Available](/docs/bank-linking/get-connection-data/when-is-your-data-available)), you can call the endpoints below to read their financial data. This page is for backend developers fetching connection data from Meld's REST API.
 
-# Accessing customer financial data
+## Before you begin
 
-In order to access your customer's financial data, you can call the endpoints below. We typically adhere to two endpoint patterns:   
+<Info>
+- You have received the `BANK_LINKING_ACCOUNTS_UPDATED` or `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhook for the product you intend to query
+- You know the `customerId`, `externalCustomerId`, `connectionId`, or `financialAccountId` you want to scope the query to
+- Your API key has access to the relevant products
+</Info>
 
-* Get a singular result by `id` 
-* Filter through all results by various query parameters. Some of these are described below:
-  * `externalCustomerId` - the id you provided Meld for your customer.
-  * `customerId` - the id Meld assigns for your customer.
-  * `institutionId` - the Meld id for a financial institution.
-  * `financialAccountId` - the Meld id for your customer's financial account.
+## Accessing customer financial data
 
-## Financial Data
+Meld's data endpoints follow two patterns:
 
-To get back information on [Balances](https://docs.meld.io/docs/account-balances), [Identifiers](https://docs.meld.io/docs/account-identifiers), or [Owners](https://docs.meld.io/docs/account-owners), use the [financial accounts endpoint](https://docs.meld.io/reference/bank-linking-accounts-search). See [here](https://docs.meld.io/docs/get-connection-data#get-balances-owners-and-identifiers-data) for an example.
+* **Get a single result by id** — pass the resource id.
+* **Filter through results by query parameters** — typical filters include:
+  * `externalCustomerId` — the id you provided Meld for your customer.
+  * `customerId` — the id Meld assigned for your customer.
+  * `institutionId` — the Meld id for a financial institution.
+  * `financialAccountId` — the Meld id for your customer's financial account.
 
-To get back a list of [Transactions](https://docs.meld.io/docs/account-transactions), use the [transactions endpoint](https://docs.meld.io/reference/bank-linking-transactions-search). See [here](https://docs.meld.io/docs/get-connection-data#get-transactions-data) for an example. Note that transactions are ordered by newest first, per each financial account. For more details on Meld's recommendation on how to fetch financial transactions, see [here](https://docs.meld.io/docs/fetching-transaction-information).
+### Financial data
 
-To get back a list of [Investment Holdings](https://docs.meld.io/docs/account-investments#investment-holdings), use the [investment holdings endpoint](https://docs.meld.io/reference/bank-linking-investment-holdings-search). See [here](https://docs.meld.io/docs/get-connection-data#get-investments-data) for an example.
+To retrieve [Balances](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-balances), [Identifiers](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-identifiers), or [Owners](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-owners), use the financial accounts endpoint.
 
-To get back a list of [Investment Transactions](https://docs.meld.io/docs/account-investments#investment-transactions), use the [investment transactions endpoint](https://docs.meld.io/reference/bank-linking-investment-transactions-search). See [here](https://docs.meld.io/docs/get-connection-data#get-investments-data) for an example.
+To retrieve [Transactions](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-transactions), use the transactions endpoint. Transactions are ordered newest first per financial account.
 
-## Metadata
+To retrieve [Investment Holdings](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-investments), use the investment holdings endpoint.
 
-To get back a list of connections, use the [connections endpoint](https://docs.meld.io/reference/bank-linking-connections-search).
+To retrieve **Investment Transactions**, use the investment transactions endpoint.
 
+### Metadata
+
+To retrieve a list of connections, use the connections endpoint.
 
 <Note>
-Resources
-
-* [API Reference for Bank Linking Stack](https://docs.meld.io/reference/bank-linking-connect-create)
+For the complete request and response schema for each endpoint listed above, refer to the [Bank Linking API reference](/api-reference/bank-linking).
 </Note>
+
+<Tip>
+For updating transaction data efficiently on subsequent calls, see [When Is Your Data Available — Updating Transaction Data](/docs/bank-linking/get-connection-data/when-is-your-data-available). The recommended approach is to fetch only the last 14 days when handling routine background aggregations.
+</Tip>
