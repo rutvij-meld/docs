@@ -394,72 +394,6 @@
                 ]
               }
             ]
-          },
-          {
-            "group": "Old Crypto Pages",
-            "pages": [
-              {
-                "group": "Crypto Quickstart",
-                "pages": [
-                  "docs/old-crypto/crypto-quickstart-old/index",
-                  "docs/old-crypto/crypto-quickstart-old/crypto-additional-settings",
-                  "docs/old-crypto/crypto-quickstart-old/how-to-set-up-a-service-provider"
-                ]
-              },
-              {
-                "group": "The Crypto Flows",
-                "pages": [
-                  "docs/old-crypto/the-crypto-flows/index",
-                  "docs/old-crypto/the-crypto-flows/buy-flow-old",
-                  "docs/old-crypto/the-crypto-flows/sell-flow-old",
-                  "docs/old-crypto/the-crypto-flows/transfer-flow-old",
-                  "docs/old-crypto/the-crypto-flows/nft-checkout-flow"
-                ]
-              },
-              {
-                "group": "Integration Options",
-                "pages": [
-                  "docs/old-crypto/integration-options-old/index",
-                  {
-                    "group": "White Label Widget Experience",
-                    "pages": [
-                      "docs/old-crypto/integration-options-old/crypto-widget/index",
-                      "docs/old-crypto/integration-options-old/crypto-widget/recommended-white-label-flow",
-                      "docs/old-crypto/integration-options-old/crypto-widget/crypto-widget-customization",
-                      "docs/old-crypto/integration-options-old/crypto-widget/crypto-quotes",
-                      "docs/old-crypto/integration-options-old/crypto-widget/fetch-transaction-information",
-                      "docs/old-crypto/integration-options-old/crypto-widget/crypto-transaction-statuses"
-                    ]
-                  },
-                  {
-                    "group": "All in One Wizard",
-                    "pages": [
-                      "docs/old-crypto/integration-options-old/crypto-wizard/index",
-                      "docs/old-crypto/integration-options-old/crypto-wizard/crypto-wizard-customization"
-                    ]
-                  }
-                ]
-              },
-              "docs/old-crypto/conversion-based-routing",
-              "docs/old-crypto/transaction-data-in-dashboard",
-              {
-                "group": "Sandbox Buy Flow Testing Guide",
-                "pages": [
-                  "docs/old-crypto/crypto-testing-guide/index",
-                  "docs/old-crypto/crypto-testing-guide/testing-sell-transfer-and-nft-checkout"
-                ]
-              },
-              "docs/old-crypto/quote-and-purchase-thresholds",
-              {
-                "group": "Supported Service Providers",
-                "pages": [
-                  "docs/old-crypto/crypto-supported-service-providers/index",
-                  "docs/old-crypto/crypto-supported-service-providers/onrampmoney"
-                ]
-              },
-              "docs/old-crypto/webhook-events-crypto",
-              "docs/old-crypto/crypto-faq"
-            ]
           }
         ]
       },
@@ -621,10 +555,6 @@
         ]
       }
     ]
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
   },
   "navbar": {
     "links": [
