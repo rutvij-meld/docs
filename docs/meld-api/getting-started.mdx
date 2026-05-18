@@ -2,40 +2,165 @@
 title: "Getting started"
 ---
 
-The Meld API is architected based on REST and contains resource-oriented URLs. All request and response bodies are in JSON format unless specified otherwise. When submitting your API key for authentication, you must specify "BASIC " before the key value pair.
+The Meld API is a REST API for fintech use cases such as crypto onramps/offramps and bank linking. This page is for developers making their first call to Meld. By the end, you will have authenticated against Sandbox, made a successful request, and know where to go for full endpoint reference.
+
+All request and response bodies are JSON unless otherwise noted. Authentication uses an API key passed in the `Authorization` header with a `BASIC` prefix (note the trailing space between `BASIC` and the key).
+
+<Info>
+This page covers Sandbox setup and your first call. For exhaustive environment, status code, and error schema details, see the [Reference](/docs/welcome/reference) page.
+</Info>
+
+# Prerequisites
+
+Before you start, you should have:
+
+1. **A Meld account.** If you do not have one, contact your Meld representative to get onboarded.
+2. **An API key for Sandbox.** API keys are issued by Meld and are environment-specific (Sandbox keys do not work in Production, and vice versa). Work with your Meld contact to obtain your key.
+3. **A way to make HTTP requests from a backend.** This guide uses `curl`, but any HTTP client works. Calls must originate from your backend, not from a browser or mobile app.
+
+<Warning>
+Your API key is a secret. Never commit it to source control, embed it in client-side code, or send it through a frontend call. Store it in environment variables or a secrets manager.
+</Warning>
 
 # Environments
 
-Meld offers both production and sandbox environments. The below table contains the URL for each environment:
+Meld offers separate Sandbox and Production environments with separate API keys and separate data.
 
-| Environment | API Base URL                  |
-| :---------- | :---------------------------- |
-| Sandbox     | https://api-sb.meld.io |
-| Production  | https://api.meld.io    |
+| Environment | API Base URL             | Purpose                                    |
+| :---------- | :----------------------- | :----------------------------------------- |
+| Sandbox     | `https://api-sb.meld.io` | Build and test. No real funds move.        |
+| Production  | `https://api.meld.io`    | Live traffic. Real customers, real funds.  |
 
-To obtain your API key for either Production or Sandbox environments, work with your Meld contact. Your API Key is a secret, treat it as such. Do not share it or send it through a front end call.
+<Note>
+Always begin integration in Sandbox. Switch the base URL and swap in your Production API key when you are ready to go live.
+</Note>
 
+# Quick Start
+
+Follow these five steps to make your first authenticated call.
+
+## Step 1 — Get your Sandbox API key
+
+Reach out to your Meld contact to obtain your Sandbox API key. Treat it like a password.
+
+## Step 2 — Store the API key as an environment variable
+
+In your shell:
+
+```bash
+export MELD_API_KEY="your-sandbox-api-key-here"
+```
+
+## Step 3 — Construct the `Authorization` header
+
+Meld expects the `BASIC` scheme followed by your raw API key (not a base64-encoded user:password pair like HTTP Basic Auth — Meld uses the `BASIC` keyword with the key value directly).
+
+The header format is:
+
+```
+Authorization: BASIC <YOUR_API_KEY>
+```
+
+For example, if your API key is `sk_sb_abc123xyz`, the header is:
+
+```
+Authorization: BASIC sk_sb_abc123xyz
+```
+
+<Warning>
+There must be a single space between `BASIC` and your key, and the word `BASIC` is uppercase. Omitting either causes a `401 Unauthorized`.
+</Warning>
+
+## Step 4 — Make your first request
+
+Pick any GET endpoint from the [API Reference](/api-reference). Send the request against the Sandbox base URL with your `Authorization` header.
+
+Example request:
+
+```bash
+curl --location --request GET 'https://api-sb.meld.io/<ENDPOINT>' \
+  --header 'Authorization: BASIC '"$MELD_API_KEY"'' \
+  --header 'Accept: application/json'
+```
+
+<Note>
+Replace `<ENDPOINT>` with the path of the endpoint you are calling. Refer to the [API Reference](/api-reference) for exact paths, methods, query parameters, and request bodies.
+</Note>
+
+Example successful response (shape will vary by endpoint):
+
+```json
+{
+  "id": "abc123",
+  "status": "OK",
+  "createdAt": "2024-01-19T20:32:30.784928Z"
+}
+```
+
+## Step 5 — Handle errors
+
+If the response status code is `400` or higher, Meld returns a structured error payload. See [API Error Schema](/docs/welcome/reference#api-error-schema) in the Reference page for the full shape.
+
+A common first-call failure is `401 Unauthorized`:
+
+```json
+{
+  "code": "UNAUTHORIZED",
+  "message": "Unauthorized",
+  "errors": ["Invalid or missing API key"],
+  "requestId": "eb6aaa76bd7103cf6c5b090610c31913",
+  "timestamp": "2024-01-19T20:32:30.784928Z"
+}
+```
+
+<Warning>
+**Resolving a 401:**
+
+* Confirm the `Authorization` header starts with `BASIC ` (uppercase, single trailing space).
+* Confirm you are using the Sandbox key against `api-sb.meld.io` and the Production key against `api.meld.io`. Keys are not interchangeable.
+* Confirm the key has not been rotated or revoked. Contact your Meld representative if unsure.
+* Confirm the header is not being stripped by a proxy or middleware in front of your backend.
+</Warning>
+
+Other common errors:
+
+| Status | Meaning                | What to check                                                       |
+| :----- | :--------------------- | :------------------------------------------------------------------ |
+| 400    | Bad Request            | Inspect `errors` for which field is invalid.                        |
+| 403    | Forbidden              | Your key is valid but does not have permission for this resource.   |
+| 404    | Not Found              | Verify the endpoint path and resource ID.                           |
+| 422    | Validation Failed      | Inspect `errors` for the failing field(s).                          |
+| 429    | Too Many Requests      | Back off and retry. Reduce request rate.                            |
+| 500    | Server Error           | Retry with backoff. If persistent, share `requestId` with support.  |
+
+# Security
+
+Meld does not require IP or CORS allowlisting — authentication is solely via the `Authorization` header. However:
+
+1. **Always call Meld from your backend.** Direct calls from a browser or mobile app expose your API key.
+2. **Treat your API key like a password.** Use a secrets manager, restrict access to your backend, and rotate keys if exposure is suspected.
+3. **Authenticate your own frontend to your backend** before letting it trigger Meld calls, and reject unauthorized callers.
+
+For more, see [Security in Reference](/docs/welcome/reference#security).
+
+# Postman collection
 
 <Note>
 Public Postman Workspace
 
-Meld offers public postman collections for our core endpoints to get you started. Please use it in conjunction with the documentation to understand the full power of Meld's API.
+Meld offers public Postman collections for our core endpoints to help you get started. Use it alongside this documentation to explore Meld's API surface.
 
-The Postman workspace can be found [here](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection).
+The Postman workspace is available [here](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection).
 </Note>
-
-
-# Security
-
-1. CORS -- Meld does not need to whitelist any of our customer's URL or IPs for them to call our public Production & Sandbox APIs. You can use whichever URL you desire, as we authenticate via your Meld API Key.
-
-2. For security reasons, Meld recommends using your backend server to make the calls to Meld's API. If you make these calls from your frontend instead, it may not work and you may get back a CORS error. This is because making calls to Meld APIs require that you passed in an Authentication header with the API Key we issued you. It is insecure to keep this API Key hardcoded in your mobile app or web app.
-
-3. All our customers need to treat the Meld API Key they've been issued like any other "password". It is an extremely sensitive credential that needs to be protected at all cost. The security measures you need to ensure are:\
-   a) strict controls to the backend server (as it has access to your Meld API Key),\
-   b) a way to authenticate your FE/app to your backend server\
-   c) reject/ignore all other calls to your backend server
 
 # Dates
 
-All Meld dates / timestamps returned via Meld's API are in UTC time.
+<Info>
+All Meld dates and timestamps returned via the API are in UTC and formatted using ISO 8601 (for example, `2024-01-19T20:32:30.784928Z`).
+</Info>
+
+# Next steps
+
+* Browse the [API Reference](/api-reference) for the full list of endpoints.
+* Review the [Reference](/docs/welcome/reference) page for status codes, error schema, and security details.
+* Pick a product to integrate — see [Meld's products](/docs/welcome/see-all-products).
