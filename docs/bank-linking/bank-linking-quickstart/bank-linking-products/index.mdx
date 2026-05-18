@@ -4,22 +4,25 @@ title: "Bank Linking Products"
 
 ## Overview
 
-Once your customer has connected their account to your app, you can then use our endpoints to retrieve customer financial account information. 
+Once your customer has connected their account to your app, you can use Meld's endpoints to retrieve customer financial account information. This page lists the products available, shows how Meld's product names map to each service provider's terminology, and links to the deeper documentation for each.
 
 The following Meld products are normalized to return data across any bank linking service provider configured to your account:
 
-* [Balances](https://docs.meld.io/docs/account-balances): The cached or realtime balances of the Customer's account.
-* [Identifiers](https://docs.meld.io/docs/account-identifiers): The institution's account and routing numbers or related account specific account identifiers.
-* [Owners](https://docs.meld.io/docs/account-owners): The Customer's account owner information, such as name and address.
-* [Transactions](https://docs.meld.io/docs/account-transactions): Customer's account transaction history.
-* [Investment Holdings](https://docs.meld.io/docs/account-investments#investment-holdings): Customer's current investment holdings, including stocks and other securities.
-* [Investment Transactions](https://docs.meld.io/docs/account-investments#investment-transactions): Customer's trade history.
+* [Balances](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-balances): The cached or realtime balances of the customer's account.
+* [Identifiers](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-identifiers): The institution's account and routing numbers (or related account-specific identifiers).
+* [Owners](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-owners): Account-owner information such as name and address.
+* [Transactions](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-transactions): Account transaction history.
+* [Investment Holdings](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-investments): Current investment holdings, including stocks and other securities.
+* [Investment Transactions](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-investments): Trade history.
 
-The following are not standalone products but rather features Meld supports.
+The following are not standalone products but features Meld supports:
 
-* [Processor Token](https://docs.meld.io/docs/account-processor-token): Where supported by the service provider, this token can be used by an authorized third party to make API calls directly to the processor on your behalf.\
-  *Note:* Processor Token is treated differently than other products in that it isn't requested in the initial call to `/connect/start`. It has its own separate [endpoint](https://docs.meld.io/reference/bank-linking-accounts-create-processor-token)
-* [Recurring Transactions](https://docs.meld.io/docs/account-transactions#recurring-transactions): Certain providers identify recurring transactions (such as a monthly subscription to a service). Therfore, for Plaid and MX specifically, you will notice that recurring transactions, in the transaction details object, have `recurring=TRUE`, while all other transactions have `recurring=FALSE`.
+* [Processor Token](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-processor-token): Where supported by the service provider, this token can be used by an authorized third party to make API calls directly to the processor on your behalf.
+* [Recurring Transactions](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-transactions): Certain providers identify recurring transactions (such as a monthly subscription). For Plaid and MX specifically, recurring transactions in the transaction details object have `recurring=TRUE`, while all other transactions have `recurring=FALSE`.
+
+<Note>
+Processor Token is treated differently than other products: it isn't requested in the initial call to `/bank-linking/connect/start`. It has its own dedicated endpoint described on the [Processor Token](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-processor-token) page.
+</Note>
 
 Mapping of Meld's products to service provider's products:
 
@@ -269,8 +272,10 @@ Mapping of Meld's products to service provider's products:
 
 # Account Types and Subtypes
 
-Each service provider has its own way of returning data and hierarchy/nomenclature when it comes to account types and subtypes. We have normalized the data across providers so accounts have a uniform way of identifying account types. You can reference the service provider mappings to the Meld account types/subtypes in the *Normalized Account Types and Subtypes* section at the bottom of each service provider's mappings page.
+Each service provider has its own way of returning data and hierarchy/nomenclature when it comes to account types and subtypes. Meld normalizes the data across providers so accounts have a uniform way of identifying account types. You can reference the service provider mappings to the Meld account types/subtypes in the *Normalized Account Types and Subtypes* section at the bottom of each service provider's mappings page (see [Partner Details](/docs/bank-linking/partner-details/index)).
 
-*Note:* If service providers add new account types/subtypes then they will be mapped to the Meld type of `UNIDENTIFIED` until a proper mapping has been determined.
+<Note>
+If service providers add new account types/subtypes, they will be mapped to the Meld type of `UNIDENTIFIED` until a proper mapping has been determined.
+</Note>
 
 A list of all the Meld account types and subtypes can be found below:

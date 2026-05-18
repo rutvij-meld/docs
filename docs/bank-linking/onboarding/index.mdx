@@ -2,28 +2,39 @@
 title: "Onboarding"
 ---
 
-Meld works hard to make onboarding as smooth as possible. To facilitate with onboarding, follow the steps below and use the Meld Dashboard to add your credentials, grab your API key, set up webhooks, and access Meld's API.
+This section walks developers through onboarding onto Meld for Bank Linking. By the end you will have a Meld Dashboard account, service-provider credentials configured, a Meld API key, working webhooks, and a successful first API call.
 
-If you would like access to the Meld Dashboard, reach out to Meld either [here](https://www.meld.io/contact) or via your account rep to request it.
+## Steps
+
+1. [Accept your Dashboard invite](/docs/bank-linking/onboarding/step-1-accept-your-dashboard-invite)
+2. [Add your service providers](/docs/bank-linking/onboarding/step-2-adding-your-service-providers)
+3. [Grab your Meld API key](/docs/bank-linking/onboarding/step-3-meld-api-key)
+4. [Make your first API call](/docs/bank-linking/onboarding/step-4-make-your-first-api-call)
+5. [Set up webhooks](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/index)
+6. [Integrate](/docs/bank-linking/onboarding/step-6-integration)
+
+<Note>
+If you would like access to the Meld Dashboard, reach out to Meld via [the contact form](https://www.meld.io/contact) or your account rep.
+</Note>
 
 ## Onboarding FAQ
 
-### My dashboard invite in Step 1 isn't working or has expired, what should I do?
+### My Dashboard invite in Step 1 isn't working or has expired. What should I do?
 
-Reach out to Meld for assistance with receiving a new invite. If members of your team have already joined the dashboard for your account, they can also re-invite you.
+Reach out to Meld for assistance with receiving a new invite. If members of your team have already joined the Dashboard for your account, they can also re-invite you.
 
 ### Where do I get my service provider credentials in Step 2?
 
 They can generally be found in the dashboard of each provider, or are logged in any API calls you have made to that provider. Meld generally does not have access to your accounts with each provider and therefore cannot get this information for you.
 
-### After adding my service provider credentials in Step 2, I tried to make an API call in Step 4 but it didn't work, what happened?
+### After adding my service provider credentials in Step 2, I tried to make an API call in Step 4 but it didn't work. What happened?
 
-There are a couple of different possible sources of error here:
+There are a few possible sources of error:
 
-1. The credentials entered in Step 2 were incorrect. Double-check the credentials, fix them, and try again.
-2. The API key used did not match the Base URL selected. See Step 4 for more details but each API key is tied to either a sandbox or production account, and can only be used for API calls in that environment.
-3. Some required fields for the API call are missing or have improper values. The API reference guide will inform you if this is the case.
-4. Your provider does not match the call being made. For example, asking for a crypto quote for Finicity, a bank linking provider, will not work. Each endpoint is generally domain specific, and will only work for providers in that domain.
+1. The credentials entered in Step 2 were incorrect. Double-check them, fix them, and try again.
+2. The API key used did not match the Base URL selected. See Step 4 for more details — each API key is tied to either a sandbox or production account and can only be used for API calls in that environment.
+3. Some required fields for the API call are missing or have improper values. The API reference will indicate this.
+4. Your provider does not match the call being made. For example, asking for a crypto quote for Finicity (a bank linking provider) will not work. Each endpoint is generally domain-specific.
 
 ### What events should I subscribe to for webhooks?
 

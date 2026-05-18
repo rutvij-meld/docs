@@ -2,14 +2,27 @@
 title: "Step 4: Setting Up Webhooks"
 ---
 
-Setting up webhooks is a 2 step process.
+Webhooks let Meld push real-time updates to your backend whenever something changes in a customer's bank linking data (new transactions, broken connections, etc.). Setting up webhooks is a two-step process — one set of webhooks flows from your service providers to Meld, and another from Meld to your backend.
 
-Step 1: In order for Meld to receive webhooks from the providers you have configured in step 2, you must set up these webhooks for each service provider. Instructions can be found [here](https://docs.meld.io/docs/webhook-quickstart#steps-to-send-webhooks-from-the-service-provider-to-meld).
+## Before you begin
 
-Step 2: If you would like to receive webhooks with updates from Meld, go to the **Developer** tab and the **Webhooks** subtab, and set up webhooks as described [here](https://docs.meld.io/docs/webhook-quickstart#steps-to-receive-webhooks-from-meld). 
+- You have completed [Step 2: Add your service providers](/docs/bank-linking/onboarding/step-2-adding-your-service-providers) so that Meld knows which providers to receive webhooks for.
+- You have a publicly reachable HTTPS endpoint on your backend that can receive Meld's webhook deliveries.
 
-![](https://files.readme.io/f66d007-image.png)
+## Steps
 
-Step 1 of webhook setup is necessary for Meld to track your transactions / connections. Step 2 of webhook setup is optional, as you can use the **Transactions** tab to view your completed transactions and connections.
+1. **Provider → Meld**: In order for Meld to receive webhooks from the providers you configured in Step 2, set up these webhooks for each service provider. See [Steps to send webhooks from the service provider to Meld](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart#steps-to-send-webhooks-from-the-service-provider-to-meld).
+2. **Meld → You**: If you want Meld to forward updates to your backend, go to the **Developer** tab → **Webhooks** subtab in the Dashboard and add an endpoint. See [Steps to receive webhooks from Meld](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart#steps-to-receive-webhooks-from-meld).
 
-![](https://files.readme.io/94bd5a2-image.png)
+   ![Webhooks subtab in Dashboard](https://files.readme.io/f66d007-image.png)
+
+<Note>
+Step 1 (provider → Meld) is required for Meld to track your transactions and connections. Step 2 (Meld → you) is optional — you can use the **Transactions** tab in the Dashboard to view completed transactions and connections without forwarding webhooks.
+</Note>
+
+![Transactions tab in Dashboard](https://files.readme.io/94bd5a2-image.png)
+
+For details, see:
+
+- [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart)
+- [Webhook Authentication](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-authentication)

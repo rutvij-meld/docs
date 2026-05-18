@@ -2,37 +2,39 @@
 title: "Bank Linking Use Cases"
 ---
 
-# How to Use the Product
+This page summarizes how to build an app that uses Meld's Bank Linking stack end to end — from creating a connection through ongoing management — and lists common use cases that Bank Linking data unlocks. Use it as a roadmap that points to the deep-dive pages for each step.
 
-Here is a high level summary of how you can build an app that interacts with Meld, any bank linking provider, and your customer.
+## How to use the product
 
-1. [Create a connection](https://docs.meld.io/docs/creating-connections) to your customer's bank account(s).
-   1. Test credentials can be found in the [bank linking sandbox testing guide](https://docs.meld.io/docs/bank-linking-sandbox-testing-guide).
-   2. Make sure to tell the user the connection is complete while you are waiting to fetch the data, see more about this [here](https://docs.meld.io/docs/get-connection-data#informing-the-user-of-the-status).
-2. [Get connection data](https://docs.meld.io/docs/managing-completed-connections) to pull the financial data you need.
-   1. This data includes [balances](https://docs.meld.io/docs/account-balances), [identifiers](https://docs.meld.io/docs/account-identifiers), [owners](https://docs.meld.io/docs/account-owners), [transactions](https://docs.meld.io/docs/account-transactions), and [investments](https://docs.meld.io/docs/account-investments).
-   2. Configure and consume [webhooks](https://docs.meld.io/docs/webhook-events-bank-linking) as needed to know when new financial data is available or if a connection is broken.
-   3. You can also create a [processor token](https://docs.meld.io/docs/account-processor-token) for a financial account.
-3. [Manage connection status](https://dash.readme.com/project/melduniversal/v2023-12-19/docs/manage-connection-status) to keep your connections organized and up
-   1. [Refresh](https://docs.meld.io/docs/refreshing-connections) a connection to get the latest data.
-   2. [Repair](https://docs.meld.io/docs/repairing-connections) a connection to start receiving updates again.
-   3. [Delete](https://docs.meld.io/docs/deleting-connections) a connection as needed.
-4. [Route](https://docs.meld.io/docs/routing-overview#bank-linking-routing) between providers to optimize conversion.
-   1. Each service provider has different coverage, as well as its own details. Be sure to read through them before using a particular service provider. The list of service providers includes [Plaid](https://docs.meld.io/docs/plaid), [Finicity](https://docs.meld.io/docs/finicity), [MX](https://docs.meld.io/docs/mx), [Yodlee](https://docs.meld.io/docs/yodlee), [Salt Edge](https://docs.meld.io/docs/salt-edge), and [Salt Edge Partners](https://docs.meld.io/docs/salt-edge-partners).
-   2. Meld's Bank Linking stack allows you to route your customers to specific service providers based upon predefined defaults, a service provider waterfall based on institution coverage and availability, or specific financial institution based decisioning. > > Routing rules are defined within the Meld dashboard.
-5. If you have existing connections with a service provider that you would like to bring over to Meld, you can by [importing connections](https://docs.meld.io/docs/importing-connections).
+1. [Create a connection](/docs/bank-linking/creating-connections/index) to your customer's bank account(s).
+   1. Test credentials and sandbox flows are described in the [Bank Linking Sandbox Testing Guide](/docs/bank-linking/testing-and-debugging/bank-linking-sandbox-testing-guide).
+   2. Inform the user that the connection is complete while you fetch the data in the background. See [Informing the user of the status](/docs/bank-linking/get-connection-data/index).
+2. [Get connection data](/docs/bank-linking/get-connection-data/index) to pull the financial data you need.
+   1. This includes [balances](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-balances), [identifiers](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-identifiers), [owners](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-owners), [transactions](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-transactions), and [investments](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-investments).
+   2. Configure and consume [webhooks](/docs/bank-linking/webhook-events-bank-linking) so you know when new financial data is available or a connection is broken.
+   3. You can also create a [processor token](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-processor-token) for a financial account.
+3. [Manage connection status](/docs/bank-linking/manage-connection-status/index) to keep connections organized and up to date.
+   1. [Refresh](/docs/bank-linking/manage-connection-status/refreshing-connections) a connection to get the latest data.
+   2. [Repair](/docs/bank-linking/manage-connection-status/repairing-connections) a connection to start receiving updates again.
+   3. [Delete](/docs/bank-linking/manage-connection-status/deleting-connections) a connection as needed.
+4. [Route](/docs/bank-linking/creating-connections/select-an-institution/routing-overview) between providers to optimize conversion.
+   1. Each service provider has different coverage and details. Be sure to read through them before using a particular provider. See [Plaid](/docs/bank-linking/partner-details/plaid/index), [Finicity](/docs/bank-linking/partner-details/finicity/index), [MX](/docs/bank-linking/partner-details/mx/index), [Salt Edge](/docs/bank-linking/partner-details/salt-edge/index), and [Salt Edge Partners](/docs/bank-linking/partner-details/salt-edge-partners/index).
+   2. Meld's Bank Linking stack lets you route customers to specific providers based on predefined defaults, a provider waterfall using institution coverage and availability, or institution-specific decisioning. Routing rules are defined in the Meld dashboard.
+5. If you already have existing connections with a service provider, you can bring them over by [importing connections](/docs/bank-linking/manage-connection-status/importing-connections).
 
-# Potential Use Cases
+## Potential use cases
 
-Here are some potential use cases for Meld's bank linking product:
+Common reasons to integrate Bank Linking:
 
-1. See users' balances and invstment holdings to be able to give them financial advice.
-2. See users' balances and transactions to see if they would qualify for a loan.
-3. See users' owners information to verify their identity.
-4. See users' identifiers information (including account number and routing number) in order to perform an ACH transaction. See more about identity verification [here](https://docs.meld.io/docs/account-verification).
+1. View users' balances and investment holdings to give them financial advice.
+2. View users' balances and transactions to assess loan qualification.
+3. View users' owner information to verify their identity.
+4. View users' identifier information (account number and routing number) to perform an ACH transaction. See [Account Verification](/docs/bank-linking/bank-linking-quickstart/account-verification) for more.
 
-# Building Your Own Institution Picker
+## Building your own institution picker
 
-The first step of bank linking is knowing which institution the user wants to connect to. Most customers will launch Meld's widget which has an institution picker as the first screen. However, you have the ability to build you own picker, have the user select an institution, and pass that institutionId into the Meld [widget endpoint](https://docs.meld.io/reference/bank-linking-connect-create) as well, which will skip the institution picker screen in the Meld UI. To populate institutions along with their symbols in your own UI, fetch this data from the [institutions endpoint](https://docs.meld.io/reference/bank-linking-institutions-get). Note that this data rarely changes, so cache this response rather than calling this endpoint live every time.
+The first step of bank linking is knowing which institution the user wants to connect to. Most customers launch Meld's widget, which has an institution picker as the first screen. However, you can build your own picker, have the user select an institution, and pass that `institutionId` into the Meld `/bank-linking/connect/start` endpoint — this skips the institution picker screen in the Meld UI. To populate institutions along with their symbols in your own UI, fetch this data from the institutions endpoint.
 
-<br />
+<Tip>
+Institution data rarely changes, so cache the response rather than calling the institutions endpoint live every time.
+</Tip>

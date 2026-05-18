@@ -2,61 +2,62 @@
 title: "Transactions"
 ---
 
-<Note>
-API Reference
+The Transactions product returns a customer's account transaction history. Developers use it for cash-flow modeling, risk analysis, expenditure categorization, and similar use cases.
 
-[Search financial transactions](https://docs.meld.io/reference/bank-linking-transactions-search)\
-[Get a financial transaction](https://docs.meld.io/reference/bank-linking-transactions-get)
+<Note>
+**API Reference**
+
+- Search financial transactions: `GET /bank-linking/transactions`
+- Get a financial transaction: `GET /bank-linking/transactions/{transactionId}`
 </Note>
 
+## Overview
 
-# Overview
-
-Transactional data helps you understand a customer's expenditure, timing, and frequency of purchases. These details can be helpful for many different applications, such as cash flow modeling, risk analysis, etc. You can call the [transactions](https://docs.meld.io/reference/bank-linking-transactions-search) endpoint to filter transactions. Also see [here](https://docs.meld.io/docs/managing-completed-connections#get-transactions-data) for an example on fetching the data.
+Transactional data helps you understand a customer's expenditure, timing, and frequency of purchases. Call the transactions endpoint to filter transactions. See [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data) for an example.
 
 Transactions are typically only available for the following account types:
 
-* Depository accounts such as checking and saving funds.
-* Credit type accounts, such as credit cards or student loan accounts.
+- Depository accounts such as checking and savings.
+- Credit-type accounts, such as credit cards or student loan accounts.
 
-## Fetching Transactions
+## Fetching transactions
 
-See [here](https://docs.meld.io/docs/fetching-transaction-information) for information on how to fetch Meld transactions.
+See [Fetching Transaction Information](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/fetching-transaction-information) for how to fetch Meld transactions.
 
-## Updating Transactions
+## Updating transactions
 
-Transactions can get updated, especially their status. See more about this [here](https://docs.meld.io/docs/when-is-your-data-available#updating-transaction-data).
+Transactions can get updated, especially their status. See [When Is Your Data Available?](/docs/bank-linking/get-connection-data/when-is-your-data-available) for more.
 
-## Data Normalization
+## Data normalization
 
-**Meld normalizes transaction data, including the type, signage and the status. See[here](https://docs.meld.io/docs/data-normalization) for more information.**
+Meld normalizes transaction data, including the type, signage, and status. See [Data Normalization](/docs/bank-linking/get-connection-data/data-normalization) for more information.
 
-# Transaction Days Fetched By Refresh Type
+## Transaction days fetched by refresh type
 
-Meld loads a different period of transaction history depending on several factors like whether it is the first load (`INITIAL`), a subsequent refresh (`SUBSEQUENT`), or a historical aggregation (`HISTORICAL`).
+Meld loads a different period of transaction history depending on several factors — whether it is the first load (`INITIAL`), a subsequent refresh (`SUBSEQUENT`), or a historical aggregation (`HISTORICAL`).
 
 ### Initial loads
 
-For `INITIAL` loads (immediately following completing or reconnecting a connection), only a limited transaction history is  available at this time. Meld loads whatever the service provider has initially available, but this varies by service provider with the following breakdown:
+For `INITIAL` loads (immediately following completing or reconnecting a connection), only a limited transaction history is available. Meld loads whatever the service provider has initially available:
 
-* Plaid: last 30 days
-* Finicity: last 180 days
-* MX: last 90 days
-* Other service providers: 30 days
+- Plaid: last 30 days
+- Finicity: last 180 days
+- MX: last 90 days
+- Other service providers: 30 days
 
 ### Historical loads
 
-After completing an `INITIAL` aggregation, Meld will then trigger a `HISTORICAL` type aggregation with the service provider. Historical aggregations collect **2 years** of transaction history across all service providers. Historical transaction data typically takes longer to aggregate (and is billed separately by the service provider), which is why it is executed after the initial aggregation. Because of this, a secondary `BANK_LINKING_HISTORICAL_TRANSACTIONS_AGGREGATED` webhook will be issued after the first `BANK_LINKING_TRANSACTIONS_AGGREGATED`  webhook to indicate that historical transactions are now also  available (as well as how many were loaded). Since each service providers varies on what is immediately available during the `INITIAL` load, then the `HISTORICAL` load will collect whatever remains up to 2 years (i.e. from 30 days - 2 years for Plaid, from 180 days to 2 years for finicity, etc.). The numbers of transactions loaded are broken down by period and reflected in the aforementioned webhooks.
+After completing an `INITIAL` aggregation, Meld triggers a `HISTORICAL` aggregation with the service provider. Historical aggregations collect **2 years** of transaction history across all service providers. Historical transaction data typically takes longer to aggregate (and is billed separately by the service provider), which is why it is executed after the initial aggregation. Because of this, a secondary `BANK_LINKING_HISTORICAL_TRANSACTIONS_AGGREGATED` webhook is issued after the first `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhook to indicate that historical transactions are now also available (as well as how many were loaded). Since each service provider varies on what is immediately available during the `INITIAL` load, the `HISTORICAL` load collects whatever remains up to 2 years (i.e., from 30 days to 2 years for Plaid, from 180 days to 2 years for Finicity, etc.). The numbers of transactions loaded are broken down by period and reflected in the aforementioned webhooks.
 
 ### Subsequent loads
 
-Following both the `INITIAL` and `HISTORICAL` loads, then only the recent transaction history is aggregated daily to capture any new transactions or updates to existing transactions. These loads are considered `SUBSEQUENT` and only retrieves the last 20 days of transaction data. This is sufficient to capture both any recent transactions that may have occurred, as well as updates to existing transactions (such as transactions transitioning from `PENDING` to `POSTED`, or cancellations of transactions).
+Following both the `INITIAL` and `HISTORICAL` loads, only the recent transaction history is aggregated daily to capture any new transactions or updates to existing transactions. These loads are considered `SUBSEQUENT` and only retrieve the last 20 days of transaction data. This is sufficient to capture recent transactions as well as updates to existing transactions (such as transactions transitioning from `PENDING` to `POSTED`, or cancellations of transactions).
 
-# Recurring Transactions
+## Recurring transactions
 
-Certain providers identify recurring transactions (such as a monthly subscription to a service). Therfore, for Plaid and MX specifically, you will notice that recurring transactions, in the transaction details object, have `recurring=TRUE`, while all other transactions have `recurring=FALSE`.
+Certain providers identify recurring transactions (such as a monthly subscription). For Plaid and MX specifically, recurring transactions in the transaction details object have `recurring=TRUE`, while all other transactions have `recurring=FALSE`.
 
-# Sample Response
+## Sample response
 
 ```json
 {

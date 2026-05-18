@@ -2,35 +2,34 @@
 title: "Balances"
 ---
 
-<Note>
-API Reference
+The Balances product returns the cached or realtime balances for a customer's financial account. Use it to determine if an account has sufficient funds before using it as a funding source for a transaction.
 
-[Search financial accounts](https://docs.meld.io/reference/bank-linking-accounts-search)\
-[Get a specific financial account](https://docs.meld.io/reference/bank-linking-accounts-get)\
-[Refresh customer accounts](https://docs.meld.io/reference/bank-linking-connections-refresh)
+<Note>
+**API Reference**
+
+- Search financial accounts: `GET /bank-linking/accounts`
+- Get a specific financial account: `GET /bank-linking/accounts/{accountId}`
+- Refresh customer accounts: `POST /bank-linking/connections/{connectionId}/refresh`
 </Note>
 
+## Overview
 
-# Overview
+There are two types of balance data: current balance and available balance.
 
-Account balance data helps you determine if an account has sufficient funds before using it as a funding source for a financial transaction.
+- **Current balance** — The total amount of money in the account. This does not mean it is all available to spend. Some funds may be from deposits or checks that have not cleared yet.
+- **Available balance** — The total amount of money in the account that is available for your customer to spend.
 
-There are two types of balance data: Current balance and Available balance.
+<Tip>
+For fraud detection and insufficient-funds (NSF) prevention use cases, use available balance to determine fund sufficiency — it represents the predicted balance net of any pending transactions. Current balance does not take pending transactions into account.
+</Tip>
 
-<ul>
-<li><strong>Current balance -- </strong>The total amount of money in the account. But that does not mean it is all available to spend. Some of the funds included in the current balance may be from deposits your customer made or checks they wrote that have not cleared yet, in which case they are not available for your customer to use. </li> 
-<li><strong>Available balance -- </strong>The total amount of money in the account that is available for your customer to spend.</li> 
-</ul> 
+In some cases, a financial institution may not return available balance information. If that happens, you can calculate it by starting with the current balance, then using the transactions endpoint to detect pending transactions and adjusting the balance accordingly.
 
-For fraud detection and insufficient funds (NSF) prevention use cases, available balance should be used to determine the fund sufficiency, as it represents the predicted balance net of any pending transactions, while the current balance does not take pending transactions into account.
+## Balance data
 
-In some cases, a financial institution may not return available balance information. If that happens, you can calculate available balance by starting with the current balance, then using the [transactions endpoint](https://docs.meld.io/reference/bank-linking-transactions-search) to detect any pending transactions and adjusting the balance accordingly.
+When calling the financial accounts endpoint, you can access the `currency`, `currentAmount`, and `availableAmount` for that account. See [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data) for an example.
 
-# Balance data
-
-When calling the [financial accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint, you will be able to access the `currency`, `currentAmount`, and `availableAmount` for that account. Also see [here](https://docs.meld.io/docs/managing-completed-connections#get-balances-owners-and-identifiers-data) for an example.
-
-# Sample Response
+## Sample response
 
 ```json
 {
@@ -62,6 +61,6 @@ When calling the [financial accounts](https://docs.meld.io/reference/bank-linkin
 }
 ```
 
-# Account balance updates
+## Account balance updates
 
-Account balance data is constantly updated with new transactions made and previous transactions being processed. Utilize our webhooks to receive updates on the data. For details on how to set up webhooks, reference [Webhook & Notification](https://docs.meld.io/docs/webhook-quickstart).
+Account balance data is constantly updated as new transactions are made and previous transactions are processed. Use Meld's webhooks to receive updates on the data — see [Webhooks Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart) for setup details.

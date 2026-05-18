@@ -2,75 +2,101 @@
 title: "Webhooks Quickstart"
 ---
 
+This page walks developers through both halves of the webhook setup for Bank Linking: configuring your service providers to deliver webhooks to Meld, and configuring Meld to deliver webhooks to your backend.
+
+## Before you begin
+
+- You have completed [Step 2: Add your service providers](/docs/bank-linking/onboarding/step-2-adding-your-service-providers).
+- You have your Meld API key and know which environment it belongs to (see [Step 3: Meld API Key](/docs/bank-linking/onboarding/step-3-meld-api-key)).
+- You have a publicly reachable HTTPS URL on your backend that can accept webhook deliveries.
+
 # Introduction
 
-Meld uses webhooks to send you real-time updates when an event happens in your account. For instance, your customer connects with new financial accounts, new updates have been made to your customer's financial accounts and/or transactions, etc.
+Meld uses webhooks to send you real-time updates when an event happens in your account — for example, a customer connects with new financial accounts, or new updates have been made to a customer's financial accounts and/or transactions.
 
-The webhook flow is as follows: Meld received a webhook from the service provider that an action has happened, Meld processes the webhook, and then Meld sends you a corresponding webhook letting you know what happened. In this way, you will receive only webhooks from Meld, not the service provider, and the format and data will be standardized across service providers.
+The webhook flow:
 
-This means that there are two distinct webhook setups needed, one for the service provider to send webhooks to Meld and one for Meld to send webhooks to you. The steps for each are described below.
+1. Meld receives a webhook from the service provider that an action has happened.
+2. Meld processes the webhook.
+3. Meld sends you a corresponding webhook letting you know what happened.
+
+This means you receive only webhooks from Meld, not the service provider, and the format and data are standardized across providers.
+
+Two distinct webhook setups are required: one for the service provider to send webhooks to Meld, and one for Meld to send webhooks to you.
 
 # Environments
 
-Meld offers both production and sandbox environments. The below table contains the URL for each environment:
+Meld offers both production and sandbox environments. The base URL for each is:
 
-| Environment | API Base URL <p> \{api\_base\_url} </p> |
-| :---------- | :-------------------------------------- |
-| Sandbox     | https\:`<area>`//api-sb.meld.io           |
-| Production  | https\:`<area>`//api.meld.io              |
+| Environment | API Base URL          |
+| :---------- | :-------------------- |
+| Sandbox     | `https://api-sb.meld.io` |
+| Production  | `https://api.meld.io`    |
+
+<Note>
+The same webhook flow applies in both environments, but each environment has its own API key and its own webhook URLs in the Dashboard. Set webhooks up separately for sandbox and production.
+</Note>
 
 # Steps to send webhooks from the service provider to Meld
 
-**Note: For accounts that Meld shares with you (these show as "Shared Meld Integration" in the Dashboard), webhooks from the provider to Meld have already been set up so there is no work needed on your part. Also, some service providers, such as Robinhood, don't support webhooks so no set up is needed for those either.**
+<Note>
+For accounts that Meld shares with you (these show as "Shared Meld Integration" in the Dashboard), webhooks from the provider to Meld have already been set up — no work is needed on your part. Also, some service providers (such as Robinhood) don't support webhooks, so no setup is needed for those either.
+</Note>
 
-**STEP 1:**
+1. In the Meld Dashboard, open the **Integrations** tab and locate your Meld webhook URL. Webhook URLs are per service provider, per environment (sandbox and prod) — view the URL for any provider by clicking on it and expanding it. The URL clearly indicates which environment and which service provider each link is for. If in doubt, reach out to Meld.
 
-Check the Integrations tab of the Meld Dashboard for your Meld webhook URL. Webhook URLs are per service provider, per environment (sandbox and prod), and you can view the URL for any provider by clicking on it and expanding it, as shown below. The URL should clearly indicate which environment and which service provider each link is for, and if you have any doubts, don't hesitate to reach out to Meld for assistance.
+   ![Integrations tab showing webhook URL](https://files.readme.io/93e3e4e-image.png)
 
-![](https://files.readme.io/93e3e4e-image.png)
+2. Take the webhook URL from the Meld Dashboard and add it in the service provider's dashboard so that the provider sends Meld webhooks for your account. Events vary between providers — to be safe, sign up for all available events.
 
-**STEP 2:**\
-Take the webhook URL from the Meld dashboard and add it in the service provider's dashboard so that for your account, the service provider sends Meld webhooks. The events to sign up for vary between service providers so just to be safe, we recommend signing up for all available events.
-
-<br />
-
-Not all service providers have a dashboard, so for those who don't, you may have to reach out to them directly so that their team can set this up for you. Once you complete both these steps, Meld will start receiving webhooks from the service provider whenever transaction or connection information changes, and we will pass on that information to you in Meld's outbound webhooks, described in the next section.
+<Note>
+Not all service providers have a dashboard. For those that don't, you may need to reach out to them directly so their team can set this up. Once both steps are complete, Meld starts receiving webhooks from the service provider whenever transaction or connection information changes, and forwards that information to you in Meld's outbound webhooks (see the next section).
+</Note>
 
 ## MX Webhooks
 
-MX specifically requires a webhook username and password when setting up webhooks to Meld. However, Meld needs your MX API Key and Client ID before we can generate a url for you to use set up webhooks in the MX dashboard. Therefore when setting up an MX integration, the recommended order of operations is for you to add your API Key and Client ID for MX in the dashboard, then after we provide you with a Meld webhook url, use that to go and set up a webhook profile on MX's dashboard, along with setting up a username and password. Then come back to Meld's dashboard and add the username and password to the MX integration credentials.
+MX specifically requires a webhook username and password when setting up webhooks to Meld. However, Meld needs your MX API Key and Client ID before generating a URL for you to use to set up webhooks in the MX dashboard. Therefore, when setting up an MX integration, the recommended order of operations is:
 
-![](https://files.readme.io/7391b70-image.png)
+1. Add your MX API Key and Client ID in the Meld Dashboard.
+2. After Meld provides you with a Meld webhook URL, use that URL to set up a webhook profile on MX's dashboard, along with a username and password.
+3. Return to Meld's Dashboard and add the username and password to the MX integration credentials.
+
+![MX webhook credentials](https://files.readme.io/7391b70-image.png)
 
 # Steps to receive webhooks from Meld
 
-All of the below steps for configuring webhooks to be sent to you from Meld can also be done through the UI in the Developer tab of the Meld dashboard, which we recommend for ease of use.
+All of the steps for configuring webhooks to be sent to you from Meld can also be done through the UI in the **Developer** tab of the Meld Dashboard, which Meld recommends for ease of use.
 
-![](https://files.readme.io/2b80b06-image.png)
+![Webhooks UI in Dashboard](https://files.readme.io/2b80b06-image.png)
 
-Start by clicking "Add Endpoint", add your url and name the webhook profile.
+1. Click **Add Endpoint**, add your URL, and name the webhook profile.
 
-![](https://files.readme.io/6f3e1b1-image.png)
+   ![Add endpoint modal](https://files.readme.io/6f3e1b1-image.png)
 
-Select the events you would like to receive webhooks for. Meld recommends subscribing to all webhooks so that you don't miss any updates. Then hit "Add Endpoint" and you are good to go!
+2. Select the events you want to receive webhooks for. Meld recommends subscribing to all webhooks so you don't miss any updates.
 
-![](https://files.readme.io/c228288-image.png)
+   ![Event selection](https://files.readme.io/c228288-image.png)
 
-Instead of using the dashboard, if you choose to set these webhooks up using Meld's API instead, here are the steps to do so:
+3. Click **Add Endpoint** to save.
 
-**STEP 1:**\
-Using the API Key that Meld has issued to you, send a `GET` request to the [\{api\_base\_url}/notifications/webhooks/event-types](https://docs.meld.io/reference/webhooks-events-get) endpoint. You will receive a list of all event types available in the response.
+## Setting up webhooks via the API
 
-Your API Key is a secret, treat it as such. Do not share it or send it through a front end call.
+If you prefer to set up webhooks through the API rather than the Dashboard:
 
-Below is a sample request:
+**Step 1.** Using the API Key Meld has issued to you, send a `GET` request to `{api_base_url}/notifications/webhooks/event-types`. You will receive a list of all event types available.
 
-```json
+<Warning>
+Your API Key is a secret — treat it as such. Do not share it or send it through a frontend call.
+</Warning>
+
+Sample request:
+
+```bash
 curl --location --request GET '{api_base_url}/notifications/webhooks/event-types' \
---header 'Authorization: BASIC {{Your API Key}}'
+  --header 'Authorization: BASIC {{Your API Key}}'
 ```
 
-And below is the sample response:
+Sample response:
 
 ```json
 [
@@ -83,28 +109,25 @@ And below is the sample response:
 ]
 ```
 
-**STEP 2:**\
-Identify the events you want to monitor and the event payloads you will need to parse. Reference [Webhook Events](https://docs.meld.io/docs/webhook-events)
+**Step 2.** Identify the events you want to monitor and the event payloads you will need to parse. See [Bank Linking Webhook Events](/docs/bank-linking/webhook-events-bank-linking).
 
-**STEP 3:**\
- Using the API Key that Meld has issued to you, send a `POST` request to the [\{api\_base\_url}/notifications/webhooks](https://docs.meld.io/reference/webhooks-profiles-create) endpoint. You will receive a `201 Created` status code and details of your webhook profile.
+**Step 3.** Using your API Key, send a `POST` request to `{api_base_url}/notifications/webhooks`. You will receive a `201 Created` status code and details of your webhook profile.
 
-Below is a sample request:
+Sample request:
 
-```json
+```bash
 curl --location --request POST '{api_base_url}/notifications/webhooks' \
---header 'Authorization: {{Your API Key}}' \
---header 'Content-Type: application/json' \
---data-raw '{
+  --header 'Authorization: BASIC {{Your API Key}}' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
     "name": "sample-webhook-profile-name",
     "url": "https://a875ba2afae4f7792f48c28cd16e72b8.m.pipedream.net",
     "eventType": ["FINANCIAL_ACCOUNT_ADDED",
         "FINANCIAL_ACCOUNT_TRANSACTIONS_ADDED"]
-
-}'
+  }'
 ```
 
-And below is the sample response:
+Sample response:
 
 ```json
 {
@@ -119,32 +142,29 @@ And below is the sample response:
 }
 ```
 
-Your webhook profile is now ready to receive notifications from Meld at the URL you have specified in the request. We recommend using the webhook signatures to verify that Meld generated a webhook request and did not come from a server acting like Meld.
-
+Your webhook profile is now ready to receive notifications from Meld at the URL you specified. Meld recommends using webhook signatures to verify that requests originated from Meld and were not sent by a third party — see [Webhook Authentication](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-authentication).
 
 <Note>
-When you created a profile, we sent a WEBHOOK\_TEST event to the designated URL right away. If you do not receive a WEBHOOK\_TEST webhook, we recommend doing the following:
+When you created a profile, Meld sent a `WEBHOOK_TEST` event to the designated URL right away. If you do not receive a `WEBHOOK_TEST` webhook:
 
-* Do a health check on your webhook source
-* Check if the webhook is pointing to the right destination
-* Make sure your destination server is running
+* Do a health check on your webhook source.
+* Check that the webhook is pointing to the right destination.
+* Make sure your destination server is running.
 
 You can also reach out to Meld for assistance.
 </Note>
 
+**Step 4.** Use the below endpoints to update webhook profiles, list all your webhook profiles, or get details of a specific webhook profile.
 
-**STEP 4:**\
-Use the below endpoints to make updates on your webhook profiles, get a list of all your webhook profiles, or get details of a specific webhook profile.
-
-| Usage                                     | Endpoint                                                                                               |
-| :---------------------------------------- | :----------------------------------------------------------------------------------------------------- |
-| Update your webhook profile               | [/notifications/webhooks/\{webhookProfileId}](https://docs.meld.io/reference/webhooks-profiles-update) |
-| List all your webhook profiles            | [/notifications/webhooks](https://docs.meld.io/reference/webhooks-profiles-search)                     |
-| Get details of a specific webhook profile | [/notifications/webhooks/\{webhookProfileId}](https://docs.meld.io/reference/webhooks-profiles-get)    |
-
+| Usage                                     | Endpoint                                            |
+| :---------------------------------------- | :-------------------------------------------------- |
+| Update your webhook profile               | `PATCH /notifications/webhooks/{webhookProfileId}`  |
+| List all your webhook profiles            | `GET /notifications/webhooks`                       |
+| Get details of a specific webhook profile | `GET /notifications/webhooks/{webhookProfileId}`    |
 
 <Note>
-Resources
+**Resources**
 
-* [API Reference for Webhooks](https://docs.meld.io/reference/webhooks-profiles-create)
+- See [Bank Linking Webhook Events](/docs/bank-linking/webhook-events-bank-linking) for the event types you can subscribe to.
+- See [Webhook Authentication](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-authentication) for how to verify Meld's signature.
 </Note>

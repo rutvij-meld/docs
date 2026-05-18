@@ -2,22 +2,35 @@
 title: "Step 3: Meld API Key"
 ---
 
-# Not Using the Crypto Wizard
+Retrieve the Meld API key that authenticates all calls to the Bank Linking API. Each Meld account has its own keys, scoped per environment.
 
-This section assumes that you are not using Meld's crypto wizard. If you are, see [here](https://docs.meld.io/docs/step-3-meld-api-key#using-the-crypto-wizard) instead.
+## Before you begin
 
-After adding your integrations, go to the **Developer** tab and the **API Keys** subtab to grab your API key, which is automatically generated and includes the credentials for all of the integrations you added in the previous step.
+- You have completed [Step 2: Add your service providers](/docs/bank-linking/onboarding/step-2-adding-your-service-providers).
 
-![](https://files.readme.io/9035875-image.png)
+## Not using the Crypto Wizard
 
-Keys named **Production** and **Sandbox** are private keys you will use to call Meld's API. **Production** keys are in Meld's production environment, and **Sandbox** keys are in Meld's sandbox environment. Remember to put the word `BASIC` in front of the key when making an API call.
+This section assumes you are not using Meld's Crypto Wizard. If you are, see [Using the Crypto Wizard](#using-the-crypto-wizard) below instead.
 
-Unless you are using the **Public Crypto Wizard** key, please treat all API keys as absolutely confidential! If your API key is ever exposed, please inform Meld immediately so that Meld can roll your key.
+1. In the Meld Dashboard, open the **Developer** tab.
+2. Click the **API Keys** subtab.
 
-# Using the Crypto Wizard
+   ![API Keys subtab](https://files.readme.io/9035875-image.png)
 
-If you are only using the [Meld Crypto Wizard](https://docs.meld.io/docs/crypto-wizard), ignore any key marked **Production** or **Sandbox**. Instead, you will see a **Public Crypto Wizard** key as well, and the url in the popup is the url for your personal crypto wizard. Do not use any other API key for your crypto wizard or you may risk exposing sensitive data. This only applies to the Crypto Stack, not the Bank Linking or Payments Stacks.
+3. Copy the API key for your target environment:
+   - **Production** keys are tied to Meld's production environment (`https://api.meld.io`).
+   - **Sandbox** keys are tied to Meld's sandbox environment (`https://api-sb.meld.io`).
 
-![](https://files.readme.io/c94287d-image.png)
+<Warning>
+Treat your API keys as absolutely confidential. If your API key is ever exposed, inform Meld immediately so we can roll your key. Unless you are using the **Public Crypto Wizard** key, never expose your API key in client-side code.
+</Warning>
 
-<br />
+<Note>
+When making an API call, prefix the key with the word `BASIC` in the `Authorization` header — for example, `Authorization: BASIC <your-api-key>`.
+</Note>
+
+## Using the Crypto Wizard
+
+If you are only using the Meld Crypto Wizard, ignore any key marked **Production** or **Sandbox**. Instead, you will see a **Public Crypto Wizard** key as well, and the URL in the popup is the URL for your personal Crypto Wizard. Do not use any other API key for your Crypto Wizard — doing so may risk exposing sensitive data. This only applies to the Crypto Stack, not the Bank Linking or Payments stacks.
+
+![Public Crypto Wizard key](https://files.readme.io/c94287d-image.png)

@@ -2,19 +2,20 @@
 title: "iOS App to App Authentication"
 ---
 
-This page outlines the steps to load the Meld bank linking widget inside your iOS mobile app using a WebView.
+This page outlines the steps to load the Meld bank linking widget inside your iOS mobile app using a `WKWebView`, and to support App to App authentication with banks that have implemented it.
+
+## Before you begin
+
+- An iOS project in Xcode where you can integrate a `WKWebView`.
+- Access to your website's server to host the `apple-app-site-association` file.
+- An Apple Developer account to create and use App IDs and provisioning profiles.
+- A Meld API key and the ability to call `/bank-linking/connect/start` to obtain a widget URL.
 
 # Project Setup
 
 ## Step 1: Universal Links Setup
 
 Universal Links provide a seamless user experience by connecting a URL to a specific part of your iOS app, bypassing the browser. This guide is designed for beginners and explains how to set up and use Universal Links in your iOS applications.
-
-### Before you begin, ensure you have:
-
-* An iOS project in Xcode
-* Access to your website’s server to host the required files
-* An Apple Developer account to create and use App IDs and provisioning profiles
 
 ### Universal Links Step 1: Enable Associated Domains
 

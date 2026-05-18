@@ -2,14 +2,34 @@
 title: "Fetching Transaction Information"
 ---
 
-Fetching and updating transactions should follow a general process of waiting for an indication that updates have occurred (either via the `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhooks or by noticing an updated `successfullyAggregatedAt` time for the connection) and then capturing these updates. Transactions are ordered by date descending (newest first, oldest last) for each financial account, and each of these transactions has an associated key field that represents its position in this sequence. When capturing additions/updates to transactions, retrieving the full transaction history each time isn’t necessary (except for right after the initial connection). Transactions typically aren’t added or modified beyond 2 weeks of the time of fetching them, so we recommend utilizing one of the following strategies to ensure all transaction additions/updates are captured during each refresh:
+This page explains the recommended strategies for fetching and updating transactions in your application after Meld signals new data is available. Pick the strategy that best matches how aggressive your refresh cadence is and how much extra data you are willing to fetch.
 
-1. Fetch transactions using the `startDate` and `endDate` params. Following a successful refresh, these params can be set so that the last 2 weeks of transaction history is fetched. This can reasonably ensure that all transaction updates are captured. The length of this period can be modified to be longer or shorter depending on how conservative you want to be that all updates are captured. You would then paginate through these results using the after param set to the key of the last transaction on each page until reaching the end of the results for that time period.
-2. You can utilize `the oldestTransactionUpdatedSearchKey` present for each financial account on the `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhook. This key can then be used as a baseline for refreshing to be certain that all updates are captured (without also capturing unnecessary older transactions that weren’t updated, which could occur with option 1). You can then call the search transactions endpoint with no key initially, then paginate through the results using the after key until you reach the transaction with key matching the `oldestTransactionUpdatedSearchKey` (newest transaction -> oldest transaction updated). 
-3. Another option is the reverse of #2, which is to call the search transactions endpoint with the before key set to the `oldestTransactionUpdatedSearchKey`, and then paginate through the results in the opposite direction using the before key until there are none remaining (oldest transaction updated -> newest transaction).
+## Before you begin
 
-Note: The `after` and `before` fields mean to get the results “after” or “before” it in relation to pagination. This is standard across all of the bank-linking search endpoints. In relation to transactions in particular, this can be misleading because they do not mean “occurred after” or “occurred before”. Since transactions are ordered with the newest first and oldest last, then when paginating through the results, each call with an after key will get the transactions on the next page (which are actually older), and each call with a before key will get the results on the previous page (which are actually newer).
+- You have an active bank linking connection.
+- You are subscribed to the `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhook (see [Webhooks Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart)) or you are polling the connection's `successfullyAggregatedAt` timestamp.
 
-Note: Meld recommends that when updating transactions that searching be done by financial account id as opposed to the connection id. The ordering of transactions is done by transaction date per financial account, so searching by connection id would yield a sequence of: *account1 transactions ordered by date* -> *account2 transactions ordered by date* -> *etc*. This can be misleading when parsing the transactions as it may appear that some recent transactions are missing, when in reality they are just later in the sequence because they belong to a different financial account for the connection.
+## When to fetch
 
-<br />
+Fetching and updating transactions follows a general process:
+
+1. Wait for an indication that updates have occurred — either via the `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhook or by noticing an updated `successfullyAggregatedAt` time for the connection.
+2. Capture those updates using one of the strategies below.
+
+Transactions are ordered by date descending (newest first, oldest last) for each financial account, and each transaction has an associated key field that represents its position in this sequence. When capturing additions/updates, retrieving the full transaction history each time isn't necessary (except right after the initial connection). Transactions typically aren't added or modified beyond 2 weeks of the time of fetching them.
+
+## Recommended strategies
+
+Use one of the following to ensure all transaction additions/updates are captured during each refresh:
+
+1. **Date-range fetch.** Fetch transactions using the `startDate` and `endDate` params. Following a successful refresh, set them so the last 2 weeks of transaction history is fetched. This reasonably ensures all transaction updates are captured. The length of this period can be modified to be longer or shorter depending on how conservative you want to be. Paginate through these results using the `after` param set to the key of the last transaction on each page until reaching the end of the results for that time period.
+2. **Oldest-updated key (forward).** Use the `oldestTransactionUpdatedSearchKey` present for each financial account on the `BANK_LINKING_TRANSACTIONS_AGGREGATED` webhook. This key can be used as a baseline so all updates are captured without also capturing unnecessary older transactions that weren't updated (which could occur with option 1). Call the search transactions endpoint with no key initially, then paginate through the results using the `after` key until you reach the transaction with key matching the `oldestTransactionUpdatedSearchKey` (newest transaction → oldest transaction updated).
+3. **Oldest-updated key (reverse).** The reverse of strategy #2: call the search transactions endpoint with the `before` key set to the `oldestTransactionUpdatedSearchKey`, and paginate through the results in the opposite direction using the `before` key until there are none remaining (oldest transaction updated → newest transaction).
+
+<Warning>
+The `after` and `before` fields refer to pagination order, not occurrence order. This is standard across all bank-linking search endpoints. In particular for transactions, this can be misleading: they do **not** mean "occurred after" or "occurred before". Since transactions are ordered with the newest first and oldest last, each call with an `after` key returns the transactions on the next page (which are actually older), and each call with a `before` key returns the results on the previous page (which are actually newer).
+</Warning>
+
+<Tip>
+When updating transactions, Meld recommends searching by financial account ID rather than connection ID. The ordering of transactions is done by transaction date per financial account, so searching by connection ID would yield a sequence of: *account1 transactions ordered by date* → *account2 transactions ordered by date* → etc. This can be misleading when parsing the transactions, as some recent transactions may appear missing when in reality they are later in the sequence because they belong to a different financial account for the connection.
+</Tip>

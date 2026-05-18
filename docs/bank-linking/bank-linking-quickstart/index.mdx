@@ -2,36 +2,37 @@
 title: "Bank Linking Quickstart"
 ---
 
-Note: If you are looking for Meld's Crypto / Digital Assets Documentation, then skip this section and go to [here](https://docs.meld.io/docs/crypto-overview_#/) instead.
-
-# Open API
-
-Reach out to Meld if you would like the OpenAPI spec for bank linking.
-
-# Introduction
-
-Welcome to Meld's Bank Linking Product! Meld’s Bank Linking stack enables you to work with multiple bank linking providers through an integrated API and UX flow.
-
-Before you start using Meld's products, first make sure that you have completed [Onboarding](https://docs.meld.io/docs/onboarding) and have your Meld API key available.
-
-The page includes a summary of how to create and manage a connection, a list of Meld environments, and a glossary with an accompanying diagram to explain Meld's terminology.
-
-# [How to Use the Product](https://docs.meld.io/docs/bank-linking-use-cases)
-
-To see more information on how to use Meld's bank linking product, see [here](https://docs.meld.io/docs/bank-linking-use-cases).
-
+Welcome to Meld's Bank Linking product. Meld's Bank Linking stack lets developers connect their users' bank accounts through multiple service providers (Plaid, MX, Finicity, Salt Edge, Yodlee, Akoya) using a single integrated API and UX flow. This quickstart covers how connections are created and managed, the data products available, and the terminology used throughout the rest of the bank linking documentation.
 
 <Note>
-Environments
-
-See [here](https://docs.meld.io/docs/reference#meld-environments) for more information on Meld's sandbox and production environments.
+Looking for Meld's Crypto / Digital Assets documentation? Skip this section and head to the [Crypto Overview](/docs/crypto/crypto-overview/index) instead.
 </Note>
 
+## Before you begin
 
-For more information on Meld's glossary and the bank linking flow, see [here](https://docs.meld.io/docs/bank-linking-glossary).
+- Complete [Onboarding](/docs/bank-linking/onboarding/index) so you have a Meld dashboard account.
+- Grab your Meld API key from the **Developer** tab of the Dashboard (see [Step 3: Meld API Key](/docs/bank-linking/onboarding/step-3-meld-api-key)).
+- Confirm which environment your key targets (sandbox or production).
 
-To understand the various products you can get bank linking data for, see [here](https://docs.meld.io/docs/bank-linking-products).
+<Note>
+Reach out to Meld if you would like the OpenAPI spec for bank linking.
+</Note>
 
-# Accounts with Service Providers
+## How to use the product
 
-Meld has reseller agreements with Finicity, MX, and Akoya, and can create an account for you with each of these providers. For the other providers, if you don't have your own account with the provider already, Meld can temporatily share their account with you for testing while your account is being spun up. Contact Meld for more details on this.
+The high-level flow is summarized in [Bank Linking Use Cases](/docs/bank-linking/bank-linking-quickstart/bank-linking-use-cases). For terminology and a relationship diagram, see the [Bank Linking Glossary](/docs/bank-linking/bank-linking-quickstart/bank-linking-glossary). For details on the financial-data products you can retrieve after a connection completes, see [Bank Linking Products](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/index).
+
+<Info>
+**Environments**
+
+Meld offers separate sandbox and production environments. Each environment has its own API key and base URL:
+
+| Environment | API Base URL          |
+| :---------- | :-------------------- |
+| Sandbox     | `https://api-sb.meld.io` |
+| Production  | `https://api.meld.io`    |
+</Info>
+
+## Accounts with service providers
+
+Meld has reseller agreements with Finicity, MX, and Akoya and can create an account for you with each of these providers. For the other providers, if you don't have your own account with the provider already, Meld can temporarily share their account with you for testing while your account is being spun up. Contact Meld for more details.

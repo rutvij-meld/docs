@@ -2,14 +2,33 @@
 title: "Step 3: Make Your First API Call"
 ---
 
-Grab your Meld API key from the Developer's tab of the Meld dashboard.
+Make your first authenticated request against Meld's Bank Linking API to confirm that your API key and provider credentials are wired up correctly.
 
-Use your API key to start making API calls in Meld's, specifically the the [Bank Linking API reference](https://docs.meld.io/reference/bank-linking-connect-create). Make sure you put the word **BASIC** in front of your key in the **Header** section.
+## Before you begin
 
-![](https://files.readme.io/de536d3-image.png)
+- You have completed [Step 3: Grab your Meld API key](/docs/bank-linking/onboarding/step-3-meld-api-key) and copied your API key.
+- You know which environment your API key belongs to (sandbox or production).
 
-Ensure that you are using the correct Base URL for any calls you make. If the account you grabbed the key from is a sandbox account, you should use [https://api-sb.meld.io](https://api-sb.meld.io). If the account you grabbed the key from is a production account, you should use [https://api.meld.io](https://api-sb.meld.io). You can figure out which environment your key works for by looking at the bottom left toggle in the Dashboard.
+## Steps
 
-![](https://files.readme.io/bc53ef5-image.png)
+1. Grab your Meld API key from the **Developer** tab of the Meld Dashboard.
+2. Use your API key to make a call to one of the [Bank Linking API endpoints](/api-reference/bank-linking). Prefix the key with the word **BASIC** in the `Authorization` header — for example, `Authorization: BASIC <your-api-key>`.
 
-All fields marked as **Required** in the API Reference must be filled out in order to make a request successfully.
+   ![Header with BASIC prefix](https://files.readme.io/de536d3-image.png)
+
+3. Use the correct Base URL for the environment your key belongs to:
+
+   | Environment | API Base URL          |
+   | :---------- | :-------------------- |
+   | Sandbox     | `https://api-sb.meld.io` |
+   | Production  | `https://api.meld.io`    |
+
+   You can figure out which environment your key works for by looking at the toggle in the bottom left of the Dashboard.
+
+   ![Dashboard environment toggle](https://files.readme.io/bc53ef5-image.png)
+
+4. Fill out all fields marked as **Required** in the API Reference; the call will fail without them.
+
+<Warning>
+A sandbox key only works against `https://api-sb.meld.io`, and a production key only works against `https://api.meld.io`. Mixing them produces an authentication error.
+</Warning>

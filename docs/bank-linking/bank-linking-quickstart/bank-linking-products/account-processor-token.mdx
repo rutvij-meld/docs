@@ -2,4 +2,24 @@
 title: "Processor Token"
 ---
 
-Processor tokens are optional, and can be used to tokenize sensitive information (such as account and routing numbers) between a bank linking provider and a payment service provider that they support, for example a Plaid-Checkout integration. Processor tokens do not expire and cannot be modified, but can be revoked at any time. They are used to make calls to the payment service provider (Checkout) on behalf of the bank linking provider (Plaid) without needing to directly pass the sensitize data. For example, Plaid can authorize Checkout to pull money from a user's bank account, and can send over a processor token instead of the raw account details for increased security. You can read more about them [here](https://plaid.com/docs/api/processors/). To generate one, use Meld's [processor token endpoint](https://docs.meld.io/reference/bank-linking-accounts-create-processor-token). Currently, Meld supports processor tokens for Plaid and MX.
+A processor token tokenizes sensitive information (such as account and routing numbers) between a bank linking provider and a payment service provider — for example, a Plaid–Checkout integration. Use a processor token when a downstream processor needs to act on a bank account without handling raw account details.
+
+<Note>
+**API Reference**
+
+- Create a processor token: `POST /bank-linking/accounts/{accountId}/processor-token`
+</Note>
+
+## Overview
+
+Processor tokens are optional and are used to make calls to a payment service provider (for example, Checkout) on behalf of the bank linking provider (for example, Plaid) without needing to directly pass the sensitive data. For example, Plaid can authorize Checkout to pull money from a user's bank account by sending a processor token instead of the raw account details.
+
+- Processor tokens do not expire.
+- Processor tokens cannot be modified, but can be revoked at any time.
+- Meld currently supports processor tokens for **Plaid** and **MX**.
+
+<Note>
+Processor Token is treated differently than other products: it isn't requested in the initial call to `/bank-linking/connect/start`. It has its own dedicated endpoint.
+</Note>
+
+For Plaid-specific details, see [Plaid's processor documentation](https://plaid.com/docs/api/processors/).

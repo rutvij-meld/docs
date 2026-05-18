@@ -2,7 +2,13 @@
 title: "Android App to App Authentication"
 ---
 
-This page outlines the steps to load the Meld bank linking widget inside your Android mobile app using a WebView.
+This page outlines the steps to load the Meld bank linking widget inside your Android mobile app using a WebView, and to support App to App authentication with banks that have implemented it.
+
+## Before you begin
+
+- An Android project (Kotlin) where you can integrate a `WebView`.
+- A domain you control for [Android App Links](https://developer.android.com/training/app-links).
+- A Meld API key and the ability to call `/bank-linking/connect/start` to obtain a widget URL.
 
 # Project Setup
 
@@ -30,7 +36,7 @@ App Links are the Android equivalent of iOS's universal links.
 
 ### App Links Step 2: Redirect URL
 
-* We need to pass the redirectUrl in Meld's [connect/start endpoint](https://docs.meld.io/reference/bank-linking-connect-create).
+* We need to pass the `redirectUrl` in Meld's `/bank-linking/connect/start` endpoint.
 * Ensure that the redirectUrl parameter is an HTTP URL and not a deep link. It should specifically be formatted as an Android App Link. For detailed guidance on creating App Links, refer to the instructions provided in this [guide](https://developer.android.com/training/app-links).
 
 ### App Links Step 3: Opening the Widget URL in a Webview

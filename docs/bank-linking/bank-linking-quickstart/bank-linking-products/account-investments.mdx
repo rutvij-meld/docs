@@ -2,26 +2,26 @@
 title: "Investments"
 ---
 
+The Investments product lets developers connect to a customer's investment (brokerage) account and retrieve the current holdings and trade history. Use it for wealth-management, portfolio tracking, and financial-advice use cases.
+
 <Note>
-API Reference
+**API Reference**
 
-[Search investment holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search)
-
-[Search investment transactions](https://docs.meld.io/reference/bank-linking-investment-transactions-search)
+- Search investment holdings: `GET /bank-linking/investment-holdings`
+- Search investment transactions: `GET /bank-linking/investment-transactions`
 </Note>
 
+## Overview
 
-# Overview
+Investments refers to an investment account (also known as a brokerage account) where one has various stocks and other securities such as mutual funds, CDs, bonds, and ETFs. The investment product lets you connect an investment account and get back all relevant information about the account.
 
-Investments refers to an investment account, also known as a brokerage account, where one has various stocks and other securities (such as mutual funds, CDs, bonds, ETFs, etc.) The investment product allows you to connect an investment account and get back all relevant information about the account.
+There are two types of investment data: investment holdings and investment transactions. See [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data) for an example on fetching the data.
 
-There are two types of investment data: investment holdings and investment transactions. See [here](https://docs.meld.io/docs/managing-completed-connections#get-investments-data) for an example on fetching the data.
+## Investment Holdings
 
-# Investment Holdings
+Investment Holdings refers to the current holdings of an investment account — what securities are currently in the account, along with other relevant information such as the number of shares, the cost basis, and the current value of the holding. This is similar to the Balances product but is a breakdown, since it includes all the securities in an account.
 
-Investment Holdings refers to the current holdings of an investment account. This means what securities are currently in the account, along with other relevant information such as the number of shares, the cost basis, and the current value of the holding. This is similar to the balances product, but is a breakdown as it includes all the securities in an account.
-
-## Sample Response for a Single Holding
+### Sample response for a single holding
 
 ```json
 {
@@ -44,11 +44,11 @@ Investment Holdings refers to the current holdings of an investment account. Thi
 }
 ```
 
-# Investment Transactions
+## Investment Transactions
 
-Investment Transactions are the trade history of an account. For example, if the account owner purchased 10 shares of Google in a single trade, that would be a transaction. Unlike holdings, which are a snapshot of the present, transactions are the history of the account and give insight as to how the current holdings were assembled.
+Investment Transactions are the trade history of an account. For example, if the account owner purchased 10 shares of Google in a single trade, that would be a transaction. Unlike holdings, which are a snapshot of the present, transactions are the history of the account and give insight into how the current holdings were assembled.
 
-## Sample Response for a Single Transaction
+### Sample response for a single transaction
 
 ```json
 {
@@ -64,10 +64,14 @@ Investment Transactions are the trade history of an account. For example, if the
     "symbol": "RKLB",
     "quantity": 2.00000000000000000000,
     "costBasis": 5.56000000000000000000,
-    "type": "buy"
+    "type": "buy",
     "status": "POSTED",
     "serviceProviderDetails": [
         // data
     ]
 }
 ```
+
+<Note>
+Investments support varies by service provider. See the provider-specific mapping pages under [Partner Details](/docs/bank-linking/partner-details/index) for what is supported.
+</Note>

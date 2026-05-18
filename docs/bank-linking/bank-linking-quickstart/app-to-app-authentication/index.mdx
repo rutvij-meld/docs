@@ -2,20 +2,28 @@
 title: "App to App Authentication"
 ---
 
-Meld supports App to App Authentication for Plaid, MX, and Finicity. What this means is that, if enabled, a user who views the Meld bank picker in a mobile application can get redirected to the bank's app to login, then will be redirected back to the app of origin afterward. This makes authentication easier and more secure as the user can login with biometrics rather than entering a username/password, and they can feel more secure that their bank credentials are protected since they are using the bank app itself.
+App to App Authentication lets a user who launches the Meld bank picker inside your mobile app jump directly into the bank's native app to log in (using biometrics, for example), then return to your app once authenticated. Developers integrate it to improve conversion and user trust during bank linking. Meld supports this flow for Plaid, MX, and Finicity, with provider-specific code on each platform.
 
-If you implement this, and the user does not have their bank app installed on their phone, then the bank login screen will be launched in a webview.
+## How it works
 
-App to app authentication is currently only supported for Chase, as it is a feature developed by each bank. Other banks are following suit and will have this feature available in the near future.
+When enabled, a user who sees Meld's bank picker in your mobile app gets redirected to the bank's app to log in, then back to your app of origin afterward. This makes authentication easier and more secure — the user can log in with biometrics rather than typing a username and password, and they can feel more secure that their bank credentials are protected because they are using the bank's own app.
+
+<Note>
+If the user does not have their bank app installed on their phone, the bank login screen is launched in a webview instead.
+</Note>
+
+## Supported banks
+
+App to app authentication is currently only supported for Chase, as it is a feature developed by each bank. Other banks are following suit and will have this feature available in the future.
 
 |         | Plaid         | Finicity      | MX          |
-| :------ | :------------ | ------------- | :---------- |
+| :------ | :------------ | :------------ | :---------- |
 | iOS     | **Supported** | **Supported** | Coming Soon |
 | Android | **Supported** | Coming Soon   | Coming Soon |
 
-The documentation in the subpages describes how to implement App to App authentication in your iOS Native (Swift) and Android Native (Kotlin) mobile apps. If you are using other technologies such as Flutter or React Native, you will need to modify the below code to fit your framework.
+## Platform guides
 
-- [iOS App to App Authentication](https://docs.meld.io/docs/ios-app-to-app-authentication)
-- [Android App to App Authentication](https://docs.meld.io/docs/android-app-to-app-authentication)
+The subpages describe how to implement App to App Authentication in iOS Native (Swift) and Android Native (Kotlin) mobile apps. If you are using other technologies such as Flutter or React Native, you will need to adapt the code samples to fit your framework.
 
-<br />
+- [iOS App to App Authentication](/docs/bank-linking/bank-linking-quickstart/app-to-app-authentication/ios-app-to-app-authentication)
+- [Android App to App Authentication](/docs/bank-linking/bank-linking-quickstart/app-to-app-authentication/android-app-to-app-authentication)

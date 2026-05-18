@@ -2,36 +2,47 @@
 title: "Webhooks Authentication"
 ---
 
-Meld signs our webhook events using an HMAC hash with the secret defined in the webhook profile. We strongly recommend clients validate the signature and timestamp to ensure the data is sent by Meld and not tampered with in transit.
+Meld signs webhook events using an HMAC hash with the secret defined in the webhook profile. Developers should verify both the signature and timestamp on every incoming webhook to ensure the data was sent by Meld and was not tampered with in transit.
 
-# Request headers & body
+## Before you begin
+
+- You have configured a webhook profile in Meld (see [Webhooks Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart)).
+- You have the webhook profile's `secret` available on your backend (do not commit it to source control).
+
+# Request headers and body
 
 The request includes the following headers for verifying the event comes from Meld:
 
-* `meld-signature` - The signature to verify against.
-* `meld-signature-timestamp` - The timestamp of the event, which is included in the signature.
+- `meld-signature` — The signature to verify against.
+- `meld-signature-timestamp` — The timestamp of the event, which is included in the signature.
 
-The body of the request is JSON, but it is compact and not pretty. Some tools may display the response in a prettier format with extra whitespace that is not included in the raw response body. That cannot be included when constructing the signature.
+<Warning>
+The body of the request is JSON, but it is compact and not pretty-printed. Some tools may display the response with extra whitespace that is **not** included in the raw response body. Always compute the signature against the raw bytes you received over the wire, not a re-serialized version.
+</Warning>
 
 # Verifying the signature
 
-The signature is constructed using the signature timestamp in the header, the URL where the event was sent, and the unformatted/raw request body. These three are concatenated together with a period (`.`) and then signed using the secret. The signed bytes are then Base64 URL encoded with padding.
+The signature is constructed using the signature timestamp in the header, the URL where the event was sent, and the raw request body. These three are concatenated with a period (`.`) and signed using the secret. The signed bytes are then Base64-URL-encoded with padding.
 
-Represented simply: `base64url(HMACSHA256(<TIMESTAMP>.<URL>.<BODY>))`
+Represented simply:
 
-To verify, create the same SHA256 HMAC signature and then compare it to the `Meld-Signature` in the header. If they match, then you can be sure that the webhook was sent by Meld. If they don't, it may be from another source.
+```
+base64url(HMACSHA256(<TIMESTAMP>.<URL>.<BODY>))
+```
+
+To verify, create the same SHA256 HMAC signature and compare it to `Meld-Signature` in the header. If they match, the webhook was sent by Meld. If they don't, treat the request as untrusted and reject it.
 
 # Example
 
 Profile Settings:
 
-* `Secret`: `42m4NMLS34WQ6BbMfo1KFKqMv4hy`
-* `URL`: `https://example.meld.io/webhooks`
+- `Secret`: `42m4NMLS34WQ6BbMfo1KFKqMv4hy`
+- `URL`: `https://example.meld.io/webhooks`
 
 Headers:
 
-* `Meld-Signature`: `O4bN5E0U9s88l2DFc0kjt-0w3LLA3Zkv8hXhafc22Hg=`
-* `Meld-Signature-Timestamp`: `2022-05-26T20:25:17.682818Z`
+- `Meld-Signature`: `O4bN5E0U9s88l2DFc0kjt-0w3LLA3Zkv8hXhafc22Hg=`
+- `Meld-Signature-Timestamp`: `2022-05-26T20:25:17.682818Z`
 
 Body:
 
@@ -45,7 +56,7 @@ Given these values, the string to sign is:
 2022-05-26T20:25:17.682818Z.https://example.meld.io/webhooks.{"eventType":"WEBHOOK_TEST","eventId":"GDtv8pQgwzc9HuFFBQFrww","timestamp":"2022-05-26T20:23:45.908400Z","accountId":"W9jpQc1HKvwscqMPcLmzUS","profileId":null,"version":"2021-10-27","payload":{"requestId":"7aWW1GXTjWCCtNubzvVX7V"}}
 ```
 
-The signed string in base64 should match the signature in the header:
+The signed string in Base64 should match the signature in the header:
 
 ```
 O4bN5E0U9s88l2DFc0kjt-0w3LLA3Zkv8hXhafc22Hg=
@@ -53,7 +64,7 @@ O4bN5E0U9s88l2DFc0kjt-0w3LLA3Zkv8hXhafc22Hg=
 
 # Sample code
 
-Here is sample code to get the signature:
+Here is sample Java code to compute the signature:
 
 ```java
 import java.nio.charset.StandardCharsets;
@@ -74,3 +85,7 @@ public class WebhookUtil
   }
 }
 ```
+
+<Tip>
+Use a constant-time comparison function when comparing the signatures (for example, `MessageDigest.isEqual` in Java) to avoid timing attacks.
+</Tip>

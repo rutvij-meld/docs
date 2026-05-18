@@ -2,56 +2,49 @@
 title: "Identifiers"
 ---
 
-<Note>
-API Reference
+The Identifiers product returns the account number, routing number, and related identifiers for a customer's financial account. Use it to ensure that subsequent transactions (such as ACH transfers) end up in the right place.
 
-[Search financial accounts](https://docs.meld.io/reference/bank-linking-accounts-search)  
-[Get a specific financial account](https://docs.meld.io/reference/bank-linking-accounts-get)
+<Note>
+**API Reference**
+
+- Search financial accounts: `GET /bank-linking/accounts`
+- Get a specific financial account: `GET /bank-linking/accounts/{accountId}`
 </Note>
 
-
-# Overview
-
-Financial account information helps identify your customer's account and ensure that the subsequent transactions end up in the right place.
+## Overview
 
 Each checking or savings account is assigned a unique account number and routing number.
 
-<ul>
-  <li><strong>Account number -- </strong>This is a critical piece of information, as it identifies your customer's unique bank account. It’s a string of numbers — typically 10 to 12 digits — that lets the bank know which account to withdraw funds from or deposit them in.</li>
-  <li><strong>Routing number -- </strong> Financial institutions use a nine-digit routing number to identify other financial institutions. This string of numbers indicates what bank your customer's financial account is held.</li>
-</ul>
+- **Account number** — Identifies your customer's unique bank account. Typically a 10–12 digit string that tells the bank which account to withdraw funds from or deposit funds in.
+- **Routing number** — A nine-digit number that financial institutions use to identify other financial institutions. It indicates which bank holds your customer's financial account.
 
-# Use cases
+## Use cases
 
-There are many uses cases that will require a customer's account number and routing number, such as:
+There are many use cases that require a customer's account and routing number, such as:
 
-<ul>
-  <li> Your app allows users to accumulate a credit balance that they can cash out to a bank account.</li>
-  <li> Your app allows users to pay you directly from their checking or savings account.</li>
-  <li> Your app allows an end-to-end ACH transfer.</li>
-</ul>
+- Your app allows users to cash out a credit balance to a bank account.
+- Your app allows users to pay you directly from their checking or savings account.
+- Your app allows an end-to-end ACH transfer.
 
-Account authentication allows you to request a customer's account number and bank identification number (such as routing number, for US accounts) in a seamless and validated way without having to look up and type their account numbers.
-
+Account authentication lets you request a customer's account number and bank identification number (such as routing number, for US accounts) in a seamless and validated way without having to look up and type their account numbers.
 
 <Note>
-Account authentication generally supports checking and savings accounts.
+Account authentication generally supports checking and savings accounts only.
 </Note>
 
+## Account authentication data
 
-# Account authentication data
+When calling the financial account endpoint, you can access the `accountNumber` and `routingNumber` for that account. See [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data) for an example.
 
-When calling the [financial account](https://docs.meld.io/reference/bank-linking-accounts-get) endpoint, you will be able to access the `accountNumber` and `routingNumber` for that account. Also see [here](https://docs.meld.io/docs/managing-completed-connections#get-balances-owners-and-identifiers-data) for an example.
+<Warning>
+**Tokenized Account and Routing Numbers**
 
+Service providers may provide "tokenized" account and routing numbers when working with institutions that support an OAuth flow. This may be due to the provider's or institution's policies. A tokenized account number is not the actual number but a representation of it. These tokenized numbers work identically to normal account numbers.
 
-<Note>
-Tokenized Account and Routing Numbers
+The digits returned in the `mask` field continue to reflect the actual account number, not the tokenized account number. For this reason, when displaying account numbers in your UI, always use the `mask` rather than truncating the account number. If a user revokes permissions to your app, the tokenized numbers will continue to work for ACH deposits but not withdrawals.
+</Warning>
 
-Service providers may provide "tokenized" Account and Routing numbers when working with institutions which support an oAuth flow. This may be due to the service provider's or the institution's policies. A tokenized account number is not the actual number but rather a representation of it. These tokenized numbers should work identically to normal account numbers. The digits returned in the mask field will continue to reflect the actual account number, rather than the tokenized account number; for this reason, when displaying account numbers to the user to help them identify their account in your UI, always use the mask rather than truncating the account number. If a user revokes their permissions to your app, the tokenized numbers will continue to work for ACH deposits, but not withdrawals
-</Note>
-
-
-# Sample Response
+## Sample response
 
 ```json
 {
