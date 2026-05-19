@@ -2,34 +2,48 @@
 title: "ACH Payout (Credit)"
 ---
 
-ACH Payouts are any transaction where money flows from the merchant to the buyer.
+An ACH Payout is any transaction where money flows from the merchant to the buyer. This page is for developers implementing ACH credit. By the end you will have submitted a Payout and know how to fetch its final status.
 
-Make sure you have a [Meld customerId](https://docs.meld.io/docs/creating-a-payments-customer) for the buyer ready before continuing. Sample API calls for all the steps for making a payin are found on this page.
+## Prerequisites
 
-# Make an ACH Credit (aka Payout) transaction
+<Info>
+- A Meld `customerId` for the buyer — see [Creating a Customer](/docs/payments-stack/fiat-payment-quickstart/making-ach-payments/creating-a-payments-customer).
+- A verified bank account on file for the buyer (account number, routing number, account type).
+- An ACH-capable service provider configured on your account.
+- Webhooks configured so you can receive `TRANSACTION_FIAT_CREATED` and `TRANSACTION_FIAT_UPDATED` events.
+</Info>
 
-1. Call Meld's [/transactions/payout endpoint](https://docs.meld.io/reference/payouts-transactions-create) in order to make an ACH Payout. Make sure to pass in the customerId of the buyer you created in the [Creating a Customer](https://docs.meld.io/docs/creating-a-payments-customer) stage. This is where you will pass in the ACH details including the account type, account number and routing number. 
-2. Once the transaction has been submitted, listen for the [TRANSACTION\_FIAT\_CREATED webhook](https://docs.meld.io/docs/webhook-events-fiat-payment#transaction_fiat_created) to know that a transaction has been initiated. You can use this webhook as a trigger to call Meld's [get transaction endpoint](https://docs.meld.io/reference/payments-transactions-get) to fetch the latest transaction details.
-3. Depending on the underlying service provider, you may receive a [TRANSACTION\_FIAT\_UPDATED webhook](https://docs.meld.io/docs/webhook-events-fiat-payment#transaction_fiat_updated) letting you know if the transaction has succeeded, or failed, or if something else has occurred. Use this webhook as a trigger to fetch the latest transaction details. For certain providers who do not support webhooks, you will not receive updates after the transaction is submitted, however, if the transaction fails upon submission you will see that through response object immediately.
-   > 📘 Webhook Support
-   >
-   > To know which providers support webhooks and which don't, see our provider [testing guide](https://docs.meld.io/docs/ach-testing).
+## Steps
+
+1. Call Meld's `POST /payments/transactions/payout` endpoint to make an ACH Payout. Pass in the buyer's `customerId` from the [Creating a Customer](/docs/payments-stack/fiat-payment-quickstart/making-ach-payments/creating-a-payments-customer) step. The request body carries the ACH details — `accountType`, `routingNumber`, and `accountNumber`.
+2. Once the transaction is submitted, listen for the `TRANSACTION_FIAT_CREATED` webhook confirming the transaction was initiated. Use this webhook as a trigger to call `GET /payments/transactions/{transactionId}` to fetch the latest transaction details.
+3. Depending on the underlying service provider, you may also receive a `TRANSACTION_FIAT_UPDATED` webhook telling you whether the transaction succeeded, failed, or moved to another status. Use this webhook as a trigger to refetch transaction details. For providers without webhook support, you will not receive updates after submission — but if the transaction fails at submit time you will see that in the response immediately.
+
+<Note>
+**Webhook support**
+
+To see which providers support webhooks, refer to the [ACH Testing Guide](/docs/payments-stack/fiat-payment-testing-guide/ach-testing-guide).
+</Note>
+
+<Tip>
+For ACH transaction status definitions and the typical lifecycle, see [ACH Transaction Statuses](/docs/payments-stack/fiat-payment-quickstart/making-ach-payments/ach-transaction-statuses).
+</Tip>
 
 # API Calls
 
 ## Make a Payout
 
-Here is a sample call to [/transactions/payout](https://docs.meld.io/v0.0/reference/payouts-transactions-create) to make an ACH Payout transaction:
+Sample request to `POST /payments/transactions/payout`:
 
 ```json
 {
     "customerId": "WXDeHGgNJ1t1nFnoVY43Bh",
     "sourceAmount": "15.00",
     "sourceCurrencyCode": "USD",
-    "paymentMethod" : {
-        "type" : "ACH",
+    "paymentMethod": {
+        "type": "ACH",
         "details": {
-            "accountType" : "CHECKING", // should be CHECKING, SAVINGS, or BUSINESS_CHECKING
+            "accountType": "CHECKING",
             "routingNumber": "987654321",
             "accountNumber": "43214321"
         }
@@ -38,7 +52,9 @@ Here is a sample call to [/transactions/payout](https://docs.meld.io/v0.0/refere
 }
 ```
 
-Here is a sample response:
+`accountType` must be `CHECKING`, `SAVINGS`, or `BUSINESS_CHECKING`.
+
+Sample response:
 
 ```json
 {
@@ -108,9 +124,9 @@ Here is a sample response:
 }
 ```
 
-## Fetching Transaction Details
+## Fetching transaction details
 
-When you call [/transactions/:transactionId](https://docs.meld.io/v0.0/reference/payments-transactions-get) to fetch the details of the transaction you made, here is a sample response:
+Call `GET /payments/transactions/{transactionId}` to fetch the latest details for a transaction. Sample response:
 
 ```json
 {
@@ -179,5 +195,3 @@ When you call [/transactions/:transactionId](https://docs.meld.io/v0.0/reference
     }
 }
 ```
-
-<br />

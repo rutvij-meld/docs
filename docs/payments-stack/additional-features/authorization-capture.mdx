@@ -2,6 +2,21 @@
 title: "Authorization & Capture"
 ---
 
-Authorization and capture is a two-step process for completing credit card payments. The first step is authorization which makes sure the Customer has sufficient funds for the charge, but doesn't actually charge the card. The status of the transaction at this point is Authorized. The second step is to Capture some or all of the Authorized amount to finalize the sale. After a Capture, the transaction status moves from Authorized to Settled.
+Authorization and capture is a two-step process for completing card payments. This page is for developers who need to reserve funds at order time and charge the customer later — for example, an eCommerce pre-order that ships once inventory arrives.
 
-One example of when this might be used is if there is an eCommerce order where the merchant does not have the merchandise available to ship immediately, but will in a short amount of time, such as a pre-order. In this case, authorization is initiated at the time of the transaction. Once the goods are available to ship, the capture request is issued, and the credit card is charged.
+## How it works
+
+1. **Authorization** — verifies the customer has sufficient funds for the charge but does not actually charge the card. The transaction status moves to `AUTHORIZED`.
+2. **Capture** — captures some or all of the authorized amount to finalize the sale. After a successful capture, the transaction status moves from `AUTHORIZED` to `SETTLED`.
+
+<Note>
+Authorizations typically expire roughly 30 days after the initial authorization if never captured. After that, the status moves to `AUTHORIZATION_EXPIRED`. See [Transaction Statuses](/docs/payments-stack/fiat-transaction-statuses) for the full lifecycle.
+</Note>
+
+## Example use case
+
+An eCommerce order is placed for an item that is not in stock immediately, but will ship shortly (a pre-order). Authorization is initiated at order time. Once the goods are available to ship, the capture request is issued and the card is charged.
+
+<Tip>
+Not every service provider supports authorization and capture. See [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers) to confirm support.
+</Tip>

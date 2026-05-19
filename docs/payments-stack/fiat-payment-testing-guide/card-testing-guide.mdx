@@ -2,19 +2,32 @@
 title: "Card Testing Guide"
 ---
 
-# Create a payment using nonce method
+This page lists the test cards and nonces you can use to validate card payments in Meld's sandbox. It is for developers integrating card payments who need to confirm a transaction flows end-to-end before going live.
 
-When create a payment using the nonce method, only the payment method token is required. You can use `meld-fake-valid-nonce` for all service providers besides Checkout, or use each service provider's supported nonces listed on their websites. This nonce is provided by Meld for testing. To create a nonce in production, use a nonce generator provided by the service provider. 
+## Prerequisites
 
+<Info>
+- A sandbox API key from your Meld dashboard.
+- At least one card-capable service provider enabled on your account — see [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers).
+</Info>
+
+# Create a payment using the nonce method
+
+When creating a payment using the nonce method, only the payment method token is required. You can use `meld-fake-valid-nonce` for all service providers besides Checkout, or use each service provider's supported nonces listed on their websites. This nonce is provided by Meld for testing. To create a nonce in production, use a nonce generator provided by the service provider.
 
 <Note>
-Reference [Supported service providers](https://docs.meld.io/docs/fiat-supported-service-providers) to know which service providers are supporting the nonce method.
+See [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers) for which providers support the nonce method.
 </Note>
 
+# Create a payment using the card method
 
-# Create a payment using card method
+<Warning>
+Genuine card information cannot be used in test mode. Use the test card numbers below with a valid future expiration date and any random CVC to create a successful payment.
+</Warning>
 
-Genuine card information cannot be used in test mode. Instead, use any of the following test card numbers, a valid expiration date in the future, and any random CVC number, to create a successful payment. 
+<Note>
+To trigger specific decline scenarios (insufficient funds, expired card, fraud, etc.), refer to the additional test card numbers available in your Meld sandbox dashboard or the relevant service provider's testing documentation.
+</Note>
 
 ## Authorize.net
 
@@ -142,5 +155,5 @@ You can use any of the following test cards to simulate a successful payment for
 
 
 <Note>
-Reference [Supported service providers](https://docs.meld.io/docs/fiat-supported-service-providers) to know which service providers are supporting the card method.
+See [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers) for which providers support the card method.
 </Note>

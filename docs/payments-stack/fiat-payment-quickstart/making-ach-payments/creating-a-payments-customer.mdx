@@ -2,51 +2,61 @@
 title: "Creating a Customer"
 ---
 
-The buyer (your Customer) always needs to have a unique Meld customerId mapped to them. In a Payin transaction, you are debiting from the buyer and crediting to your own account. In a Payout transaction, you are crediting to the buyer and debiting from your own account. You (the merchant, seller) do not need to create a customerId.
+The buyer (your customer) must always be represented by a unique Meld `customerId`. This page is for developers building an ACH integration who need to attach the buyer's name, email, and address to the customer record created during account verification. You (the merchant/seller) do not need to create a `customerId`.
 
+In a Payin, you debit the buyer and credit your account. In a Payout, you credit the buyer and debit your account.
 
 <Warning>
-Account Verification is required before creating a Customer for ACH Transactions
+**Account verification is required before creating a customer for ACH transactions.**
 
-Before beginning an ACH flow, you need to verify a customer's account as described on the "[Making ACH Payments](https://docs.meld.io/docs/making-ach-payments)" page.
-
-Each customer you create needs to use the Meld customerId used in the account verification flow.
+Before beginning an ACH flow, you must verify the customer's bank account as described in [Making ACH Payments](/docs/payments-stack/fiat-payment-quickstart/making-ach-payments/index). Each customer you create must reuse the Meld `customerId` returned from the account verification flow.
 </Warning>
 
+<Note>
+If the buyer is a repeat customer and you already know their Meld `customerId`, you can skip these steps.
+</Note>
 
-Note: If the buyer is a repeat customer and you already know their meld customerId, you can skip these steps.
+## Prerequisites
 
-1. Now that you have completed [identity verification](https://docs.meld.io/docs/identity-verification), call Meld's [update customer endpoint](https://docs.meld.io/reference/accounts-customers-update) to update the existing customerId (from the bank linking connection) with at least the customer's first, last name, and email address. If the bank account has several names on it, any one of the names should suffice.
-2. Once you have updated the customer's name, call Meld's [update customer address endpoint](https://docs.meld.io/reference/accounts-customers-addresses-create) to add an address to the customer, with lineOne, city, country, postal code, and region (state) being required.
+- A `customerId` returned by the Bank Linking account verification flow.
+- The buyer's first name, last name, email address, and billing address.
 
-An ACH customer must have a name, email address, and address. Now you are ready to actually make an ACH transaction.
+## Steps
+
+1. Call Meld's update customer endpoint (`PATCH /customers/{customerId}`) to update the existing `customerId` (from the bank linking connection) with at least the customer's first name, last name, and email address. If the bank account has several names on it, any one of the names is sufficient.
+2. Call Meld's create customer address endpoint (`POST /customers/{customerId}/addresses`) to add an address to the customer. `lineOne`, `city`, `country`, `postalCode`, and `region` (state) are required.
+
+An ACH customer must have a name, email address, and address. Once both calls succeed, you are ready to make an ACH transaction.
 
 # API Calls
 
-The Meld customerId is a path param for both of the following calls.
+The Meld `customerId` is a path parameter for both of the following calls.
 
-## Update a Customer's Name and Email Address
+## Update a customer's name and email address
 
-Here is a sample call to [/customers/:customerId](https://docs.meld.io/reference/accounts-customers-update) to update a customer:
+Sample request to `PATCH /customers/{customerId}`:
 
 ```json
 {
-    "name" : {
-        "firstName" : "John",
-        "lastName" : "Smith"
+    "name": {
+        "firstName": "John",
+        "lastName": "Smith"
     },
-    "email" : "testcustomer1@example.com",
+    "email": "testcustomer1@example.com"
 }
 ```
 
-Here is a sample response:
+Sample response:
 
 ```json
 {
     "id": "WXDeHGgNJ1t1nFnoVY43Bh",
     "accountId": "W2bJdfJRoJQHjsNnUeUNRA",
     "externalId": "testcustomer1",
-    "name": null,
+    "name": {
+        "firstName": "John",
+        "lastName": "Smith"
+    },
     "email": "testcustomer1@example.com",
     "phone": null,
     "addresses": [],
@@ -55,26 +65,26 @@ Here is a sample response:
 }
 ```
 
-## Update a Customer's Address
+## Update a customer's address
 
-Here is a sample call to [/customers/:customerId/addresses](https://docs.meld.io/reference/accounts-customers-addresses-create):
+Sample request to `POST /customers/{customerId}/addresses`:
 
 ```json
 {
-    "type" : "BILLING",
-    "address" : {
-        "firstName" : "John",
-        "lastName" : "Smith",
-        "lineOne" : "123 Fake St",
-        "city" : "Boston",
-        "region" : "MA",
-        "country" : "US",
-        "postalCode" : "02112"  
+    "type": "BILLING",
+    "address": {
+        "firstName": "John",
+        "lastName": "Smith",
+        "lineOne": "123 Fake St",
+        "city": "Boston",
+        "region": "MA",
+        "country": "US",
+        "postalCode": "02112"
     }
 }
 ```
 
-Here is a sample response:
+Sample response:
 
 ```json
 {
@@ -92,5 +102,3 @@ Here is a sample response:
     }
 }
 ```
-
-<br />

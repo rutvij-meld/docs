@@ -2,55 +2,70 @@
 title: "Payments Quickstart"
 ---
 
-# Introduction
+The Meld Payments Stack lets you accept and disburse fiat payments — ACH debits, ACH credits, and card payments — through multiple payment service providers using a single, normalized API. This guide is for developers who want to take their first payment with Meld and understand the end-to-end flow before diving into the API reference.
 
-The Meld Payments Stack allows you to offer a comprehensive way to build and route across multiple payments providers through a single, normalized API. After you review the documentation, read the API Reference for the Payments Stack to understand what is required to make the API calls.
+By the end of this quickstart you will know how to onboard, set up webhooks, and reach the right page for your first ACH or card transaction.
 
-To onboard with Meld for Payments, follow the steps found in the [onboarding guide](https://docs.meld.io/docs/onboarding).
+## Prerequisites
 
+Before you make your first payment, make sure you have:
+
+<Info>
+- A Meld dashboard account and a sandbox API key (see the [onboarding guide](/docs/bank-linking/onboarding/index)).
+- At least one fiat payment service provider configured in your dashboard (see [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers)).
+- For ACH transactions: a verified customer bank account on file. Use the Bank Linking Stack to run [Account Verification](/docs/bank-linking/bank-linking-quickstart/account-verification) and request the [IDENTIFIERS](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-identifiers) and [OWNERS](/docs/bank-linking/bank-linking-quickstart/bank-linking-products/account-owners) products.
+- Webhooks configured so you receive transaction status updates (see [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart)).
+</Info>
+
+## Quick-start sequence
+
+Follow these steps in order to take your first payment:
+
+1. Complete the [onboarding guide](/docs/bank-linking/onboarding/index) and obtain a sandbox API key.
+2. Choose a payment service provider from the [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers) table and ensure your merchant account is set up with them.
+3. Configure webhooks so you receive transaction status updates (see [Webhook Quickstart](/docs/bank-linking/onboarding/step-5-setting-up-webhooks/webhook-quickstart)).
+4. Pick your flow:
+   - For ACH transactions, follow [Making ACH Payments](/docs/payments-stack/fiat-payment-quickstart/making-ach-payments/index).
+   - For card transactions, see [Payments Use Cases](/docs/payments-stack/fiat-payment-quickstart/payments-use-cases) and the [Card Testing Guide](/docs/payments-stack/fiat-payment-testing-guide/card-testing-guide).
+5. Test against the sandbox environment using the [ACH Testing Guide](/docs/payments-stack/fiat-payment-testing-guide/ach-testing-guide) or [Card Testing Guide](/docs/payments-stack/fiat-payment-testing-guide/card-testing-guide) before promoting to production.
 
 <Note>
-Public Postman Workspace
+**Public Postman Workspace**
 
-Meld offers public postman collections for our core endpoints to get you started. Please use it in conjunction with the documentation to understand the full power of Meld's API.
+Meld offers public Postman collections for our core endpoints to get you started. Use it alongside the documentation to understand the full power of Meld's API.
 
 The Postman workspace can be found [here](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection).
 </Note>
 
-
-## Webhooks
-
-In order for both you and Meld to receive transaction status notifications and updates, you must set up webhooks for your service providers, as shown in the [webhooks quickstart](https://docs.meld.io/docs/webhook-quickstart).
-
 ## Routing
 
-Routing can be used to route to user to the best provider to complete their transaction. More information on fiat payments routing can be found [here](https://docs.meld.io/docs/routing-overview#payments-routing).
+Routing can be used to route your user to the best provider to complete their transaction. More information on payments routing can be found in the [Routing Overview](/docs/bank-linking/creating-connections/select-an-institution/routing-overview).
 
-# Environments
+## Environments
 
-Meld offers both production and sandbox environments. The tables below contain the URL for each environment:
+Meld offers both production and sandbox environments. The table below contains the URL for each environment:
 
-| Environment | API Base URL                              |
-| :---------- | :---------------------------------------- |
-| Sandbox     | https\://api-sb.meld.io                     |
-| Production  | https\://api.meld.io                        |
+| Environment | API Base URL          |
+| :---------- | :-------------------- |
+| Sandbox     | `https://api-sb.meld.io` |
+| Production  | `https://api.meld.io`    |
 
-# Payment Functionality Supported
+## Payment functionality supported
 
-The following functionalities are supported to payments service providers through the Meld API:
+The following functionalities are supported across payments service providers through the Meld API:
 
 | Functionality                              | Description                                                                                                                                                 |
 | :----------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Collect a payment                          | Collect a payment from your customer through the specified service provider.                                                                                |
-| Get all transactions                       | Get a list of all payments that we submitted through a service provider. This request can be filtered based on date, service provider, and other variables. |
-| Get a transaction using the transaction id | Get the status of a specific transaction.                                                                                                                   |
-| Issue a refund                             | Issue a refund to a transaction that was submitted through Meld.                                                                                            |
-| Issue an external refund to a customer     | Issue a refund to a transaction that was submitted outside of Meld.                                                                                         |
-
+| Get all transactions                       | Get a list of all payments submitted through a service provider. This request can be filtered based on date, service provider, and other variables.         |
+| Get a transaction using the transaction ID | Get the status of a specific transaction.                                                                                                                   |
+| Issue a refund                             | Issue a refund for a transaction that was submitted through Meld.                                                                                           |
+| Issue an external refund to a customer     | Issue a refund for a transaction that was submitted outside of Meld.                                                                                        |
 
 <Note>
-Resources
+**Resources**
 
-* [API Reference for Payments Stack](https://docs.meld.io/reference/payments-transactions-create)
-* [Supported service providers](https://docs.meld.io/docs/fiat-supported-service-providers)
+- [Supported service providers](/docs/payments-stack/fiat-supported-service-providers)
+- [Transaction statuses](/docs/payments-stack/fiat-transaction-statuses)
+- [Error responses](/docs/payments-stack/fiat-error-responses)
 </Note>

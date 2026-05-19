@@ -2,297 +2,43 @@
 title: "Error responses"
 ---
 
-When a request fails, Meld endpoints return a response that includes the errors fields in the body. The following table lists the error code you might receive from our API. 
+When a request fails, Meld endpoints return a response that includes an error code and message in the body. This page lists the error codes you might receive from Meld's fiat payment APIs and the action a developer should take in response. The error message includes both Meld's error code and the service provider's error details.
 
-The error message includes both Meld's error code and the service provider's error details. Reference [Error schema](https://docs.meld.io/docs/error-schema).
+<Note>
+For the shape of error responses, see the Error schema in the API reference.
+</Note>
 
 # General
 
-<Table align={["left","left"]}>
-  <thead>
-    <tr>
-      <th>
-        Error code
-      </th>
-
-      <th>
-        Error message
-      </th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr>
-      <td>
-        `UNKNOWN`
-      </td>
-
-      <td>
-        Unknown Error
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `BAD_REQUEST`
-      </td>
-
-      <td>
-        Bad request
-
-        * \*Note:\*\* When a bad request is received, the system will return a user-friendly representation of the error, such as:
-          <li>[amount] Must be a decimal value greater than zero</li>
-          <li>[serviceProvider] Must be a service provider</li>
-          <li>[serviceTransactionId] must not be blank</li>
-      </td>
-    </tr>
-  </tbody>
-</Table>
+| Error code      | Description                                                                                  | Recommended action                                                                                                                                                  |
+| :-------------- | :------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `UNKNOWN`       | An unexpected error occurred.                                                                | Retry the request. If the error persists, contact Meld support with the request ID.                                                                                 |
+| `BAD_REQUEST`   | The request body did not pass validation. The response includes a user-friendly description. | Inspect the response message (for example: `[amount] Must be a decimal value greater than zero`, `[serviceProvider] Must be a service provider`) and fix the request. |
 
 # Payments
 
-<Table align={["left","left"]}>
-  <thead>
-    <tr>
-      <th>
-        Error code
-      </th>
-
-      <th>
-        Error message
-      </th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr>
-      <td>
-        `INVALID_AMOUNT_OR_CURRENCY`
-      </td>
-
-      <td>
-        Invalid amount or currency
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `INITIAL_TRANSACTION_ERROR`
-      </td>
-
-      <td>
-        Error creating initial transaction
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `JSON_PROCESSING_ERROR`
-      </td>
-
-      <td>
-        Error processing JSON
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `PAYMENT_TRANSACTION_STATE_INVALID`
-      </td>
-
-      <td>
-        Payment transaction is null or invalid
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `PREVIOUS_TRANSACTION_STATE_INVALID`
-      </td>
-
-      <td>
-        Previous transaction state is null or invalid
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `SERVICE_PROVIDER_ERROR`
-      </td>
-
-      <td>
-        Service Provider Error
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_CREATION_ERROR`
-      </td>
-
-      <td>
-        Unable to create transaction
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_EXCEPTION`
-      </td>
-
-      <td>
-        Exception in transaction
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_INVALID_ID`
-      </td>
-
-      <td>
-        Transaction ID is invalid or it was not found
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_INVALID_STATE_ID`
-      </td>
-
-      <td>
-        Transaction state ID is invalid or it was not found
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_NO_RESULT`
-      </td>
-
-      <td>
-        No result from gateway
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_NO_RESPONSE`
-      </td>
-
-      <td>
-        No response from transaction
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_REQUEST_CREATION_ERROR`
-      </td>
-
-      <td>
-        Unable to create a transaction request
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_INVALID_PROVIDER`
-      </td>
-
-      <td>
-        Invalid service provider
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_UPDATE_NULL_ERROR`
-      </td>
-
-      <td>
-        Unable to update a null/invalid transaction
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_INVALID_SERVICE_TRANSACTION_ID`
-      </td>
-
-      <td>
-        Invalid service transaction ID
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_NULL_DATA`
-      </td>
-
-      <td>
-        Transaction data is null
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `NOT_SUPPORTED`
-      </td>
-
-      <td>
-        Operation not supported for service provider
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        ` FAILED_GETTING_TRANSACTION`
-      </td>
-
-      <td>
-        Failed getting transaction
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_MISSING_SERVICE_PROVIDER_DETAILS`
-      </td>
-
-      <td>
-        Request requires serviceProviderDetails property
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_MISSING_CARD_INFORMATION`
-      </td>
-
-      <td>
-        Missing credit/debit card information
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE`
-      </td>
-
-      <td>
-        Failed getting crypto quote
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        `TRANSACTION_CREDIT_CARD_INFO_NOT_SUPPORTED`
-      </td>
-
-      <td>
-        Transactions with credit card information are not supported by the provider. Try to use nonces
-      </td>
-    </tr>
-  </tbody>
-</Table>
+| Error code                                  | Description                                                                       | Recommended action                                                                                                                |
+| :------------------------------------------ | :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| `INVALID_AMOUNT_OR_CURRENCY`                | The supplied amount or currency code is invalid.                                  | Send a positive decimal amount and a supported ISO 4217 currency code.                                                            |
+| `INITIAL_TRANSACTION_ERROR`                 | Meld failed to create the initial transaction record.                             | Retry the request. If the error persists, contact Meld support with the request payload.                                          |
+| `JSON_PROCESSING_ERROR`                     | The request body could not be parsed as JSON.                                     | Ensure the body is valid JSON and the `Content-Type` header is `application/json`.                                                |
+| `PAYMENT_TRANSACTION_STATE_INVALID`         | The payment transaction is null or in an invalid state for the requested action.  | Refetch the transaction with `GET /payments/transactions/{transactionId}` and confirm its current status before retrying.         |
+| `PREVIOUS_TRANSACTION_STATE_INVALID`        | A prior transaction referenced by this request is null or in an invalid state.    | Refetch the referenced transaction and ensure it is in a state that allows the requested action (for example, capture or refund). |
+| `SERVICE_PROVIDER_ERROR`                    | The downstream service provider returned an error.                                | Inspect `serviceProviderDetails.response` for the underlying error and act per the provider's documentation.                       |
+| `TRANSACTION_CREATION_ERROR`                | Meld was unable to create the transaction.                                        | Validate all required fields and retry. If the error persists, contact Meld support.                                               |
+| `TRANSACTION_EXCEPTION`                     | An exception occurred while processing the transaction.                           | Retry the request. If the error persists, contact Meld support with the request ID.                                                |
+| `TRANSACTION_INVALID_ID`                    | The transaction ID is invalid or was not found.                                   | Confirm the `transactionId` belongs to your account and was returned by a previous Meld response.                                  |
+| `TRANSACTION_INVALID_STATE_ID`              | The transaction state ID is invalid or was not found.                             | Refetch the transaction and use the latest state ID.                                                                              |
+| `TRANSACTION_NO_RESULT`                     | No result was returned from the gateway.                                          | Retry with the same `Idempotency-Key`. If the issue persists, contact the service provider and Meld support.                       |
+| `TRANSACTION_NO_RESPONSE`                   | No response was received from the transaction submission.                         | Retry with the same `Idempotency-Key` to avoid duplicate charges. See [Idempotency Key](/docs/payments-stack/idempotency-key).      |
+| `TRANSACTION_REQUEST_CREATION_ERROR`        | Meld was unable to build the request to send to the service provider.             | Validate all required fields, particularly `paymentMethod` and `serviceProvider`, and retry.                                       |
+| `TRANSACTION_INVALID_PROVIDER`              | The specified service provider is invalid or not enabled on your account.         | Use a supported provider — see [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers).                |
+| `TRANSACTION_UPDATE_NULL_ERROR`             | An attempt was made to update a null or invalid transaction.                      | Refetch the transaction before retrying the update.                                                                               |
+| `TRANSACTION_INVALID_SERVICE_TRANSACTION_ID`| The `serviceTransactionId` is invalid.                                            | Ensure the value matches the ID returned by the service provider for the transaction.                                              |
+| `TRANSACTION_NULL_DATA`                     | The transaction data was null.                                                    | Include all required fields in the request body and retry.                                                                        |
+| `NOT_SUPPORTED`                             | The requested operation is not supported by the selected service provider.        | Check the provider's capabilities in [Supported Service Providers](/docs/payments-stack/fiat-supported-service-providers).          |
+| `FAILED_GETTING_TRANSACTION`                | Meld was unable to fetch the transaction.                                         | Retry the GET request. If the error persists, contact Meld support with the transaction ID.                                        |
+| `TRANSACTION_MISSING_SERVICE_PROVIDER_DETAILS` | The request requires a `serviceProviderDetails` property.                      | Include `serviceProviderDetails` as documented for the chosen service provider and retry.                                          |
+| `TRANSACTION_MISSING_CARD_INFORMATION`      | The request is missing credit/debit card information.                             | Include a valid `paymentMethod` with card details, a token, or a nonce.                                                            |
+| `TRANSACTION_FAILED_GETTING_CRYPTO_QUOTE`   | Meld failed to retrieve a crypto quote for the transaction.                       | Retry the request. If the error persists, contact Meld support.                                                                    |
+| `TRANSACTION_CREDIT_CARD_INFO_NOT_SUPPORTED`| The provider does not accept raw card information for this flow.                  | Use a nonce or tokenized payment method instead — see [Payment Processor Tokens](/docs/payments-stack/additional-features/payment-methods-and-tokenization). |

@@ -2,7 +2,11 @@
 title: "Supported Service Providers"
 ---
 
-This is the current list of supported service providers within the fiat payments domain.
+This page lists the fiat payment service providers Meld supports and the capabilities each one offers — card payments, refunds, credential passthrough, external refunds, tokenization, authorization and capture, and ACH payments. Use it to pick the right provider for your integration and to confirm which features you can rely on.
+
+<Note>
+An `X` in a cell means the provider supports that capability through Meld. An empty cell means it does not.
+</Note>
 
 <Table align={["left","left","left","left","left","left","left","left"]}>
   <thead>
@@ -28,11 +32,11 @@ This is the current list of supported service providers within the fiat payments
       </th>
 
       <th style={{ textAlign: "left" }}>
-        [Tokenization](https://docs.meld.io/docs/payment-methods-and-tokenization)
+        [Tokenization](/docs/payments-stack/additional-features/payment-methods-and-tokenization)
       </th>
 
       <th style={{ textAlign: "left" }}>
-        [Auth & Capture](https://docs.meld.io/docs/authorization-capture)
+        [Auth & Capture](/docs/payments-stack/additional-features/authorization-capture)
       </th>
 
       <th style={{ textAlign: "left" }}>
@@ -352,8 +356,8 @@ This is the current list of supported service providers within the fiat payments
 
 
 <Note>
-Resources
+**Resources**
 
-* Certain service providers have features that are unique. For example, Checkout.com allows developers to add a custom billing descriptor to a transaction. We expose Service Provider specific functionality in the serviceProviderDetails object. Details and parameters can be found in the Transactions endpoint of the API reference guide.
-* [API Reference for Service Providers](https://docs.meld.io/reference/service-providers-details-search)
+- Certain service providers have features that are unique. For example, Checkout.com allows developers to add a custom billing descriptor to a transaction. We expose service-provider-specific functionality in the `serviceProviderDetails` object. Details and parameters can be found in the Transactions endpoint of the API reference.
+- For credential passthrough headers per provider, see [Credential Passthrough](/docs/payments-stack/credential-passthrough).
 </Note>

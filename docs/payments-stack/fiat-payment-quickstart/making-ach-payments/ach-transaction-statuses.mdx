@@ -2,16 +2,18 @@
 title: "ACH Transaction Statuses"
 ---
 
-Depending on what happens, transactions go through several statuses. The list below provides you with the definition of each transaction status you might come across when calling Meld APIs. Transactions with a temporary status will continue to change status while transactions with terminal statuses will not change.
+ACH transactions move through several statuses during their lifecycle. This page lists every status you might see when calling Meld's ACH endpoints and is intended for developers building or debugging an ACH integration. Statuses are either **TEMPORARY** (the transaction may still change) or **TERMINAL** (the transaction will not change again).
 
-The most common lifecycle of a successful transaction is `PENDING` -> `SETTLED`. In this case `PENDING` generally means that the transaction has been submitted, and `SETTLED` means that it's been batched by NACHA. All Meld ACH transactions are currently sam day ACH rather than standard ACH.
+The most common lifecycle of a successful ACH transaction is `PENDING` → `SETTLED`. `PENDING` generally means the transaction has been submitted, and `SETTLED` means it has been batched by NACHA. All Meld ACH transactions are currently same-day ACH rather than standard ACH.
 
 | Status     | Description                                                                                                      | State     |
 | :--------- | :--------------------------------------------------------------------------------------------------------------- | :-------- |
-| `PENDING`  | The transaction has been created in Meld's system and has been submitted to the service provider to be reviewed. | TEMPORARY |
-| `SETTLING` | The service provider has accepted the transaction but it hasn't been batched yet                                 | TEMPORARY |
-| `SETTLED`  | The transaction has been batched and is expected to complete successfully.                                       | TEMPORARY |
-| `DISPUTED` | The user whose money was removed from their account has disputed the transaction and it is being reviewed.       | TEMPORARY |
-| `FAILED`   | The order has been declined by external payment systems and/or cannot be processed.                              | TERMINAL  |
+| `PENDING`  | The transaction has been created in Meld's system and submitted to the service provider for review.              | TEMPORARY |
+| `SETTLING` | The service provider has accepted the transaction but it has not yet been batched.                               | TEMPORARY |
+| `SETTLED`  | The transaction has been batched and has completed successfully.                                                 | TERMINAL  |
+| `DISPUTED` | The account holder whose money was debited has disputed the transaction and it is under review.                  | TEMPORARY |
+| `FAILED`   | The transaction has been declined by external payment systems and/or cannot be processed.                        | TERMINAL  |
 
-<br />
+<Note>
+For the full set of fiat transaction statuses across both ACH and card flows, see [Transaction Statuses](/docs/payments-stack/fiat-transaction-statuses).
+</Note>

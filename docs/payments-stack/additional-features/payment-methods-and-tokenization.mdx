@@ -2,42 +2,44 @@
 title: "Payment Processor Tokens"
 ---
 
-Payment methods must be passed in when creating a transaction. You can pass in a card PAN directly, or you can tokenize the card with Meld so that you do not have to keep asking your Customer for this information. You can tokenize your card PAN with Meld using our [/tokens](https://docs.meld.io/reference/payment-token-post) endpoint.
+Payment methods must be passed in when creating a transaction. You can pass a card PAN directly, or tokenize the card with Meld so you don't have to re-ask your customer for card details on future transactions. This page is for developers who want to securely store payment methods and re-use them across providers.
 
+Tokenize a card PAN with Meld using the `POST /payments/tokens` endpoint.
 
 <Note>
-Tokenization
+**Tokenization**
 
-Meld does not store Customer card information such as card number, CVV, expiration date (collectively known as Card PAN). When you first collect a card PAN from your customer, we recommend you tokenize it with Meld. In the future, you can process all future payments with your Meld Token. Here are the steps and benefits:
+Meld does not store customer card information such as card number, CVV, or expiration date (collectively known as Card PAN). When you first collect a card PAN from your customer, we recommend tokenizing it with Meld. You can then process all future payments with your Meld Token.
 
-1. By tokenizing the card with Meld, you do not have to ask the Customer for this information in the future.
-2. Meld tokenizes the card PAN with all the service providers you specify. 
-3. We return a Meld Token back to you. You can store and use your Meld Token in the future across all service providers for which the card has been tokenized. Storing a Meld token is much less risky than storing the card PAN or a service provider token. When you send us a Meld Token, you do not need to specify a service provider.
+1. By tokenizing the card with Meld, you do not have to ask the customer for this information again.
+2. Meld tokenizes the card PAN with all the service providers you specify.
+3. Meld returns a Meld Token. You can store and use this token in the future across all service providers for which the card has been tokenized. Storing a Meld Token is much less risky than storing the card PAN or a service-provider-specific token. When sending a Meld Token, you do not need to specify a service provider.
 </Note>
 
+## Examples
 
-Below are a few examples on how to pass in payment information of various types.
+Below are examples for passing payment information of various types in a transaction request.
 
-## Token
-
-```json
-"paymentMethod":{
-        "type": "MELD_PAYMENT_TOKEN",
-        "details": {
-            "meldPaymentToken": "WGv9BKp8s7emvxELiskFra"
-        }
-    }
-```
-
-## Card
+### Meld payment token
 
 ```json
 "paymentMethod": {
-        "type": "CARD",
-        "details": {
-            "number": "4111111111111111",
-            "cvc": "555",
-            "expiration": "10/23"
-        }
+    "type": "MELD_PAYMENT_TOKEN",
+    "details": {
+        "meldPaymentToken": "WGv9BKp8s7emvxELiskFra"
     }
+}
+```
+
+### Card
+
+```json
+"paymentMethod": {
+    "type": "CARD",
+    "details": {
+        "number": "4111111111111111",
+        "cvc": "555",
+        "expiration": "10/29"
+    }
+}
 ```

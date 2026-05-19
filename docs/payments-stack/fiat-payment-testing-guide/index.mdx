@@ -2,4 +2,13 @@
 title: "Payment Testing Overview"
 ---
 
-#
+Use Meld's sandbox environment to test fiat payments end-to-end before going live. This section is for developers who want to validate their integration with a known-good set of test credentials and trigger common scenarios such as successful settlement, declines, and ACH returns.
+
+## Where to start
+
+- For card payments, see the [Card Testing Guide](/docs/payments-stack/fiat-payment-testing-guide/card-testing-guide) for test card numbers per provider.
+- For ACH payments, see the [ACH Testing Guide](/docs/payments-stack/fiat-payment-testing-guide/ach-testing-guide) for test customer credentials and account/routing numbers per provider.
+
+<Note>
+The sandbox base URL is `https://api-sb.meld.io`. Always use sandbox keys when testing — never use production credentials with test card or test account numbers.
+</Note>
