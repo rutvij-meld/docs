@@ -2,9 +2,11 @@
 title: "Finicity Partner Details"
 ---
 
-This page will cover supported countries, config settings, and Finicity specific information.
+Finicity (a Mastercard company) is a US-focused open banking provider. Meld supports Finicity for Balances, Identifiers, Owners, Transactions, Investment Holdings, and Investment Transactions across United States and Canadian institutions.
 
-**Do not attempt to set up webhooks from Finicity to Meld, Meld will pass Finicity the correct webhook url when initiating the Finicity widget (in any environment).**
+<Warning>
+  Do not attempt to set up webhooks from Finicity to Meld. Meld passes Finicity the correct webhook URL when initiating the Finicity widget (in any environment).
+</Warning>
 
 ## Supported Countries
 
@@ -23,5 +25,10 @@ If you have your own [Finicity](https://www.finicity.com/) account that you wish
 
 ## Special considerations
 
-* Finicity refreshes existing connections once a day with the institution. They do not notify when these updates occur, so Meld polls daily to check for updates
-* Finicity bills extra for aggregating historical transactions. Meld loads them by default on the initial connection. Contact Meld if you would instead like to configure Finicity connections to only load historical transactions once the first forced refresh is triggered for the connection.
+<Note>
+  Finicity refreshes existing connections once a day with the institution. They do not notify when these updates occur, so Meld polls daily to check for updates.
+</Note>
+
+<Warning>
+  Finicity bills extra for aggregating historical transactions. Meld loads them by default on the initial connection. Contact Meld if you would instead like to configure Finicity connections to only load historical transactions once the first forced refresh is triggered for the connection.
+</Warning>

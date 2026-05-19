@@ -2,11 +2,20 @@
 title: "Salt Edge Partners - Partner Details"
 ---
 
-This page will cover supported countries, config settings, and Salt Edge Partners specific information.
+Salt Edge Partners is Salt Edge's PSD2-compliant open banking product, used for EEA and UK regulated bank connections. Meld supports Salt Edge Partners for Balances, Identifiers, Owners, and Transactions.
+
+<Info>
+  **Salt Edge Partners vs Salt Edge** — Meld integrates with two distinct Salt Edge products:
+
+  * **Salt Edge Partners** (this page) uses the PSD2-compliant Partners API ([/api/partners/v1](https://docs.saltedge.com/partners/v1/)) and is the correct choice for EEA-regulated open banking connections.
+  * **[Salt Edge](../salt-edge)** uses Salt Edge's global Account Information API ([/api/v5](https://docs.saltedge.com/account_information/v5/)) and covers a wider set of non-EEA countries.
+
+  The two products require separate credentials and use separate endpoints. If you have both, double-check which set you are configuring.
+</Info>
 
 ## Supported Countries
 
-Meld supports Salt Edge Partners institutions in Argentina (AR), Australia (AU), Austria (AT), Belarus (BY), Belgium (BE), Brazil (BR), Bulgaria (BG), Croatia (HR), Cyprus (CY), Czechia (CZ), Denmark (DK), Estonia (EE), Finland (FI), France (FR), Germany (DE), Greece (GR), Hungary (HU), Iceland (IS), Ireland (IE), Italy (IT), Latvia (LV), Liechtenstein (LI), Lithuania (LT), Luxembourg (LU). Malta (MT), Netherlands (NL), Norway (NO), Poland (PL), Portugal (PT), Romania (RO), Slovakia (SK), Slovenia (SI), Spain (ES), Sweden (SE), and the United Kingdom (UK).
+Meld supports Salt Edge Partners institutions in Argentina (AR), Australia (AU), Austria (AT), Belarus (BY), Belgium (BE), Brazil (BR), Bulgaria (BG), Croatia (HR), Cyprus (CY), Czechia (CZ), Denmark (DK), Estonia (EE), Finland (FI), France (FR), Germany (DE), Greece (GR), Hungary (HU), Iceland (IS), Ireland (IE), Italy (IT), Latvia (LV), Liechtenstein (LI), Lithuania (LT), Luxembourg (LU), Malta (MT), Netherlands (NL), Norway (NO), Poland (PL), Portugal (PT), Romania (RO), Slovakia (SK), Slovenia (SI), Spain (ES), Sweden (SE), and the United Kingdom (UK).
 
 ## Configuration Settings
 
@@ -18,7 +27,9 @@ If you have your own [Salt Edge Partners](https://docs.saltedge.com/partners/v1/
 
 ![](https://files.readme.io/8d1d6a1-image.png)
 
-_Note_: If you have both a Salt Edge and Salt Edge Partners account, the keys may be different, so please verify you are entering the correct credentials.
+<Warning>
+  If you have both a Salt Edge and Salt Edge Partners account, the keys are different. Verify you are entering the correct credentials for each integration.
+</Warning>
 
 ## Salt Edge Partners Webhooks
 
@@ -32,7 +43,10 @@ All of the urls will start with `<base_url>/webhook/saltedgepartners/<accountId>
 
 ## Special considerations
 
-* Salt Edge Partners does not support forced refreshes, only daily automatic refreshes
-* Meld loads the last 90 days of transaction data by default for Salt Edge Partners connections (if transactions is a requested product)
+<Warning>
+  Salt Edge Partners does not support forced refreshes — only daily automatic refreshes. If you need on-demand refresh behavior, use a different provider for the same institution where available.
+</Warning>
 
-<br />
+<Note>
+  Meld loads the last 90 days of transaction data by default for Salt Edge Partners connections (if transactions is a requested product).
+</Note>

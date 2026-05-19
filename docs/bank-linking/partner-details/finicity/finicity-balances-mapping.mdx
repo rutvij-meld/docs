@@ -8,6 +8,10 @@ Meld uses the cached balance [GetCustomerAccountsByInstitutionsLogin](https://de
 
 If you force refresh just balances, Meld calls [GetAvailableBalanceLive](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#GetAvailableBalanceLive) (because it's quicker and cheaper), but if you refresh balances and transactions Meld calls [RefreshCustomerAccountsByInstitutionLogin](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#RefreshCustomerAccountsByInstitutionLogin).
 
+<Note>
+  Example values: `currency: "USD"`, `currentAmount: 1543.22`, `availableAmount: 1487.10`, `updatedAt: "2024-08-12T14:33:00Z"`.
+</Note>
+
 <Table align={["left","left","left"]}>
   <thead>
     <tr>

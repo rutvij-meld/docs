@@ -2,7 +2,15 @@
 title: "Salt Edge Identifiers Mapping"
 ---
 
-This data comes from SaltEdge's [/api/v5/accounts](https://docs.saltedge.com/account_information/v5/#accounts-extra) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from Salt Edge's [/api/v5/accounts](https://docs.saltedge.com/account_information/v5/#accounts-extra) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example values: `international.iban: "GB29NWBK60161331926819"`, `international.bic: "NWBKGB2L"`, `bacs.accountNumber: "31926819"`, `bacs.sortCode: "601613"`.
+</Note>
+
+<Warning>
+  Salt Edge does not provide US ACH (`ach.*`) or Canadian EFT (`eft.*`) identifiers. Identifier coverage varies per institution within the `extra` object.
+</Warning>
 
 | Meld Field           | Description                                                                                          | SaltEdge Response Field |
 | :------------------- | :--------------------------------------------------------------------------------------------------- | :---------------------- |

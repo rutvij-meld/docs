@@ -2,7 +2,15 @@
 title: "Salt Edge Owners Mapping"
 ---
 
-This data comes from SaltEdge's [/api/v5/holder_info](https://docs.saltedge.com/account_information/v5/#holder_info-show) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from Salt Edge's [/api/v5/holder_info](https://docs.saltedge.com/account_information/v5/#holder_info-show) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example values: `names: ["Jane Doe"]`, `addresses.data: { street: "10 Downing St", city: "London", region: "Greater London", postalCode: "SW1A 2AA", country: "GB" }`, `emails.data: ["jane.doe@example.com"]`.
+</Note>
+
+<Warning>
+  Salt Edge does not indicate whether an address, email, or phone number is the owner's primary record. Meld defaults `addresses.primary`, `emails.primary`, and `phoneNumbers.primary` to `UNKNOWN`.
+</Warning>
 
 | Meld Field       | Description                                           | SaltEdge Response Field                            |
 | :--------------- | :---------------------------------------------------- | :------------------------------------------------- |

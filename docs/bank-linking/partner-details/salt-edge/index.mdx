@@ -2,7 +2,16 @@
 title: "Salt Edge Partner Details"
 ---
 
-This page will cover supported countries and config settings for Salt Edge.
+Salt Edge is a global open banking provider with broad coverage across the Americas, EMEA, and APAC. Meld supports Salt Edge for Balances, Identifiers, Owners, and Transactions.
+
+<Info>
+  **Salt Edge vs Salt Edge Partners** — Meld integrates with two distinct Salt Edge products:
+
+  * **Salt Edge** (this page) uses Salt Edge's global Account Information API ([/api/v5](https://docs.saltedge.com/account_information/v5/)) and covers a wider set of non-EEA countries.
+  * **[Salt Edge Partners](../salt-edge-partners)** uses the PSD2-compliant Partners API ([/api/partners/v1](https://docs.saltedge.com/partners/v1/)) and is the correct choice for EEA-regulated open banking connections.
+
+  The two products require separate credentials and use separate endpoints. If you have both, double-check which set you are configuring.
+</Info>
 
 ## Supported Countries
 
@@ -28,9 +37,12 @@ All of the urls will start with \<base_url>/webhook/saltedge/`{accountId}`/ but 
 
 ![](https://files.readme.io/b54472a-image.png)
 
-## Special Considerations:
+## Special Considerations
 
-* Meld loads the last 90 days of transaction data by default for Salt Edge connections (if transactions is a requested product)
-* Salt Edge also may require a signature, more information about this can be found [here](https://docs.saltedge.com/general/v5/#signature)
+<Note>
+  Meld loads the last 90 days of transaction data by default for Salt Edge connections (if transactions is a requested product).
+</Note>
 
-<br />
+<Tip>
+  Salt Edge may require a request signature on certain calls. See [Salt Edge signature documentation](https://docs.saltedge.com/general/v5/#signature) for details.
+</Tip>

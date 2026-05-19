@@ -4,6 +4,14 @@ title: "Finicity Identifiers Mapping"
 
 This data comes from Finicity's [/aggregation/v1/customers /`{customerId}`/accounts /`{accountId}`/details](https://api-reference.finicity.com/#/rest/api-endpoints/payments/get-account-ach-details) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
 
+<Note>
+  Example values: `ach.accountNumber: "1234567890"`, `ach.routingNumber: "021000021"`.
+</Note>
+
+<Warning>
+  Finicity returns ACH identifiers only. `eft.*`, `international.iban`, `international.bic`, and `bacs.*` fields are not populated.
+</Warning>
+
 | Meld                 | Description                                                                                          | Finicity Response Field |
 | :------------------- | :--------------------------------------------------------------------------------------------------- | :---------------------- |
 | ach                  | ACH data object                                                                                      |                         |

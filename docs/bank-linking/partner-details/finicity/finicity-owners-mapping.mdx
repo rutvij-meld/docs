@@ -4,6 +4,14 @@ title: "Finicity Owners Mapping"
 
 This data comes from Finicity's [/aggregation/v1/customers /`{customerId}`/accounts /`{accountId}`/owner](https://api-reference.finicity.com/#/rest/api-endpoints/account-owner/get-account-owner) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
 
+<Note>
+  Example values: `names: ["Jane Doe"]`, `addresses.data.full: "123 Main St, Springfield, IL 62701"`.
+</Note>
+
+<Warning>
+  Finicity returns owner address as a single unparsed string in `ownerAddress`, mapped to `addresses.data.full`. Parsed sub-fields (`street`, `city`, `region`, `postalCode`, `country`) are not provided. Email and phone number data are also not provided.
+</Warning>
+
 <Table align={["left","left","left"]}>
   <thead>
     <tr>

@@ -4,6 +4,14 @@ title: "Finicity Investment Holdings Mapping"
 
 This data comes from Finicity's [/aggregation/v1/customers/\{customerId}/institutionLogins/\{institutionLoginId}/accounts](https://developer.mastercard.com/open-banking-us/documentation/api-reference/?view=api#GetCustomerAccountsByInstitutionLogin) endpoint and is returned from Meld's [/bank-linking/investments/holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search) endpoint.
 
+<Note>
+  Example values: `symbol: "AAPL"`, `quantity: 10`, `currentValue: 1820.50`, `costBasis: 150.25`, `currencyCode: "USD"`, `isin: "US0378331005"`, `cusip: "037833100"`, `type: "STOCK"`.
+</Note>
+
+<Warning>
+  Finicity does not provide `description` or `closePrice` for investment holdings.
+</Warning>
+
 | Meld Field   | Description                                                                | Finicity Response Field |
 | :----------- | :------------------------------------------------------------------------- | :---------------------- |
 | symbol       | The symbol of the security                                                 | symbol                  |
