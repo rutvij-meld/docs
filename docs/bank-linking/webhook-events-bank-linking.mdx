@@ -2,7 +2,9 @@
 title: "Bank Linking Webhooks"
 ---
 
-These are the various webhooks you can expect to receive over the lifetime of a bank linking connection. To understand when to expect each webhook and what to do when it arrives, see [here](https://docs.meld.io/docs/when-is-your-data-available).
+This page lists every webhook event Meld sends over the lifetime of a bank linking connection. For each event you'll see when it fires and what your application should do on receipt. For the end-to-end flow and the order webhooks arrive in, see [When is your data available?](/docs/bank-linking/get-connection-data/when-is-your-data-available).
+
+<Note>Make sure your webhook endpoint is configured before triggering connections in production. See [Setting Up Webhooks](/docs/bank-linking/onboarding/step-5-setting-up-webhooks) for setup, authentication, and retry behavior.</Note>
 
 ## Attributes
 
@@ -15,20 +17,20 @@ All webhook events have the same attributes.
 | `timestamp` | OffsetDateTime | The date and time the event was created                                              |
 | `accountId` | String         | Account id                                                                           |
 | `profileId` | String         | Id of the webhook profile responsible for this event to be sent                      |
-| `version`   | Date           | [Version](versioning)                                                                |
+| `version`   | Date           | API version of the payload                                                           |
 | `payload`   | Object         | An object containing additional information of the event depending on the event type |
 
 # Connection Webhooks
 
-### Payload Attributes
-
-
+<Note>See the [API Reference](/api-reference/bank-linking) for the full payload schema of each connection webhook.</Note>
 
 ### `BANK_LINKING_CONNECTION_COMPLETED`
 
-Sent when the customer completes the connection with their institution either in the initial connect flow or a reconnect flow. This does not imply that financial account data has completed aggregating or is ready to be fetched, just that the customer has completed the widget flow.
+**When it fires:** Sent when the customer completes the connection with their institution either in the initial connect flow or a reconnect flow. This does not imply that financial account data has completed aggregating or is ready to be fetched, just that the customer has completed the widget flow.
 
-The `BANK_LINKING_CONNECTION_STATUS_CHANGE` webhook will be sent in tandem with this one (with the `newStatus` being `ACTIVE`). However, if a connection goes from a broken state to `ACTIVE` without the user needing to reconnect (i.e. sometimes connections may break due to temporary institution unavailability but are eventually resolved on their own) , then only `BANK_LINKING_CONNECTION_STATUS_CHANGE` will be issued containing both the old status and the new `ACTIVE` status. This is because `BANK_LINKING_CONNECTION_COMPLETED` is reserved solely for when the customer completes the widget flow.
+**What to do:** Record that the customer finished the widget so you can update your UI. Wait for `BANK_LINKING_ACCOUNTS_UPDATED` before attempting to fetch product data.
+
+The `BANK_LINKING_CONNECTION_STATUS_CHANGE` webhook will be sent in tandem with this one (with the `newStatus` being `ACTIVE`). However, if a connection goes from a broken state to `ACTIVE` without the user needing to reconnect (i.e. sometimes connections may break due to temporary institution unavailability but are eventually resolved on their own), then only `BANK_LINKING_CONNECTION_STATUS_CHANGE` will be issued containing both the old status and the new `ACTIVE` status. This is because `BANK_LINKING_CONNECTION_COMPLETED` is reserved solely for when the customer completes the widget flow.
 
 ```json
 {
@@ -55,9 +57,11 @@ The `BANK_LINKING_CONNECTION_STATUS_CHANGE` webhook will be sent in tandem with 
 
 ### `BANK_LINKING_CONNECTION_STATUS_CHANGE`
 
-Sent whenever a connection changes status. This webhook essentially encompasses all of the other connection status related webhooks and will be sent alongside them. It is advised to listen to this webhook instead. Any  service provider errors that occur post-completion will trigger this webhook as well, either due to an attempted aggregation failing or if the service provider notifies Meld via their own webhooks that a connection is in a broken state. This can happen when fetching products following an initial connection, or during daily/forced refreshes of existing connections. Following such a webhook, the connection will now have a status of `CUSTOMER_ACTION_REQUIRED`. Depending on the `newStatus` and `newStatusReason`, different actions may need to be taken. The `serviceProviderDetails` will provide additional information on what caused the connection to end up in such state. A list of potential `reasons` and actions to take for each of them can be found on the [bank linking errors](https://docs.meld.io/docs/connection-statuses-and-errors#connection-errors) page.
+**When it fires:** Sent whenever a connection changes status. This webhook essentially encompasses all of the other connection status related webhooks and will be sent alongside them. Any service provider errors that occur post-completion will trigger this webhook as well, either due to an attempted aggregation failing or if the service provider notifies Meld via their own webhooks that a connection is in a broken state. This can happen when fetching products following an initial connection, or during daily/forced refreshes of existing connections.
 
-If a connection requires a reconnect, you can still request information (such as balances, transactions, etc.) about the connection and you will receive the data from the last time the connection was still operational.
+**What to do:** This is the webhook to subscribe to for all connection-health tracking. Inspect `newStatus` and `newStatusReason` and route the customer to the [repair flow](/docs/bank-linking/manage-connection-status/repairing-connections) if the connection is now `RECONNECT_REQUIRED` or `CUSTOMER_ACTION_REQUIRED`. The `serviceProviderDetails` will provide additional information on what caused the connection to end up in such state. A list of potential reasons and actions to take for each of them can be found on the [Connection Statuses and Errors](/docs/bank-linking/get-connection-data/connection-statuses-and-errors) page.
+
+<Tip>If a connection requires a reconnect, you can still request information (such as balances, transactions, etc.) about the connection and you will receive the data from the last time the connection was still operational.</Tip>
 
 ```json
 {
@@ -102,13 +106,13 @@ If a connection requires a reconnect, you can still request information (such as
 
 # Financial Account Webhooks
 
-### Payload Attributes
-
-
+<Note>See the [API Reference](/api-reference/bank-linking) for the full payload schema of each account webhook.</Note>
 
 ### `BANK_LINKING_ACCOUNTS_UPDATING`
 
-Sent once the connect flow is completed and the accounts are in the process of aggregating. At this time, only basic account info is available. Also sent during subsequent daily/forced refreshes when the accounts are in the process of aggregating again.
+**When it fires:** Sent once the connect flow is completed and the accounts are in the process of aggregating. At this time, only basic account info is available. Also sent during subsequent daily/forced refreshes when the accounts are in the process of aggregating again.
+
+**What to do:** Treat this as a signal that aggregation has started — you can show a loading state but should not yet fetch product data. Wait for `BANK_LINKING_ACCOUNTS_UPDATED` before calling product endpoints.
 
 _Financial Account fields for this event type:_
 
@@ -158,7 +162,9 @@ _Financial Account fields for this event type:_
 
 ### `BANK_LINKING_ACCOUNTS_UPDATED`
 
-Sent once aggregation has completed for the accounts belonging to the connection. Products are now available to be fetched for the accounts. This webhook should arrive shortly after the `BANK_LINKING_ACCOUNTS_UPDATING` webhook, but sometimes products may take a while to aggregate for certain institutions. Note that if no products have been updated, then the financialAccounts object in this webhook will be empty. See more about [aggregation](https://docs.meld.io/docs/managing-completed-connections#account-aggregations) here.
+**When it fires:** Sent once aggregation has completed for the accounts belonging to the connection. Products are now available to be fetched for the accounts. This webhook should arrive shortly after the `BANK_LINKING_ACCOUNTS_UPDATING` webhook, but sometimes products may take a while to aggregate for certain institutions. Note that if no products have been updated, then the `financialAccounts` object in this webhook will be empty.
+
+**What to do:** Fetch the listed products for each financial account. See [Retrieving Connection Data](/docs/bank-linking/get-connection-data/retrieving-connection-data) and the per-account [aggregation overview](/docs/bank-linking/get-connection-data/when-is-your-data-available).
 
 _Financial Account fields for this event type:_
 
@@ -211,7 +217,9 @@ _Financial Account fields for this event type:_
 
 ### `BANK_LINKING_ACCOUNTS_REMOVED`
 
-Sent when individual financial accounts belonging to a connection have been deleted. This can occur when the customer revokes access to individual accounts or they close a financial account with their bank altogether. This webhook will always be issued following the `BANK_LINKING_CONNECTION_DELETED` event, as a connection deletion implies all of its financial accounts are deleted as well.
+**When it fires:** Sent when individual financial accounts belonging to a connection have been deleted. This can occur when the customer revokes access to individual accounts or they close a financial account with their bank altogether. This webhook will always be issued following the `BANK_LINKING_CONNECTION_DELETED` event, as a connection deletion implies all of its financial accounts are deleted as well.
+
+**What to do:** Remove the listed financial account IDs from your local data store and stop displaying them to the customer.
 
 ```json
 {
@@ -250,13 +258,13 @@ Sent when individual financial accounts belonging to a connection have been dele
 
 # Transaction Webhooks
 
-### Payload Attributes
-
-
+<Note>See the [API Reference](/api-reference/bank-linking) for the full payload schema of each transaction webhook.</Note>
 
 ### `BANK_LINKING_TRANSACTIONS_AGGREGATED`
 
-Captures net transactional effects for each financial account belonging to the connection. Will be sent after each time an aggregation occurs in which transactions are added or modified. See the [webhook flow](https://docs.meld.io/docs/managing-completed-connections#webhook-flow) for more details.
+**When it fires:** Captures net transactional effects for each financial account belonging to the connection. Sent after each aggregation in which transactions are added or modified.
+
+**What to do:** If you cache transactions locally, re-fetch the affected financial accounts using the `oldestTransactionUpdatedSearchKey` so you pick up new and updated transactions. See the [webhook flow](/docs/bank-linking/get-connection-data/when-is-your-data-available) for more details.
 
 ```json
 {
@@ -308,7 +316,9 @@ Captures net transactional effects for each financial account belonging to the c
 
 ### `BANK_LINKING_HISTORICAL_TRANSACTIONS_AGGREGATED`
 
-Captures net historical transaction effects for each financial account belonging to the connection. It will be sent out at most once per connection after historical transactions (transactions older than 30 days) have been aggregated. By default, historical transaction aggregation is initiated after the connection is made. This behavior can be changed, see the [webhook flow](https://docs.meld.io/docs/managing-completed-connections#webhook-flow) for more details.
+**When it fires:** Captures net historical transaction effects for each financial account belonging to the connection. Sent at most once per connection after historical transactions (transactions older than 30 days) have been aggregated. By default, historical transaction aggregation is initiated after the connection is made.
+
+**What to do:** Fetch the older transactions if your application surfaces extended history. Check `historicalAggregationSucceeded` per account — some institutions do not support extended history and will report `false` with an explanatory `historicalAggregationError`. See the [webhook flow](/docs/bank-linking/get-connection-data/when-is-your-data-available) for more details.
 
 ```json
 {

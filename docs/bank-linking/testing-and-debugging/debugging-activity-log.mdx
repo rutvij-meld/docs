@@ -3,28 +3,41 @@ title: "Activity Log"
 description: "This feature is in beta."
 ---
 
-One powerful tool to help you debug potential issues or see the paper trail is Meld's [Activity Log](https://docs.meld.io/reference/activity-log-search). The activity log registers all activities performed by you or performed by Meld on behalf of you and presents them in an easy to trace manner. It is an easily searchable logging tool you can use to follow a trail of activity and investigate an issue.
+The Activity Log is Meld's searchable audit trail of every request, webhook, and event that flows between your application, Meld, and the underlying service providers. Developers use it to trace what happened on a specific connection, replay webhook delivery, and pinpoint where in the pipeline something went wrong.
+
+<Info>The Activity Log is currently in beta. Behavior and search parameters may change.</Info>
+
+One powerful tool to help you debug potential issues or see the paper trail is Meld's [Activity Log](/api-reference/bank-linking/activity-log-search). The activity log registers all activities performed by you or performed by Meld on behalf of you and presents them in an easy to trace manner.
 
 Some of the major types of activities captured by the activity log are:
 
-1. [Webhooks](https://docs.meld.io/docs/debugging-activity-log#track-webhooks):
-   1. Webhooks that the provider sends Meld. 
+1. [Webhooks](#track-webhooks):
+   1. Webhooks that the provider sends Meld.
    2. Webhooks that Meld sends you.
-2. [API calls Meld makes to a service provider on your behalf and the response](https://docs.meld.io/docs/debugging-activity-log#raw-service-provider-data).
+2. [API calls Meld makes to a service provider on your behalf and the response](#raw-service-provider-data).
+
+# How to Access the Activity Log
+
+You can interact with the Activity Log in two ways:
+
+* **Meld dashboard** — log in to your Meld dashboard and navigate to the Activity Log section to browse recent activity in the UI.
+* **API** — call the [Activity Log Search](/api-reference/bank-linking/activity-log-search) and [Activity Log Details](/api-reference/bank-linking/activity-log-details-get) endpoints to query programmatically.
 
 # How to Use the Activity Log
 
-1. First, start by hitting Meld's [Activity Log endpoint](https://docs.meld.io/reference/activity-log-search) with whatever search parameters you would like. The date params (`start` and `end`) are required but all other params are optional. The activities are ordered chronologically with the most recent at the top, and every activity has a timestamp. You should typically filter using an `actions` and either a `connectionId` or `financialAccountId`. If you don't have either of those, then a `customerId` or `externalCustomerId` can work as well, but those searches will take longer.
+1. Start by hitting Meld's [Activity Log endpoint](/api-reference/bank-linking/activity-log-search) with whatever search parameters you would like. The date params (`start` and `end`) are required but all other params are optional. The activities are ordered chronologically with the most recent at the top, and every activity has a timestamp. You should typically filter using an `actions` and either a `connectionId` or `financialAccountId`. If you don't have either of those, then a `customerId` or `externalCustomerId` can work as well, but those searches will take longer.
 
 Examples of `actions` you should filter by are:
 
-* `INBOUND_REQUEST`: An API call you made to Meld
-* `OUTBOUND_REQUEST_SERVICE_PROVIDER`: An API call that Meld made to a service provider on your behalf, including the response
-* `INBOUND_REQUEST_WEBHOOK`: A webhook sent from the service provider to Meld
-* `OUTBOUND_REQUEST_WEBHOOK`: A webhook that Meld sent to you
-* `INSTITUTION_CONNECTION_IMPORT_FAILED`: A notification that an import for a particular connection has failed 
+| Action | Meaning |
+| :--- | :--- |
+| `INBOUND_REQUEST` | An API call you made to Meld |
+| `OUTBOUND_REQUEST_SERVICE_PROVIDER` | An API call that Meld made to a service provider on your behalf, including the response |
+| `INBOUND_REQUEST_WEBHOOK` | A webhook sent from the service provider to Meld |
+| `OUTBOUND_REQUEST_WEBHOOK` | A webhook that Meld sent to you |
+| `INSTITUTION_CONNECTION_IMPORT_FAILED` | A notification that an import for a particular connection has failed |
 
-2. Once you find a particular activity that you would like more information about, grab the key of the activity and head to Meld's [Activity Log Details endpoint](https://docs.meld.io/reference/activity-log-details-get). Pass in the key as a query param and you will now see all the details for that particular activity. These details include the request and response headers, the request and response body, the response code, and more. You can also see the raw response Meld received from a particular service provider here. This can help debug if for example data that looks suspicious is due to Meld's transformation or is the exact data that Meld received from the provider.
+2. Once you find a particular activity that you would like more information about, grab the key of the activity and head to Meld's [Activity Log Details endpoint](/api-reference/bank-linking/activity-log-details-get). Pass in the key as a query param and you will now see all the details for that particular activity. These details include the request and response headers, the request and response body, the response code, and more. You can also see the raw response Meld received from a particular service provider here. This can help debug if for example data that looks suspicious is due to Meld's transformation or is the exact data that Meld received from the provider.
 
 # Use Cases
 
@@ -32,21 +45,18 @@ Here are some potential use cases of the activity log:
 
 ## Track Webhooks
 
-1. Seeing what webhooks were sent for a particular connection from the provider to Meld as well as from Meld to you. This can help if you might've missed a webhook, or if you want to see the full reason a connection has an issue (which typically comes to Meld via webhook).
-
+See which webhooks were sent for a particular connection from the provider to Meld as well as from Meld to you. This can help if you might've missed a webhook, or if you want to see the full reason a connection has an issue (which typically comes to Meld via webhook).
 
 ## Raw Service Provider Data
 
-2. Seeing the raw data the provider sent Meld to evaluate if an issue with a particular connection is on Meld's side or the provider's side.
-
+See the raw data the provider sent Meld to evaluate if an issue with a particular connection is on Meld's side or the provider's side.
 
 ## Why a Connection is No Longer Active
 
-3. Seeing why a connection moved from ACTIVE to another status. This often uses one of the 2 examples above to debug the root cause for why this happened.
-
+See why a connection moved from `ACTIVE` to another status. This often uses one of the two examples above to debug the root cause for why this happened.
 
 ## Why an Import Failed
 
-4. When you import connections over to Meld, you will receive webhooks for connections that were successfully imported. However, to see which connections failed to be imported, use the activity log and search using the `INSTITUTION_CONNECTION_IMPORT_FAILED` action, which will also include the Meld reason for the import failing. One trick is to find the action for the import failing then look at the details of the action that happened right before it which will likely have the service provider's error, if there is one.
+When you import connections over to Meld, you will receive webhooks for connections that were successfully imported. However, to see which connections failed to be imported, use the activity log and search using the `INSTITUTION_CONNECTION_IMPORT_FAILED` action, which will also include the Meld reason for the import failing. One trick is to find the action for the import failing then look at the details of the action that happened right before it which will likely have the service provider's error, if there is one.
 
-The activity log is a very powerful tool, please make your requests as specific as possible by leveraging the query params or else there may be too much data to return or to be of use.
+<Warning>The activity log is a very powerful tool. Please make your requests as specific as possible by leveraging the query params, or there may be too much data to return or to be of use.</Warning>

@@ -4,7 +4,13 @@ title: "Bank Linking Sandbox Testing Guide"
 
 # Testing Information
 
-Service providers have sandboxes that you can use to make test connections and fetch test data. Each service provider has it's own set of test institutions. Some service provider sandboxes have limitations, for example Finicity's does not return investment data. In addition, testing the repair flow is not possible in sandbox.
+This page lists the test institutions and credentials each bank linking service provider exposes in their sandbox environment. Use it to validate end-to-end connection flows in your integration before pointing at production.
+
+Service providers have sandboxes that you can use to make test connections and fetch test data. Each service provider has its own set of test institutions. Some service provider sandboxes have limitations, for example Finicity's does not return investment data.
+
+<Note>Testing the repair flow is not possible in sandbox. Repair flows can only be exercised against production connections that have entered a broken state.</Note>
+
+<Tip>You can also find current test credentials in your Meld dashboard sandbox if a provider updates them.</Tip>
 
 ## Plaid
 
@@ -118,7 +124,7 @@ Akoya has several test accounts in their sandbox environment that can be used to
 
 ### Akoya Investments Testing
 
-Akoya supports testing investments thorugh certain test users, such as mikomo\_2023. However some fields that would appear with real investment data may be missing in the test data.
+Akoya supports testing investments through certain test users, such as mikomo\_2023. However some fields that would appear with real investment data may be missing in the test data.
 
 ## Yodlee
 

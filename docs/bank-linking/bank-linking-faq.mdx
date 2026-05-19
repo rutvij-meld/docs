@@ -2,48 +2,38 @@
 title: "FAQ"
 ---
 
-# Questions
+Answers to the most common questions developers ask while integrating Meld Bank Linking. If you don't see your question here, check the [Activity Log](/docs/bank-linking/testing-and-debugging/debugging-activity-log) for connection-level detail or reach out to Meld support.
 
-[Q1. How do I make a connection to an institution?](https://docs.meld.io/docs/bank-linking-faq#q1-how-do-i-make-a-connection-to-an-institution)
+<AccordionGroup>
+  <Accordion title="Q1: How do I make a connection to an institution?">
+    Follow the [Creating Connections](/docs/bank-linking/creating-connections) guide for end-to-end instructions on making a connection.
+  </Accordion>
 
-[Q2: I set an institution to route to a particular provider but it’s going to a different provider instead, why is that?](https://docs.meld.io/docs/bank-linking-faq#q2-i-set-an-institution-to-route-to-a-particular-provider-but-its-going-to-a-different-provider-instead-why-is-that)
+  <Accordion title="Q2: I set an institution to route to a particular provider but it's going to a different provider instead, why is that?">
+    There are several likely candidates:
 
-[Q3: Why can’t I find a certain institution in the Meld picker?](https://docs.meld.io/docs/bank-linking-faq#q3-why-cant-i-find-a-certain-institution-in-the-meld-picker)
+    * The provider doesn't support the institution for all of the products specified.
+    * Your account with that provider may not be configured for a particular product or for OAuth institutions.
+    * If you are using Smart Routing, Meld may know that the connection between that provider and institution is currently unstable and is therefore routing you to a different provider.
+  </Accordion>
 
-[Q4: I have a connection that doesn’t seem to have been updated in a while even though the user has been making transactions in their account. Why is that?](https://docs.meld.io/docs/bank-linking-faq#q4-i-have-a-connection-that-doesnt-seem-to-have-been-updated-in-a-while-even-though-the-user-has-been-making-transactions-in-their-account-why-is-that)
+  <Accordion title="Q3: Why can't I find a certain institution in the Meld picker?">
+    Assuming the institution is supported by one of the providers you have enabled, the likely issue is that the institution doesn't support all of the products you requested when calling [/connect/start](/api-reference/bank-linking/bank-linking-connect-create). Meld filters the institutions returned in the picker to only the ones that support all products requested. To check if this is the issue, try making a request for only `BALANCES` and `TRANSACTIONS` and see if your institution shows up.
+  </Accordion>
 
-[Q5: Why do I have to select my institution twice for Plaid?](https://docs.meld.io/docs/bank-linking-faq#q5-why-do-i-have-to-select-my-institution-twice-for-plaid)
+  <Accordion title="Q4: I have a connection that doesn't seem to have been updated in a while even though the user has been making transactions in their account. Why is that?">
+    The most likely reason is your connection is in a status other than `ACTIVE`. Check the status of your connection — it might be `RECONNECT_REQUIRED` (the user must log in again in the repair flow) or `PARTIALLY_ACTIVE` (for example, because it's a duplicate). See [Connection Statuses and Errors](/docs/bank-linking/get-connection-data/connection-statuses-and-errors) for the full list.
+  </Accordion>
 
-[Q6: I like how the Plaid picker looks with the institutions as tiles. Is there a way to do the same thing for the Meld picker?](https://docs.meld.io/docs/bank-linking-faq#q6-i-like-how-the-plaid-picker-looks-with-the-institutions-as-tiles-is-there-a-way-to-do-the-same-thing-for-the-meld-picker)
+  <Accordion title="Q5: Why do I have to select my institution twice for Plaid?">
+    Plaid forces the user to select their institution in the Plaid picker even if it was already selected in the Meld picker. No other provider does this. The best Meld can do is have the institution you picked in the Meld picker be the first one in the list of the Plaid picker, which it does.
+  </Accordion>
 
-[Q7: If I already know the institution my user is going to connect to, do they still have to go through the Meld picker?](https://docs.meld.io/docs/bank-linking-faq#q7-if-i-already-know-the-institution-my-user-is-going-to-connect-to-do-they-still-have-to-go-through-the-meld-picker)
+  <Accordion title="Q6: I like how the Plaid picker looks with the institutions as tiles. Is there a way to do the same thing for the Meld picker?">
+    Yes. Pass `"accountPreferenceOverride": {"selectionStyle": "TILE"}` as part of your [/connect/start request](/docs/bank-linking/creating-connections/create-a-connect-token).
+  </Accordion>
 
-# Answers
-
-## **Q1:** How do I make a connection to an institution?
-
-**A:** Follow [this page](https://docs.meld.io/docs/creating-connections) for instructions on making a connection.
-
-## **Q2:** I set an institution to route to a particular provider but it’s going to a different provider instead, why is that?
-
-**A:** There are several likely candidates. One is that the provider doesn’t support the institution for all the products specified. Another possibility is that your account with that provider may not be configured for a particular product or for OAuth institutions. Lastly, if you are using Smart Routing, Meld may know that the connection between that provider and institution is currently unstable and is therefore routing you to a different provider.
-
-## **Q3:** Why can’t I find a certain institution in the Meld picker?
-
-**A:** Assuming the institution is supported by one of the providers you have enabled, the likely issue is that the institution doesn’t support all the the products you requested when calling [/connect/start](https://docs.meld.io/reference/bank-linking-connect-create). Meld filters the institutions returned in the picker to only the ones that support all products requested, to see if this is the issue try making a request for only BALANCES and TRANSACTIONS and see if your institution shows up.
-
-## **Q4:** I have a connection that doesn’t seem to have been updated in a while even though the user has been making transactions in their account. Why is that?
-
-**A:** The most likely reason is your connection is in a status other than *ACTIVE*. Check the status of your connection. It might be *RECONNECT\_REQUIRED* in which case the user will have to log in again in the repair flow or *PARTIALLY\_ACTIVE* because it’s a duplicate, for example.
-
-## **Q5:** Why do I have to select my institution twice for Plaid?
-
-**A:** Plaid forces the user to select their institution in the Plaid picker even if it was already selected in the Meld picker. No other provider does this. The best Meld can do is have the institution you picked in the Meld picker be the first one in the list of the Plaid picker, which it does.
-
-## **Q6:** I like how the Plaid picker looks with the institutions as tiles. Is there a way to do the same thing for the Meld picker?
-
-**A:** Yes, you can do this by passing in *"accountPreferenceOverride": \{"selectionStyle": "TILE"},* as part of your [/connect/start request](https://docs.meld.io/docs/create-a-connect-token).
-
-## **Q7**: If I already know the institution my user is going to connect to, do they still have to go through the Meld picker?
-
-**A** No, in this situation you can [skip the Meld picker](https://docs.meld.io/docs/create-a-connect-token#skipping-or-prepopulating-the-meld-picker) by passing in the Id of the institution the user will connect to.
+  <Accordion title="Q7: If I already know the institution my user is going to connect to, do they still have to go through the Meld picker?">
+    No. You can skip the Meld picker by passing in the ID of the institution the user will connect to. See [Create a Connect Token](/docs/bank-linking/creating-connections/create-a-connect-token) for how to prepopulate the picker.
+  </Accordion>
+</AccordionGroup>
