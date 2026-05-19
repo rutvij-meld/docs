@@ -2,7 +2,15 @@
 title: "MX Owners Mapping"
 ---
 
-This data comes from MX's [/users/`{user_guid}` /members/`{member_guid}` /account_owners](https://docs.mx.com/api#identification_identity_list_account_owners) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from MX's [/users/`{user_guid}` /members/`{member_guid}` /account_owners](https://docs.mx.com/api#identification_identity_list_account_owners) endpoint and is returned from Meld's [/bank-linking/accounts](/api-reference/bank-linking/accounts/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example: MX `address: "2982 Frances Vineyard"`, `city: "San Francisco"`, `state: "CA"`, `postal_code: "94114"`, `country: "US"` maps to Meld `addresses.data.street`, `addresses.data.city`, `addresses.data.region`, `addresses.data.postalCode`, `addresses.data.country`.
+</Note>
+
+<Warning>
+  MX does not indicate which contact item is primary. Meld defaults the `primary` field to `UNKNOWN` for addresses, emails, and phone numbers sourced from MX.
+</Warning>
 
 <Table align={["left","left","left"]}>
   <thead>

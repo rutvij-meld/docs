@@ -2,7 +2,15 @@
 title: "MX Investment Holdings Mapping"
 ---
 
-This data comes from MX's [/users/\{user\_guid}/members/\{member\_guid}/holdings](https://docs.mx.com/api-reference/platform-api/reference/list-holdings-by-member) endpoint and is returned from Meld's [/bank-linking/investments/holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search) endpoint.
+This data comes from MX's [/users/\{user\_guid}/members/\{member\_guid}/holdings](https://docs.mx.com/api-reference/platform-api/reference/list-holdings-by-member) endpoint and is returned from Meld's [/bank-linking/investments/holdings](/api-reference/bank-linking/investments/bank-linking-investment-holdings-search) endpoint.
+
+<Note>
+  Example: an MX holding with `symbol: "AAPL"`, `shares: 10`, `market_value: 1850.50`, `cost_basis: 180.00`, `currency_code: "USD"` maps to Meld `symbol: "AAPL"`, `quantity: 10`, `currentValue: 1850.50`, `costBasis: 180.00`, `currencyCode: "USD"`.
+</Note>
+
+<Warning>
+  MX does not return holding `description` or `isin`. Those fields will be `null` in the Meld response when sourced from MX.
+</Warning>
 
 | Meld Field   | Description                                                                | Mx Response Field      |
 | :----------- | :------------------------------------------------------------------------- | :--------------------- |

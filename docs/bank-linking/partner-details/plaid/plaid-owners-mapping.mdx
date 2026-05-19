@@ -2,7 +2,11 @@
 title: "Plaid Owners Mapping"
 ---
 
-This data comes From Plaid's [/identity/get](https://plaid.com/docs/api/products/identity/#identity-get-response-accounts-owners-addresses-data-street) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from Plaid's [/identity/get](https://plaid.com/docs/api/products/identity/#identity-get-response-accounts-owners-addresses-data-street) endpoint and is returned from Meld's [/bank-linking/accounts](/api-reference/bank-linking/accounts/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example: Plaid `accounts.owners.addresses.data.street: "2982 Frances Vineyard"` maps to Meld `addresses.data.street`. Plaid `accounts.owners.emails.primary: true` maps to Meld `emails.primary: true`.
+</Note>
 
 <Table align={["left","left","left"]}>
   <thead>

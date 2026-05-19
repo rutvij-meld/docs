@@ -2,7 +2,11 @@
 title: "Plaid Investment Transactions Mapping"
 ---
 
-This data comes From Plaid's [/investments/transactions/get](https://plaid.com/docs/api/products/investments/#investmentstransactionsget) endpoint and is returned from Meld's [/bank-linking/investments/transactions](https://docs.meld.io/reference/bank-linking-investment-transactions-search) endpoint.
+This data comes from Plaid's [/investments/transactions/get](https://plaid.com/docs/api/products/investments/#investmentstransactionsget) endpoint and is returned from Meld's [/bank-linking/investments/transactions](/api-reference/bank-linking/investments/bank-linking-investment-transactions-search) endpoint.
+
+<Note>
+  Example: a Plaid investment transaction with `Securities.ticker_symbol: "AAPL"`, `Investment_transactions.quantity: 5`, `Investment_transactions.amount: 925.25`, `Investment_transactions.iso_currency_code: "USD"`, `Investment_transactions.date: "2024-01-15"`, `Investment_transactions.type: "buy"` maps to Meld `symbol: "AAPL"`, `quantity: 5`, `amount: 925.25`, `currency: "USD"`, `transactionDate: "2024-01-15"`, `type: "buy"`.
+</Note>
 
 | Meld Field      | Description                                                 | Plaid Response Field                         |
 | :-------------- | :---------------------------------------------------------- | :------------------------------------------- |

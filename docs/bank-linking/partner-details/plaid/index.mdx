@@ -2,9 +2,13 @@
 title: "Plaid Partner Details"
 ---
 
-This page will cover supported countries, config settings, and Plaid specific information.
+[Plaid](https://plaid.com/) is a bank linking aggregator that Meld integrates with to power account aggregation in the United States and Canada. Through Plaid, Meld supports the following products: account base data, balances, identifiers (ACH/EFT/BACS/international), owners (identity), transactions, investment holdings, and investment transactions.
 
-**Do not attempt to set up webhooks from Plaid to Meld, Meld will pass Plaid the correct webhook url when initiating the Plaid widget (in any environment).**
+This page covers supported countries, configuration settings, and Plaid-specific behavior. For field-by-field mappings, see the per-product mapping pages linked from [Plaid to Meld Overall Mappings](/docs/bank-linking/partner-details/plaid/plaid-to-meld-mappings).
+
+<Warning>
+  Do not attempt to set up webhooks from Plaid to Meld. Meld will pass Plaid the correct webhook URL when initiating the Plaid widget (in any environment).
+</Warning>
 
 ## Supported Countries
 
@@ -23,7 +27,7 @@ In addition, you will need to complete Plaid's OAuth Registration form in order 
 
 ## Product Initialization
 
-Unlike the other service providers, Plaid will filter out any accounts belonging to the customer that do not support all of the products requested, thus limiting which accounts the customer can select for aggregation within Plaid's widget flow. In order to normalize account selection behavior across service providers and reduce customer abandonment due to missing accounts, Meld aims to ensure the largest breadth of accounts is made available as possible. To do so, Meld uses a subset of the products supplied in the [/connect/start](https://docs.meld.io/reference/bank-linking-connect-create) request that optimizes for account availability when initializing the connection with Plaid. This means that there may be financial accounts belonging to the connection that don't support every product requested, but this can be expected and replicates the behavior exhibited by all of the other service providers. 
+Unlike the other service providers, Plaid will filter out any accounts belonging to the customer that do not support all of the products requested, thus limiting which accounts the customer can select for aggregation within Plaid's widget flow. In order to normalize account selection behavior across service providers and reduce customer abandonment due to missing accounts, Meld aims to ensure the largest breadth of accounts is made available as possible. To do so, Meld uses a subset of the products supplied in the [/connect/start](/api-reference/bank-linking/connect/bank-linking-connect-create) request that optimizes for account availability when initializing the connection with Plaid. This means that there may be financial accounts belonging to the connection that don't support every product requested, but this can be expected and replicates the behavior exhibited by all of the other service providers. 
 
 There are several factors Meld takes into consideration when determining which products requested in the `/connect/start` request will be included in the minimal subset provided to Plaid. This determination is made as follows:
 
@@ -42,3 +46,7 @@ You can read more about how Plaid handles product initialization on their own do
   * Enable Plaid's `transaction_refresh` product if triggering real-time refreshes is desired. Plaid will still auto-refresh transactions daily, but if forcing refreshes is applicable to your use case, then this is an additional product that must be enabled. You can do so by submitting a [product request form](https://dashboard.plaid.com/overview/request-products) on the plaid dashboard
 * Plaid is the only provider for which the user must select their institution again in their widget even if already selected previously in the Meld picker
 * If transactions is a specified product, historical transactions will be loaded by default
+
+<Note>
+  In Plaid sandbox, use the test credentials `user_good` / `pass_good` to link mock institutions. Production data and behavior may differ — particularly for OAuth institutions, which require full registration before use.
+</Note>

@@ -2,7 +2,15 @@
 title: "MX Identifiers Mapping"
 ---
 
-This data comes from MX's [/users/`{user_guid}`/members/`{member_guid}`/account_numbers](https://docs.mx.com/api#verification_mx_widgets_list_account_numbers_by_account) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from MX's [/users/`{user_guid}`/members/`{member_guid}`/account_numbers](https://docs.mx.com/api#verification_mx_widgets_list_account_numbers_by_account) endpoint and is returned from Meld's [/bank-linking/accounts](/api-reference/bank-linking/accounts/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example: MX `account_number: "1111222233330000"` and `routing_number: "011401533"` map to Meld `ach.accountNumber` and `ach.routingNumber` respectively.
+</Note>
+
+<Warning>
+  MX does not return international identifiers (IBAN, BIC) or BACS (UK) account details. Those fields will be `null` in the Meld response when sourced from MX.
+</Warning>
 
 | Meld Field           | Description                                                                                          | MX Response Field  |
 | :------------------- | :--------------------------------------------------------------------------------------------------- | :----------------- |

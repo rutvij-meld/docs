@@ -2,7 +2,11 @@
 title: "MX Transactions Mapping"
 ---
 
-This data comes from MX's [/users/\{user\_guid} /accounts/\{account\_guid}/transactions](https://docs.mx.com/api-reference/platform-api/reference/list-transactions-by-account) endpoint and is returned from Meld's [/bank-linking/transactions](https://docs.meld.io/reference/bank-linking-transactions-search) endpoint.
+This data comes from MX's [/users/\{user\_guid} /accounts/\{account\_guid}/transactions](https://docs.mx.com/api-reference/platform-api/reference/list-transactions-by-account) endpoint and is returned from Meld's [/bank-linking/transactions](/api-reference/bank-linking/transactions/bank-linking-transactions-search) endpoint.
+
+<Note>
+  Example: an MX transaction with `amount: 89.40`, `currency_code: "USD"`, `original_description: "Uber 063015 SF**POOL**"`, `status: "POSTED"`, `transacted_at: "2024-01-15"`, `posted_at: "2024-01-15"` maps to Meld `amount: 89.40`, `currency: "USD"`, `description: "Uber 063015 SF**POOL**"`, `status: "POSTED"`, `transactionDate: "2024-01-15"`, `postedDate: "2024-01-15"`.
+</Note>
 
 | Meld Field      | Description                                  | MX Response Field     |
 | :-------------- | :------------------------------------------- | :-------------------- |

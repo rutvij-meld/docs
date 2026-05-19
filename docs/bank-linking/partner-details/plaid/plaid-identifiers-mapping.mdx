@@ -2,7 +2,11 @@
 title: "Plaid Identifiers Mapping"
 ---
 
-This data comes From Plaid's [/auth/get](https://plaid.com/docs/api/products/auth/#auth-get-response-numbers-ach-account) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from Plaid's [/auth/get](https://plaid.com/docs/api/products/auth/#auth-get-response-numbers-ach-account) endpoint and is returned from Meld's [/bank-linking/accounts](/api-reference/bank-linking/accounts/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example: Plaid `numbers.ach.account: "1111222233330000"` and `numbers.ach.routing: "011401533"` map to Meld `ach.accountNumber` and `ach.routingNumber` respectively.
+</Note>
 
 | Meld Field           | Description                                                                                          | Plaid Response Field       |
 | :------------------- | :--------------------------------------------------------------------------------------------------- | :------------------------- |

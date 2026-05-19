@@ -2,7 +2,11 @@
 title: "MX Balances Mapping"
 ---
 
-This data comes from MX's [/users/\{user\_guid}/accounts](https://docs.mx.com/api#core_resources_accounts_list_accounts) endpoint and is returned from Meld's [/bank-linking/accounts](https://docs.meld.io/reference/bank-linking-accounts-search) endpoint.
+This data comes from MX's [/users/\{user\_guid}/accounts](https://docs.mx.com/api#core_resources_accounts_list_accounts) endpoint and is returned from Meld's [/bank-linking/accounts](/api-reference/bank-linking/accounts/bank-linking-accounts-search) endpoint.
+
+<Note>
+  Example: MX `currency_code: "USD"`, `balance: 1203.45`, `available_balance: 1150.20` maps to Meld `currency: "USD"`, `currentAmount: 1203.45`, `availableAmount: 1150.20`.
+</Note>
 
 | Meld Field      | Description                         | MX Response Field  |
 | :-------------- | :---------------------------------- | :----------------- |

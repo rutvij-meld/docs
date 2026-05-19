@@ -2,7 +2,11 @@
 title: "Plaid Investment Holdings Mappings"
 ---
 
-This data comes From Plaid's [/investments/holdings/get](https://plaid.com/docs/api/products/investments/#investmentsholdingsget) endpoint and is returned from Meld's [/bank-linking/investments/holdings](https://docs.meld.io/reference/bank-linking-investment-holdings-search) endpoint.
+This data comes from Plaid's [/investments/holdings/get](https://plaid.com/docs/api/products/investments/#investmentsholdingsget) endpoint and is returned from Meld's [/bank-linking/investments/holdings](/api-reference/bank-linking/investments/bank-linking-investment-holdings-search) endpoint.
+
+<Note>
+  Example: a Plaid holding with `Securities.ticker_symbol: "AAPL"`, `Holdings.quantity: 10`, `Holdings.institution_value: 1850.50`, `Securities.iso_currency_code: "USD"` maps to Meld `symbol: "AAPL"`, `quantity: 10`, `currentValue: 1850.50`, `currencyCode: "USD"`.
+</Note>
 
 | Meld Field   | Description                                                                | Plaid Response Field                |
 | :----------- | :------------------------------------------------------------------------- | :---------------------------------- |
