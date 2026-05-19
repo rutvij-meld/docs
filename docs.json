@@ -351,49 +351,6 @@
               },
               "docs/bank-linking/bank-linking-faq"
             ]
-          },
-          {
-            "group": "Payments Stack",
-            "pages": [
-              {
-                "group": "Payments Quickstart",
-                "pages": [
-                  "docs/payments-stack/fiat-payment-quickstart/index",
-                  "docs/payments-stack/fiat-payment-quickstart/payments-use-cases",
-                  {
-                    "group": "Making ACH Payments",
-                    "pages": [
-                      "docs/payments-stack/fiat-payment-quickstart/making-ach-payments/index",
-                      "docs/payments-stack/fiat-payment-quickstart/making-ach-payments/creating-a-payments-customer",
-                      "docs/payments-stack/fiat-payment-quickstart/making-ach-payments/ach-payin-debit",
-                      "docs/payments-stack/fiat-payment-quickstart/making-ach-payments/ach-credit-payout",
-                      "docs/payments-stack/fiat-payment-quickstart/making-ach-payments/ach-transaction-statuses"
-                    ]
-                  }
-                ]
-              },
-              "docs/payments-stack/idempotency-key",
-              "docs/payments-stack/credential-passthrough",
-              "docs/payments-stack/fiat-error-responses",
-              "docs/payments-stack/fiat-transaction-statuses",
-              "docs/payments-stack/fiat-supported-service-providers",
-              {
-                "group": "Payment Testing Overview",
-                "pages": [
-                  "docs/payments-stack/fiat-payment-testing-guide/index",
-                  "docs/payments-stack/fiat-payment-testing-guide/card-testing-guide",
-                  "docs/payments-stack/fiat-payment-testing-guide/ach-testing-guide"
-                ]
-              },
-              {
-                "group": "Additional Features",
-                "pages": [
-                  "docs/payments-stack/additional-features/index",
-                  "docs/payments-stack/additional-features/authorization-capture",
-                  "docs/payments-stack/additional-features/payment-methods-and-tokenization"
-                ]
-              }
-            ]
           }
         ]
       },
