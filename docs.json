@@ -12,6 +12,12 @@
     "dark": "/logo/dark.svg"
   },
   "favicon": "/favicon.svg",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/docs/welcome/overview"
+    }
+  ],
   "openapi": [
     "api-reference/bank-linking.json",
     "api-reference/crypto.json",
