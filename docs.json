@@ -1,6 +1,9 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
+  "appearance": {
+    "default": "light"
+  },
   "name": "Meld",
   "colors": {
     "primary": "#000000",
