@@ -1,32 +1,31 @@
 ---
 title: "Full Integration Guide - Old"
 description: "This is the full end to end integration guide for integrating the virtual account flow."
+hidden: true
 ---
 
 You can view API request and response examples for each of the key endpoints in the [Quickstart](/docs/stablecoins/virtual-account-integration/virtual-account-quickstart). This section covers the end-to-end flow and includes details not found in the Quickstart.
 
-
 <Warning>
-**CRITICAL: API Changes & Compatibility**
+  **CRITICAL: API Changes & Compatibility**
 
-**Non-Breaking Changes (No Versioning):**
+  **Non-Breaking Changes (No Versioning):**
 
-* New fields may be added to API responses at any time
-* Your system MUST handle unexpected fields gracefully
-* Avoid strict JSON validation that rejects unknown properties
+  - New fields may be added to API responses at any time
+  - Your system MUST handle unexpected fields gracefully
+  - Avoid strict JSON validation that rejects unknown properties
 
-**Breaking Changes (Versioned):**
+  **Breaking Changes (Versioned):**
 
-* Field modifications or deletions will be versioned
-* Released approximately with advance notice
+  - Field modifications or deletions will be versioned
+  - Released approximately with advance notice
 
-**Required Actions:**
+  **Required Actions:**
 
-* ✅ Use flexible JSON parsing (ignore unknown fields)
-* ✅ Implement defensive coding practices
-* ✅ Test with mock responses containing extra fields
+  - ✅ Use flexible JSON parsing (ignore unknown fields)
+  - ✅ Implement defensive coding practices
+  - ✅ Test with mock responses containing extra fields
 </Warning>
-
 
 # How White-Label API Virtual Account Integration Works
 
@@ -46,7 +45,7 @@ Since this flow can be used by individuals or businesses, the steps will say bus
 
 ### Technical Architecture:
 
-```
+```text
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐   
 │   Your UI   │───►│  Meld APIs  │───►│ Provider API│
 │             │◄───│             │◄───│             │
@@ -59,11 +58,11 @@ Since this flow can be used by individuals or businesses, the steps will say bus
 
 ### Prerequisites:
 
-* **API Key** from [Meld Dashboard](https://dashboard.meld.io)
-* **Webhook endpoint** for transaction updates
-* **Domain whitelisting for redirect URLs** (some providers require this)
+- **API Key** from [Meld Dashboard](https://dashboard.meld.io)
+- **Webhook endpoint** for transaction updates
+- **Domain whitelisting for redirect URLs** (some providers require this)
 
-***
+---
 
 # White-Label API Integration Steps
 
@@ -75,12 +74,12 @@ Here is a common integration approach using this three-step process:
 
 Build your own custom UI to collect user preferences:
 
-* Amount they want to spend/receive
-* Fiat currency selection
-* Cryptocurrency selection
-* Bank transfer type preference (for example ACH vs Wire in the US)
-* Wallet address for receiving crypto
-* Country (can be auto-detected from business' device/browser instead of prompting)
+- Amount they want to spend/receive
+- Fiat currency selection
+- Cryptocurrency selection
+- Bank transfer type preference (for example ACH vs Wire in the US)
+- Wallet address for receiving crypto
+- Country (can be auto-detected from business' device/browser instead of prompting)
 
 ## 2. Set Up Webhooks
 
@@ -88,23 +87,21 @@ Webhooks notify your server when transactions are created and updated. This step
 
 ### Requirements:
 
-* **A publicly accessible URL** (localhost will not work)
-* For testing, consider using [ngrok](https://ngrok.com/), [webhook.site](https://webhook.site/) or similar services
+- **A publicly accessible URL** (localhost will not work)
+- For testing, consider using [ngrok](https://ngrok.com/), [webhook.site](https://webhook.site/) or similar services
 
 ### Setup Process:
 
-1. Navigate to **Developer > Webhooks** in the dashboard
+1. Navigate to **Developer \> Webhooks** in the dashboard
 2. Click **"Add Endpoint"**
 3. Enter your **webhook URL** (must start with http/https)
 4. Give your webhook a **descriptive name**
 5. Select **"Subscribe to all events"**
 6. Click **"Add endpoint"**
 
-
 <Note>
-### **Note:** You will receive notifications to this URL for all transaction creations and updates.
+  ### **Note:** You will receive notifications to this URL for all transaction creations and updates.
 </Note>
-
 
 ## 3. Create Meld subAccount for the business
 
@@ -116,39 +113,39 @@ This only needs to be done 1 time per business per provider. If you it more than
 
 Call `POST /payments/virtual-account/crypto/quote` to get real-time quotes from multiple onramp/offramp providers:
 
-* Send user preferences to Meld quote API
-* Receive quotes from available service providers
-* Display quotes in your custom interface for business selection
+- Send user preferences to Meld quote API
+- Receive quotes from available service providers
+- Display quotes in your custom interface for business selection
 
 ### Key Response Fields Explained:
 
-* **`sourceAmount`**: This is the amount of money the business will spend. For onramp this is in fiat, for offramp this is in terms of crypto.
-* **`destinationAmount`**: This is the amount of money the business will receive. For onramp this is in crypto, for offramp this is in terms of fiat.
-* **`totalFee`**: The total fee the business will pay, in terms of the fiat currency they are using.
-* **`serviceProvider`**: The onramp whose quote you are viewing.
-* **`rampScore`**, **`institutionName`**, **`lowKyc`**: These fields can be ignored as they are not relevant to the virtual account flow.
+- **`sourceAmount`**: This is the amount of money the business will spend. For onramp this is in fiat, for offramp this is in terms of crypto.
+- **`destinationAmount`**: This is the amount of money the business will receive. For onramp this is in crypto, for offramp this is in terms of fiat.
+- **`totalFee`**: The total fee the business will pay, in terms of the fiat currency they are using.
+- **`serviceProvider`**: The onramp whose quote you are viewing.
+- **`rampScore`**, **`institutionName`**, **`lowKyc`**: These fields can be ignored as they are not relevant to the virtual account flow.
 
 ## 5. Initiate a Transaction
 
 For the buy flow:
 
-* Call `POST /payments/virtual-account/ramp/onramp/order` with the business' wallet address and `subAccountId` to receive the virtual bank account details for the user.
-* Have the business send money to the virtual bank account from their banking app.
-* When the onramp receives the payment, they will send crypto to the business' wallet.
+- Call `POST /payments/virtual-account/ramp/onramp/order` with the business' wallet address and `subAccountId` to receive the virtual bank account details for the user.
+- Have the business send money to the virtual bank account from their banking app.
+- When the onramp receives the payment, they will send crypto to the business' wallet.
 
 For the sell flow:
 
-* Call `POST /payments/virtual-account/ramp/offramp/order` with the business' wallet address, bank account information, and `subAccountId` to receive the wallet address for the user to send crypto to.
-* Have the business send crypto from their wallet to the wallet address returned in the previous step.
-* When the onramp receives the crypto, they will send payment to the business' bank account.
+- Call `POST /payments/virtual-account/ramp/offramp/order` with the business' wallet address, bank account information, and `subAccountId` to receive the wallet address for the user to send crypto to.
+- Have the business send crypto from their wallet to the wallet address returned in the previous step.
+- When the onramp receives the crypto, they will send payment to the business' bank account.
 
 ## 6. Track Transaction
 
 Process webhooks and display transaction information to the business:
 
-* Set up webhook endpoints to receive transaction status updates
-* Fetch detailed transaction data with `GET /payments/transactions/{transactionId}` when webhooks arrive
-* Display transaction progress, completion status, and details in your UI
+- Set up webhook endpoints to receive transaction status updates
+- Fetch detailed transaction data with `GET /payments/transactions/{transactionId}` when webhooks arrive
+- Display transaction progress, completion status, and details in your UI
 
 You will receive webhooks from Meld every time a transaction is created or updated. For the full list of webhook events and payload examples, see [Webhook events](/docs/stablecoins/for-all-products/webhook-events).
 
@@ -239,13 +236,11 @@ function getStatusMessage(status) {
 }
 ```
 
-
 <Note>
-### **Status Reference:** See [Transaction Statuses](transaction-statuses) for complete status definitions.
+  ### **Status Reference:** See [Transaction Statuses](transaction-statuses) for complete status definitions.
 </Note>
 
-
-***
+---
 
 ## Best Practices & Tips
 
@@ -272,34 +267,34 @@ async function handleAPIError(error, endpoint) {
 
 ### Security Considerations:
 
-* **Never expose API keys** in frontend code
-* **Validate all user inputs** before API calls
-* **Use HTTPS only** for API communications
-* **Implement rate limiting** to prevent abuse
+- **Never expose API keys** in frontend code
+- **Validate all user inputs** before API calls
+- **Use HTTPS only** for API communications
+- **Implement rate limiting** to prevent abuse
 
-***
+---
 
 ## Next Steps
 
 ### Testing Your Implementation:
 
-* **[Virtual account testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials)** — provider-specific sandbox values
+- [**Virtual account testing credentials**](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials) — provider-specific sandbox values
 
 ### Advanced Features:
 
-* **[Webhook Events](webhook-events)** - Real-time updates
-* **[Dashboard Data](dashboard-data)** - Track performance
+- [**Webhook Events**](webhook-events) - Real-time updates
+- [**Dashboard Data**](dashboard-data) - Track performance
 
 ### Production Deployment:
 
-* **[Network Partner Setup](service-provider-setup)** - Configure additional onramps
+- [**Network Partner Setup**](service-provider-setup) - Configure additional onramps
 
-***
+---
 
 ## Support & Resources
 
-* **[Postman collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** — test APIs directly
-* **[Postman Collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** - Test APIs directly
-* **[FAQ](faq)** - Common questions answered
+- [**Postman collection**](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection) — test APIs directly
+- [**Postman Collection**](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection) - Test APIs directly
+- [**FAQ**](faq) - Common questions answered
 
 _This guide provides everything needed to build a production-ready crypto interface. Most teams complete their custom UI integration within 1-2 weeks using this approach._

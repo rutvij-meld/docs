@@ -1,21 +1,22 @@
 ---
 title: "Full Integration Guide"
 description: "This is the full end to end integration guide for integrating the virtual account flow."
+hidden: true
 ---
 
 This is the end-to-end Virtual Account integration guide for developers. It walks through the complete API sequence — customer creation, KYC, quoting, order creation, and webhook tracking — that you'll need to build a production-grade onramp or offramp.
 
 ## Before you begin
 
-* You have completed the [Virtual Account Quickstart](/docs/stablecoins/virtual-account-integration/virtual-account-quickstart) end to end at least once in sandbox
-* You have a Meld API key with virtual-account access (sandbox first, production for go-live)
-* You have a webhook endpoint configured in **Developer → Webhooks** in the dashboard
-* If you are KYCing end users, you have at least one virtual-account provider (Noah, Due, or Brale) enabled on your account
+- You have completed the [Virtual Account Quickstart](/docs/stablecoins/virtual-account-integration/virtual-account-quickstart) end to end at least once in sandbox
+- You have a Meld API key with virtual-account access (sandbox first, production for go-live)
+- You have a webhook endpoint configured in **Developer → Webhooks** in the dashboard
+- If you are KYCing end users, you have at least one virtual-account provider (Noah, Due, or Brale) enabled on your account
 
 # Notes
 
-* This flow is supported for both businesses and individuals. Businesses will have to KYB with Meld, which is manual. Users will have to KYC via Meld with the onramp, which can be done via API, and is described below.
-* While both Noah and Due support this flow for both businesses and users, Brale only supports this flow for businesses at this time. Brale also requires an additional _redemption_ step in the onramp flow in order for the business to receive their crypto.
+- This flow is supported for both businesses and individuals. Businesses will have to KYB with Meld, which is manual. Users will have to KYC via Meld with the onramp, which can be done via API, and is described below.
+- While both Noah and Due support this flow for both businesses and users, Brale only supports this flow for businesses at this time. Brale also requires an additional _redemption_ step in the onramp flow in order for the business to receive their crypto.
 
 # Full Integration Guide
 
@@ -23,7 +24,7 @@ This is the end-to-end guide for executing virtual account transactions (onramp 
 
 > **API compatibility:** New fields may appear in responses without a version bump. Use flexible JSON parsing and do not reject unknown properties. Breaking changes ship under a dated `Meld-Version`.
 
-***
+---
 
 ## How it works
 
@@ -35,7 +36,7 @@ This is the end-to-end guide for executing virtual account transactions (onramp 
 6. The business or individual completes the fiat or crypto leg (bank transfer or wallet send).
 7. Track progress via **webhooks** and the Transactions API.
 
-***
+---
 
 ## 1. Create a Customer
 
@@ -81,12 +82,12 @@ API Endpoint: `POST /accounts/customers`
 Save the returned `id` — you will pass it as `customerId` on every subsequent call.
 
 <Note>
-If you plan on using `DUENETWORK` later for executing transactions, you must also specify the customer's address by calling `POST /accounts/customers/{customerId}/addresses`.
+  If you plan on using `DUENETWORK` later for executing transactions, you must also specify the customer's address by calling `POST /accounts/customers/{customerId}/addresses`.
 </Note>
->
+
 > **Note:** Order and transaction requests also accept optional `subaccountCustomerId` and `externalSubaccountCustomerId` fields. Use these to tag which sub-account or business grouping a transaction belongs to for reporting and filtering purposes.
 
-***
+---
 
 ## 2. KYC / KYB
 
@@ -100,8 +101,8 @@ To test KYC in the sandbox, follow the steps in [KYC testing](/docs/stablecoins/
 
 API endpoints:
 
-* `POST /accounts/customers/{customerId}/kyc/initiate`
-* `PATCH /accounts/customers/{customerId}/kyc/initiate`
+- `POST /accounts/customers/{customerId}/kyc/initiate`
+- `PATCH /accounts/customers/{customerId}/kyc/initiate`
 
 **Request:**
 
@@ -164,7 +165,7 @@ Check `serviceProviderCustomers[].kyc.status`. Values: `PENDING`, `APPROVED`, `R
 
 Wait for the kyc.status to be `APPROVED` before proceeding. The customer must be KYC-approved before any transactions can be created.
 
-In both KYC initiation modes (**HOSTED_URL** and **TOKEN_IMPORT**), you can optionally specify Virtual Account providers you want to share the user's KYC with after Sumsub approves submission, via the `kycShareProviders` field. Alternatively, you can add share providers later by calling `PATCH /accounts/customers/{customerId}/kyc/initiate`.
+In both KYC initiation modes (**HOSTED\_URL** and **TOKEN\_IMPORT**), you can optionally specify Virtual Account providers you want to share the user's KYC with after Sumsub approves submission, via the `kycShareProviders` field. Alternatively, you can add share providers later by calling `PATCH /accounts/customers/{customerId}/kyc/initiate`.
 
 ```json
 {
@@ -190,8 +191,8 @@ After Sumsub verifies the user's submission, the KYC token will be automatically
 
 **Supported share providers and their requirements**
 
-* Noah
-* Due Network. Requires customer country to be specified — call `POST /accounts/customers/{customerId}/addresses` to add an address.
+- Noah
+- Due Network. Requires customer country to be specified — call `POST /accounts/customers/{customerId}/addresses` to add an address.
 
 **Expected Webhook Response**
 
@@ -247,29 +248,29 @@ You will need to direct your user to `HostedURL` so they can pass additional KYC
 
 **Errors:**
 
-* Calling `initiate` again for the same customer + provider returns **409**.
+- Calling `initiate` again for the same customer \+ provider returns **409**.
 
-***
+---
 
 ## 3. Configure webhooks
 
-In the Meld dashboard (**Developer > Webhooks**), add your endpoint URL and subscribe to at minimum:
+In the Meld dashboard (**Developer \> Webhooks**), add your endpoint URL and subscribe to at minimum:
 
-* `TRANSACTION_CRYPTO_PENDING`
-* `TRANSACTION_CRYPTO_TRANSFERRING`
-* `TRANSACTION_CRYPTO_COMPLETE`
-* `TRANSACTION_CRYPTO_FAILED`
-* `CUSTOMER_KYC_STATUS_CHANGE`
+- `TRANSACTION_CRYPTO_PENDING`
+- `TRANSACTION_CRYPTO_TRANSFERRING`
+- `TRANSACTION_CRYPTO_COMPLETE`
+- `TRANSACTION_CRYPTO_FAILED`
+- `CUSTOMER_KYC_STATUS_CHANGE`
 
 You can find all webhook events in [Webhook events](/docs/stablecoins/for-all-products/webhook-events). Verify webhook signatures per [Webhook authentication](/docs/stablecoins/for-all-products/webhooks-authentication).
 
-***
+---
 
 ## 4. Get a Quote
 
 API Endpoint: `POST /payments/virtual-account/crypto/quote`
 
-Note that the provider Brale doesn't support quotes. All Brale transactions are 1:1, aka for $100 you will receive 100 USDC.
+Note that the provider Brale doesn't support quotes. All Brale transactions are 1:1, aka for \$100 you will receive 100 USDC.
 
 **Request:**
 
@@ -310,17 +311,17 @@ For a **sell** quote, swap the currency codes: `sourceCurrencyCode` is the crypt
 
 **Key fields per quote:**
 
-| Field               | Meaning                                              |
-| ------------------- | ---------------------------------------------------- |
-| `sourceAmount`      | What the user spends (fiat for buy, crypto for sell) |
-| `destinationAmount` | What the user receives                               |
-| `totalFee`          | Total fees in the fiat currency                      |
-| `serviceProvider`   | Provider backing this quote                          |
-| `transactionType`   | `CRYPTO_PURCHASE` (buy) or `CRYPTO_SELL` (sell)      |
+| Field | Meaning |
+| --- | --- |
+| `sourceAmount` | What the user spends (fiat for buy, crypto for sell) |
+| `destinationAmount` | What the user receives |
+| `totalFee` | Total fees in the fiat currency |
+| `serviceProvider` | Provider backing this quote |
+| `transactionType` | `CRYPTO_PURCHASE` (buy) or `CRYPTO_SELL` (sell) |
 
 Present quotes to the user. Capture the selected `serviceProvider` for the next step.
 
-***
+---
 
 ## 5. Create an Order
 
@@ -405,10 +406,10 @@ API Endpoint: `POST /payments/virtual-account/ramp/offramp/order`
 
 **Offramp `paymentMethod.type` options:**
 
-| Type                          | Details schema                                                                                   |
-| ----------------------------- | ------------------------------------------------------------------------------------------------ |
+| Type | Details schema |
+| --- | --- |
 | `ACH` / `LOCAL_BANK_TRANSFER` | `accountType`, `routingNumber`, `accountNumber`, `bankName`, `beneficiaryAddress`, `bankAddress` |
-| `SEPA`                        | `iban`                                                                                           |
+| `SEPA` | `iban` |
 
 **Response:**
 
@@ -422,7 +423,7 @@ API Endpoint: `POST /payments/virtual-account/ramp/offramp/order`
 
 The user sends crypto to `walletAddress` from their wallet. The provider pays out fiat to the bank details after receiving the crypto. Make sure the user sends the correct amount of crypto as in the Create Sell Order API call.
 
-***
+---
 
 ## 6. Track the Transaction
 
@@ -494,7 +495,7 @@ API Endpoint: `GET /payments/transactions/{paymentTransactionId}`
 
 The `orderId` on the transaction matches `virtualAccountRampOrderId` in the webhook and the `orderId` from your order response, tying all three together.
 
-***
+---
 
 ## Sequence diagram
 
@@ -503,29 +504,29 @@ The `orderId` on the transaction matches `virtualAccountRampOrderId` in the webh
 ## Testing
 
 <Note>
-Provider sandboxes often cannot complete full settlement — you may only reach virtual bank account creation. See [Virtual account flow testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials) for provider-specific sandbox values (Noah, Due, Brale).
+  Provider sandboxes often cannot complete full settlement — you may only reach virtual bank account creation. See [Virtual account flow testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials) for provider-specific sandbox values (Noah, Due, Brale).
 </Note>
 
 ## Next steps
 
 ### Testing your implementation
 
-* **[Virtual account testing credentials](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials)** — provider-specific sandbox values
+- [**Virtual account testing credentials**](/docs/stablecoins/sandbox-guide/virtual-account-flow-testing-credentials) — provider-specific sandbox values
 
 ### Advanced features
 
-* **[Webhook events](/docs/stablecoins/for-all-products/webhook-events)** — real-time updates
-* **[Dashboard data](/docs/stablecoins/additional-information/dashboard-data)** — track performance
+- [**Webhook events**](/docs/stablecoins/for-all-products/webhook-events) — real-time updates
+- [**Dashboard data**](/docs/stablecoins/additional-information/dashboard-data) — track performance
 
 ### Production deployment
 
-* **[Service-provider setup](/docs/stablecoins/for-all-products/service-provider-setup)** — configure additional onramps
+- [**Service-provider setup**](/docs/stablecoins/for-all-products/service-provider-setup) — configure additional onramps
 
-***
+---
 
 ## Support & resources
 
-* **[Postman collection](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection)** — test APIs directly
-* **[FAQ](/docs/stablecoins/faq)** — common questions answered
+- [**Postman collection**](https://www.postman.com/meldeng/workspace/meld-io-public-api-collection) — test APIs directly
+- [**FAQ**](/docs/stablecoins/faq) — common questions answered
 
 <br />
