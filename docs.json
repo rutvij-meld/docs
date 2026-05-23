@@ -43,6 +43,14 @@
             ]
           },
           {
+            "group": "AI Toolkit",
+            "icon": "sparkles",
+            "tag": "NEW",
+            "pages": [
+              "docs/welcome/build-with-ai"
+            ]
+          },
+          {
             "group": "Meld API",
             "pages": [
               "docs/meld-api/getting-started"

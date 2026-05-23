@@ -1,0 +1,204 @@
+---
+title: "Build with AI"
+description: "Meld's Stablecoins & Digital Assets docs are AI-friendly. Plug them into Claude, Cursor, ChatGPT, or any LLM tool to ship your crypto integration faster."
+---
+
+The Meld Stablecoins documentation is published in an agent-ready format so coding assistants and AI agents can read, search, and reason over it directly — without copy-pasting pages or relying on stale training data.
+
+This page covers four ways to bring Meld docs into your AI workflow:
+
+<CardGroup cols={2}>
+  <Card title="MCP server" icon="plug" href="#mcp-server">
+    Connect Claude, Cursor, and other tools to a live, searchable index of the docs.
+  </Card>
+  <Card title="llms.txt" icon="file-lines" href="#llms-txt">
+    Drop-in context files that summarize or inline the entire docs site.
+  </Card>
+  <Card title="Markdown export" icon="markdown" href="#markdown-export">
+    Get any page as clean Markdown by appending `.md` to its URL.
+  </Card>
+  <Card title="skill.md" icon="robot" href="#skill-md">
+    Machine-readable capability file for agents that act on Meld's APIs.
+  </Card>
+</CardGroup>
+
+<Tip>
+  All endpoints below serve the full Meld documentation, including the Stablecoins & Digital Assets, Meld API, and API reference sections.
+</Tip>
+
+## MCP server
+
+The Meld docs are exposed as a hosted [Model Context Protocol](https://modelcontextprotocol.io) server. Once connected, your AI tool can search the docs and read full pages on demand instead of guessing.
+
+**Server URL**
+
+```
+https://meld-e276f676.mintlify.app/mcp
+```
+
+**Tools the server exposes**
+
+- `search_meld` — semantic search across every page; returns titles, snippets, and links.
+- `query_docs_filesystem_meld` — shell-style read access (`ls`, `tree`, `cat`, `head`, `rg`) over the docs as a virtual filesystem, including the OpenAPI specs.
+
+### Add it to your tool
+
+<Tabs>
+  <Tab title="Claude Code">
+    Run from your project:
+
+    ```bash
+    claude mcp add --transport http meld-docs https://meld-e276f676.mintlify.app/mcp
+    ```
+
+    Then in a session, ask: *"Use the meld-docs MCP to find the White-Label API quickstart and summarize the request payload."*
+  </Tab>
+  <Tab title="Claude Desktop">
+    Add to `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "meld-docs": {
+          "type": "http",
+          "url": "https://meld-e276f676.mintlify.app/mcp"
+        }
+      }
+    }
+    ```
+
+    Restart Claude Desktop. The `meld-docs` tools will appear in the tool picker.
+  </Tab>
+  <Tab title="Cursor">
+    Add to `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` in your project:
+
+    ```json
+    {
+      "mcpServers": {
+        "meld-docs": {
+          "url": "https://meld-e276f676.mintlify.app/mcp"
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="VS Code">
+    Add to your workspace `.vscode/mcp.json`:
+
+    ```json
+    {
+      "servers": {
+        "meld-docs": {
+          "type": "http",
+          "url": "https://meld-e276f676.mintlify.app/mcp"
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="ChatGPT">
+    Open a chat and attach the Meld docs MCP under **Connectors → Add connector** (available on Plus, Pro, Business, and Enterprise). Use:
+
+    ```
+    https://meld-e276f676.mintlify.app/mcp
+    ```
+
+    No auth required.
+  </Tab>
+</Tabs>
+
+<Tip>
+  A discovery endpoint is published at `https://meld-e276f676.mintlify.app/.well-known/mcp` so MCP-aware tools can find the server automatically.
+</Tip>
+
+## llms.txt
+
+The docs are also published as flat text files designed for direct LLM consumption — useful when you want to drop the whole site into a context window, a RAG pipeline, or a fine-tuning corpus.
+
+| File | Use it when |
+| --- | --- |
+| [`https://meld-e276f676.mintlify.app/llms.txt`](https://meld-e276f676.mintlify.app/llms.txt) | You want a structured index of every page with descriptions. |
+| [`https://meld-e276f676.mintlify.app/llms-full.txt`](https://meld-e276f676.mintlify.app/llms-full.txt) | You want the entire docs site inlined as one Markdown file. |
+
+**Example — load the full docs into a Claude API request:**
+
+```python
+import anthropic, urllib.request
+
+docs = urllib.request.urlopen("https://meld-e276f676.mintlify.app/llms-full.txt").read().decode()
+
+client = anthropic.Anthropic()
+msg = client.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=1024,
+    system=[
+        {"type": "text", "text": "You are a Meld integration assistant."},
+        {"type": "text", "text": docs, "cache_control": {"type": "ephemeral"}},
+    ],
+    messages=[{"role": "user", "content": "How do I create a crypto quote for a USD → USDC buy?"}],
+)
+print(msg.content[0].text)
+```
+
+<Tip>
+  Use prompt caching (as shown above) when you call repeatedly — `llms-full.txt` is large, and caching cuts cost and latency dramatically.
+</Tip>
+
+## Markdown export
+
+Any page on `meld-e276f676.mintlify.app` can be fetched as raw Markdown — no HTML, no nav chrome — by appending `.md` to its URL.
+
+**Examples**
+
+```
+https://meld-e276f676.mintlify.app/docs/stablecoins/crypto-overview_/quickstart.md
+https://meld-e276f676.mintlify.app/docs/stablecoins/white-label-api-integration/whitelabel-quickstart.md
+https://meld-e276f676.mintlify.app/api-reference/crypto/retail-ramp/crypto-quote-get.md
+```
+
+You can also:
+
+- Send `Accept: text/markdown` on any docs request to get the Markdown variant.
+- Press <kbd>Cmd</kbd>+<kbd>C</kbd> (<kbd>Ctrl</kbd>+<kbd>C</kbd> on Windows) on any page to copy it as Markdown.
+- Use the **Copy as Markdown** / **View as Markdown** options in the page's contextual menu.
+
+API reference pages include the full OpenAPI operation in the Markdown export, which is what most coding agents need to generate a correct request.
+
+## skill.md
+
+For agents that *act* on Meld (not just read about it), the docs publish an [agentskills.io](https://agentskills.io/specification)–compatible capability file:
+
+```
+https://meld-e276f676.mintlify.app/skill.md
+```
+
+It describes what an agent can accomplish with the Meld API, the inputs each capability needs, and the constraints that apply. MCP-connected agents discover it automatically as a resource on the server above; you can also add it manually:
+
+```bash
+npx skills add https://meld-e276f676.mintlify.app
+```
+
+## Recommended setup for crypto integrations
+
+<Steps>
+  <Step title="Connect the MCP server">
+    Add `https://meld-e276f676.mintlify.app/mcp` to your editor or chat tool. This is the single best upgrade — your assistant can now look up exact request shapes, status codes, and webhook payloads on demand.
+  </Step>
+  <Step title="Pin the right starting points">
+    Bookmark these Markdown URLs and feed them to your agent at the start of a session:
+
+    - `https://meld-e276f676.mintlify.app/docs/stablecoins/crypto-overview_/index.md` — product overview and which integration to pick
+    - `https://meld-e276f676.mintlify.app/docs/stablecoins/crypto-overview_/quickstart.md` — first API call
+    - `https://meld-e276f676.mintlify.app/docs/stablecoins/for-all-products/webhook-events.md` — webhook event catalog
+  </Step>
+  <Step title="Use llms-full.txt for one-shot tasks">
+    When you want a clean-slate model (no MCP) to do something self-contained — a one-off script, a code review, a migration — paste `llms-full.txt` into context with caching enabled.
+  </Step>
+  <Step title="Verify against the OpenAPI specs">
+    The MCP filesystem includes the OpenAPI JSON for every product. Ask your agent to validate generated requests against `/api-reference/crypto.json` before you ship.
+  </Step>
+</Steps>
+
+## Questions or feedback
+
+Found a docs gap your agent stumbled on, or want a new endpoint covered? Reach out to your Meld contact — agent-readability is a first-class goal for this section of the docs.
