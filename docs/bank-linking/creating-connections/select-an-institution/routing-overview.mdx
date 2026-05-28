@@ -4,7 +4,7 @@ title: "Routing"
 
 # Introduction
 
-In the case where the service provider is not explicitly stated in the request, Meld uses intelligent routing to route the user to the best provider for their needs. This allows you to optimize conversion across the board. Routing only works if you have 2 of more providers of a single domain configured, and all of the routing rules shown below can be set up via the Meld Dashboard. If a service provider is explicitly stated in the request, then routing is not used.
+In the case where the service provider is not explicitly stated in the request, Meld uses intelligent routing to route the user to the best provider for their needs. This allows you to optimize conversion across the board. Routing only works if you have 2 or more providers of a single domain configured, and all of the routing rules shown below can be set up via the Meld Dashboard. If a service provider is explicitly stated in the request, then routing is not used.
 
 ## How to Use
 
@@ -33,7 +33,7 @@ You can set up multiple custom rules and order them, and this will determine the
 
 # Bank Linking Routing
 
-Bank Linking Routing can be used to route to user to the best provider to complete their connection. Aside from the default routing rule, you can set up custom rules with conditions on where to route the user. Currently, you can select an institution or a list of institutions and route users trying to connect to them to a particular provider. For example, you can set it up so that users trying to connect to Chase or Bank of America go through Plaid, whereas users trying to go to Wells Fargo or US Bank go through Finicity. 
+Bank Linking Routing can be used to route the user to the best provider to complete their connection. Aside from the default routing rule, you can set up custom rules with conditions on where to route the user. Currently, you can select an institution or a list of institutions and route users trying to connect to them to a particular provider. For example, you can set it up so that users trying to connect to Chase or Bank of America go through Plaid, whereas users trying to go to Wells Fargo or US Bank go through Finicity. 
 
 You can also select a product or list of products to route. For example, any requests for Investment Holdings or Investment Transactions may go to Plaid. Be careful to not route based on products to a provider that doesn't support that product, for example since Salt Edge doesn't support Investment Holdings, don't route Investment Holdings to Salt Edge. You can find which products each provider supports on the [Supported Bank Linking Products](/docs/bank-linking/creating-connections/create-a-connect-token/supported-bank-linking-products) page.
 

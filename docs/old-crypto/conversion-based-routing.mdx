@@ -38,7 +38,7 @@ The customerScore is a complex calculation Meld runs in batches multiple times a
 
 Meld recognizes the user based on the wallet address, therefore to make full use of `customerScore`make sure to pass in the user's `walletAddress`.
 
-You will receive a customerScore for each onramp for a particular quote. Successful previous transactions with an onramp result in a higher score for that onramp. The reason Meld returns a score and not a true/false here is because success is a scale. For example, a user making 3 successful transactions with a particular onramp last week is an excellent indicator that their next transaction will also be successful, whereas a user making 2 successful transactions 3 months ago and and unsuccessful transaction 1 month ago with an onramp is still a positive indicator, just less strong than the previous example. So the first scenario would result in a highest customerScore than the second.
+You will receive a customerScore for each onramp for a particular quote. Successful previous transactions with an onramp result in a higher score for that onramp. The reason Meld returns a score and not a true/false here is because success is a scale. For example, a user making 3 successful transactions with a particular onramp last week is an excellent indicator that their next transaction will also be successful, whereas a user making 2 successful transactions 3 months ago and an unsuccessful transaction 1 month ago with an onramp is still a positive indicator, just less strong than the previous example. So the first scenario would result in a higher customerScore than the second.
 
 ## Recommended Use:
 
